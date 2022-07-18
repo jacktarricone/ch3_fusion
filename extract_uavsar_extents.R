@@ -18,10 +18,12 @@ rast_to_shp <-function(file){
   ## aggregate polyongs up to just data extent
   rast_shp <- aggregate(rast_shp_file, dissolve = TRUE, fun = "mean", cores = 10)
   
-  setwd("/Users/jacktarricone/hackweek2022/isce_sat2/") # setwd
-  writeVector(rast_shp, paste(name,".shp")) # save
-  return(rast_shp)
+  setwd("/Users/jacktarricone/ch3_sierra_data/uavsar_shape_files") # setwd
+  writeVector(rast_shp, paste(name,".shp")) # save with correct name
+  return(rast_shp) # return
 }
 
 # apply our funciton to the list of rasters
 lapply(list_coherence_files, rast_to_shp)
+
+
