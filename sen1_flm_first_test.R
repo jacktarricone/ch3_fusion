@@ -30,9 +30,46 @@ fsca_stack <-rast("./optical/jan29-feb4_stack.tif")
 # list insar data
 insar_files <-list.files("./insar", full.names = TRUE, pattern = '.tif')
 insar_stack <-rast(insar_files)
+insar_stack <-project(insar_stack, 'EPSG:4326')
+
+# check both stacks
 insar_stack
-plot(insar_stack[[4]], col = heat.colors(100))
+fsca_stack
+
+plot(insar_stack[[4]], col = rev(heat.colors(100)))
 plot(fsca_stack[[7]], add = TRUE, col = gray.colors(100))
+
+# resample insar down to fsca
+#### need to change the resampling so it doesn't cut off the edge of the nisar data ###
+insar_resamp <-resample(insar_stack, fsca_stack, method = 'bilinear')
+insar <-crop(insar_resamp, ext(insar_stack))
+insar # check
+
+# crop and mask with coherence rasters
+fsca_crop <-crop(fsca_stack, ext(insar))
+fsca <-mask(fsca_crop, insar[[2]], maskvalue = NA)
+
+# check they have the same spatial parameters
+insar
+fsca
+
+# test plot
+plot(insar[[2]])
+plot(fsca[[1]], add = TRUE, col = gray.colors(100))
+
+# generate pixel counts
+fsca_pixel_count <-terra::freq(fsca[[7]])
+insar_pixel_count <-terra::freq(insar[[2]], digits = 1)
+
+# calc sum
+fsca_sum <-sum(fsca_pixel_count$count)
+insar_sum <-sum(insar_pixel_count$count)
+
+# calc percent
+fsca_percent <-(fsca_sum/insar_sum)*100
+print(fsca_percent)
+
+## %33.22 percent of the scene
 
 
 # create shape file from cor data
