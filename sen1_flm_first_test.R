@@ -7,46 +7,47 @@ library(terra)
 setwd('/Users/jacktarricone/ch3_sierra_data/sen1_nisar_sim/jan29-feb4_2020/')
 list.files()
 
-# load in fsca data
-fsca_files <-list.files("./optical", full.names = TRUE)
-fsca_stack <-rast(fsca_files)
-
-# replace 0 with NaN
-values(fsca_stack)[values(fsca_stack) == 0] = NA
-
-# reproject
-fsca_stack <-project(fsca_stack, 'EPSG:4326')
-
-# check extent
-ext(fsca_stack)
-
-# test plot
-plot(fsca_stack[[4]])
+# # load in fsca data
+# fsca_files <-list.files("./optical", full.names = TRUE)
+# fsca_stack <-rast(fsca_files)
+# 
+# # replace 0 with NaN
+# values(fsca_stack)[values(fsca_stack) == 0] = NA
+# 
+# # reproject
+# fsca_stack <-project(fsca_stack, 'EPSG:4326')
+# 
+# # check extent
+# ext(fsca_stack)
+# 
+# # test plot
+# plot(fsca_stack[[4]])
 
 # save
 #writeRaster(fsca_stack, "./optical/jan29-feb4_stack.tif")
 fsca_stack <-rast("./optical/jan29-feb4_stack.tif")
 
+# extend so sen1 isn't chopped off in the resample
+fsca_stack_expanded <- extend(fsca_stack, c(0,2500))
+plot(fsca_stack_expanded)
+
 # list insar data
 insar_files <-list.files("./insar", full.names = TRUE, pattern = '.tif')
-insar_stack <-rast(insar_files)
-insar_stack <-project(insar_stack, 'EPSG:4326')
+insar_stack <-rast(insar_files) # rasterize
+insar_stack <-project(insar_stack, 'EPSG:4326') # project
 
-# check both stacks
+# inspect both stacks
 insar_stack
 fsca_stack
 
-plot(insar_stack[[4]], col = rev(heat.colors(100)))
-plot(fsca_stack[[7]], add = TRUE, col = gray.colors(100))
-
-# resample insar down to fsca
-#### need to change the resampling so it doesn't cut off the edge of the nisar data ###
-insar_resamp <-resample(insar_stack, fsca_stack, method = 'bilinear')
+# resample insar down to fsca from expanded data
+insar_resamp <-resample(insar_stack, fsca_stack_expanded, method = 'bilinear')
 insar <-crop(insar_resamp, ext(insar_stack))
 insar # check
+plot(insar[[2]])
 
 # crop and mask with coherence rasters
-fsca_crop <-crop(fsca_stack, ext(insar))
+fsca_crop <-crop(fsca_stack_expanded, ext(insar))
 fsca <-mask(fsca_crop, insar[[2]], maskvalue = NA)
 
 # check they have the same spatial parameters
@@ -54,7 +55,8 @@ insar
 fsca
 
 # test plot
-plot(insar[[2]])
+# test plot fsca on top of insar
+plot(insar[[2]], col = heat.colors(100))
 plot(fsca[[1]], add = TRUE, col = gray.colors(100))
 
 # generate pixel counts
@@ -69,7 +71,10 @@ insar_sum <-sum(insar_pixel_count$count)
 fsca_percent <-(fsca_sum/insar_sum)*100
 print(fsca_percent)
 
-## %33.22 percent of the scene
+## %31.4 percent of the scene
+
+
+
 
 
 # create shape file from cor data
