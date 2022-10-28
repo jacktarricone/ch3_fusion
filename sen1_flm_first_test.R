@@ -73,6 +73,35 @@ print(fsca_percent)
 
 ## %31.4 percent of the scene
 
+#######
+# testing to makes sure this is correct
+#######
+
+fsca_area <-fsca[[1]]
+insar_area <-insar[[2]]
+
+# make binary
+values(fsca_area)[values(fsca_area) > 0] = 1
+values(insar_area)[values(insar_area) > 0] = 1
+
+# test plot with some color
+plot(insar_area, col = 'red')
+plot(fsca_area, add = TRUE, col = 'black')
+
+# generate pixel counts
+fsca_pixel_count_bin <-terra::freq(fsca_area)
+insar_pixel_count_bin <-terra::freq(insar_area)
+
+# calc sum
+fsca_sum_bin <-sum(fsca_pixel_count_bin$count)
+insar_sum_bin <-sum(insar_pixel_count_bin$count)
+
+# calc percent
+fsca_percent_bin <-(fsca_sum_bin/insar_sum_bin)*100
+print(fsca_percent_bin)
+
+
+
 
 
 
