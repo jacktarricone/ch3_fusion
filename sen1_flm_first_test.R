@@ -2,6 +2,9 @@
 # oct 27th, 2022
 
 library(terra)
+library(ggmap)
+library(ggplot2);theme_set(theme_minimal(12))
+library(RColorBrewer)
 
 # setwd
 setwd('/Users/jacktarricone/ch3_sierra_data/sen1_nisar_sim/jan29-feb4_2020/')
@@ -25,11 +28,19 @@ list.files()
 
 # save
 #writeRaster(fsca_stack, "./optical/jan29-feb4_stack.tif")
-fsca_stack <-rast("./optical/jan29-feb4_stack.tif")
 
-# extend so sen1 isn't chopped off in the resample
-fsca_stack_expanded <- extend(fsca_stack, c(0,2500))
-plot(fsca_stack_expanded)
+## read in optical stack
+# fsca_stack <-rast("./optical/jan29-feb4_stack.tif")
+
+# # extend so sen1 isn't chopped off in the resample
+# fsca_stack_expanded <- extend(fsca_stack, c(0,2500))
+# plot(fsca_stack_expanded)
+# 
+# writeRaster(fsca_stack_expanded, "./optical/jan29-feb4_stack_expanded.tif")
+
+
+# read in expanded stack
+fsca_stack_expanded <-rast("./optical/jan29-feb4_stack_expanded.tif")
 
 # list insar data
 insar_files <-list.files("./insar", full.names = TRUE, pattern = '.tif')
@@ -38,7 +49,7 @@ insar_stack <-project(insar_stack, 'EPSG:4326') # project
 
 # inspect both stacks
 insar_stack
-fsca_stack
+fsca_stack_expanded
 
 # resample insar down to fsca from expanded data
 insar_resamp <-resample(insar_stack, fsca_stack_expanded, method = 'bilinear')
@@ -58,6 +69,49 @@ fsca
 # test plot fsca on top of insar
 plot(insar[[2]], col = heat.colors(100))
 plot(fsca[[1]], add = TRUE, col = gray.colors(100))
+
+# conver to df for plotting
+cor_df <-as.data.frame(insar[[2]], xy = TRUE)
+fsca_df <-as.data.frame(fsca[[1]], xy = TRUE)
+
+# rename
+names(cor_df)[3] <-"cor"
+names(fsca_df)[3] <-"fsca"
+
+
+# set map bounding box
+loc <-c(-121,36,-116.7,38.5)
+
+# download google sat
+myMap <- get_map(location=loc,
+                 source="google", 
+                 maptype="satellite", 
+                 crop=TRUE)
+
+# see map, looks good
+ggmap(myMap)
+
+# set scale
+greys_scale <-rev(brewer.pal(9, 'Greys'))
+vid_scale <-viridis::
+
+hist(fsca_df$fsca, breaks = 20)
+
+# single plot test before making gif
+ggmap(myMap) +
+  coord_equal()+
+  geom_raster(cor_df, mapping = aes(x,y, fill = cor)) +
+  viridis::scale_fill_viridis(option="magma", limits = c(0,1), na.value="transparent") +
+  geom_tile(fsca_df, mapping = aes(x,y,color = fsca), fill = "transparent")) +
+  scale_fill_gradientn(colors = greys_scale, limits = c(0,100), na.value="transparent") +
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=1)) +
+  labs(title = "", fill = "Sen-1 NISAR Simulated w/ FLM fSCA",
+       x="Lon (deg)", y="Lat (deg)")
+
+
+################################################## 
+################# pixel analysis ################# 
+##################################################
 
 # generate pixel counts
 fsca_pixel_count <-terra::freq(fsca[[7]])
