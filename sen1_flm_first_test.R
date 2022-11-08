@@ -67,7 +67,7 @@ fsca
 
 # test plot
 # test plot fsca on top of insar
-plot(insar[[2]], col = heat.colors(100))
+plot(insar[[2]], col = viridis::magma(20))
 plot(fsca[[1]], add = TRUE, col = gray.colors(100))
 
 # conver to df for plotting
