@@ -19,7 +19,7 @@ modis_sin <-rast(april_3)
 # test plot NDSI layer
 plot(modis_sin[[1]])
 
-# reproject to geogrpahic coords
+# reproject to geograpahic coords
 ndsi <-project(modis_sin, 'EPSG:4326')
 ndsi
 plot(ndsi[[1]])
