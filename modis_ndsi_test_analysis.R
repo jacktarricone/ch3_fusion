@@ -13,9 +13,9 @@ data_list <-list.files("./rasters/MOD10A1F_wy2020", pattern = "\\.hdf$", full.na
 head(data_list)
 
 # read in modis tile in sinusodal projection from april 3rd 2020
-feb_1 <-data_list[60]
+feb_1 <-data_list[124]
 feb_1
-modis_sin <-rast(april_3)
+modis_sin <-rast(feb_1)
 
 # test plot NDSI layer
 plot(modis_sin[[1]])
@@ -26,7 +26,7 @@ ndsi
 plot(ndsi)
 
 # read in karls fused data for croping
-flm_raw <-rast("./rasters/fused_landsat_modis/SSN.downscaled.20200403.v4.3e+05.tif")
+flm_raw <-rast("./rasters/flm/SSN.downscaled.20200403.v4.3e+05.tif")
 values(flm_raw)[values(flm_raw) == 0] <- NA
 flm <-project(flm_raw, 'EPSG:4326')
 flm
@@ -48,8 +48,15 @@ plot(flm, col = viridis::viridis(100, option = "viridis"), add = TRUE)
 
 # save rasters for plotting in Q
 # writeRaster(flm, "./rasters/for_Q/flm_april_3_2020.tif")
-# writeRaster(ndsi_crop[[1]], "./rasters/for_Q/modis_ndsi_april_3_2020.tif")
 
+writeRaster(ndsi_crop[[1]], "./rasters/for_Q/modis_ndsi_feb1_1_2020.tif")
+
+# convert to fsca
+modis_fsca <-(-.01 + (1.45*ndsi_crop))
+modis_fsca
+plot(ndsi_crop)
+hist(ndsi_crop)
+writeRaster(modis_fsca, "./rasters/for_Q/modis_fsca_feb1_1_2020.tif")
 
 ### load in insar data
 # setwd
