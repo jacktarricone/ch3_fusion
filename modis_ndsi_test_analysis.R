@@ -13,7 +13,8 @@ data_list <-list.files("./rasters/MOD10A1F_wy2020", pattern = "\\.hdf$", full.na
 head(data_list)
 
 # read in modis tile in sinusodal projection from april 3rd 2020
-april_3 <-data_list[240]
+feb_1 <-data_list[60]
+feb_1
 modis_sin <-rast(april_3)
 
 # test plot NDSI layer
