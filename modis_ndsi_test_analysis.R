@@ -9,20 +9,20 @@
 library(terra)
 
 setwd("/Users/jacktarricone/ch3_fusion")
-data_list <-list.files("./rasters/MOD10A1_wy2020", pattern = "\\.hdf$", full.names = TRUE)
+data_list <-list.files("./rasters/MOD10A1F_wy2020", pattern = "\\.hdf$", full.names = TRUE)
 head(data_list)
 
 # read in modis tile in sinusodal projection from april 3rd 2020
-april_3 <-data_list[185]
+april_3 <-data_list[240]
 modis_sin <-rast(april_3)
 
 # test plot NDSI layer
 plot(modis_sin[[1]])
 
 # reproject to geograpahic coords
-ndsi <-project(modis_sin, 'EPSG:4326')
+ndsi <-project(modis_sin[[1]], 'EPSG:4326')
 ndsi
-plot(ndsi[[1]])
+plot(ndsi)
 
 # read in karls fused data for croping
 flm_raw <-rast("./rasters/fused_landsat_modis/SSN.downscaled.20200403.v4.3e+05.tif")
