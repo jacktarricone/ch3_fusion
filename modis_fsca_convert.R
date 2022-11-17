@@ -22,12 +22,18 @@ flm
 
 ndsi_to_fsca <-function(x){
   
+  
+    x <-data_list[51]
+    x
+    
     # read in raw raster
-    ndsi_rast <-rast(data_list[130])
+    ndsi_rast <-rast(x)
+    plot(ndsi_rast[[1]])
     
     # convert to fsca using equation presented in stillinger et al. 2022
+    # fsca = −0.01 + (1.45 × ndsi)
     fsca_rast <-ndsi_rast
-    fsca_rast[[1]] <-(-.01 + (1.45*ndsi_rast[[1]]))
+    fsca_rast[[1]] <- -.01 + (1.45*ndsi_rast[[1]])
     fsca_rast
     
     # reproject to geographic coords
@@ -37,25 +43,31 @@ ndsi_to_fsca <-function(x){
 
     # crop down to flm ext
     fsca <-crop(fsca_reproj, ext(flm))
-    plot(fsca)
+    plot(fsca[[1]])
     hist(fsca[[1]])
     
-    file_name <-basename(data_list[130])
+    # pull out file name
+    file_name <-basename(x)
     file_name
     
-    # file naming
-    wy2020 <-grep("A20200", file_name, value = FALSE)
-    if (wy2020 == 1){
+    # file naming for both 2019 and 2020 files
+    wy2020 <-grepl("A20200", file_name, fixed = TRUE)
+    
+    if (wy2020 == TRUE){
+      
       doy_raw <-str_sub(file_name,15)
       doy <-as.numeric(str_sub(doy_raw, end=-30))
       date <-as.Date(doy, origin = "2020-01-01")
       date_v2<-format(date, "%Y%m%d")
-      name_v1 <-paste0("sierra_modis_fsca_", date_v2, ".tif")
+      name_v1 <-paste0("modis_fsca_", date_v2, ".tif")
       
       }else{
-      
+        doy_raw <-str_sub(file_name,15)
+        doy <-as.numeric(str_sub(doy_raw, end=-30))
+        date <-as.Date(doy, origin = "2019-01-01")
+        date_v2<-format(date, "%Y%m%d")
+        name_v1 <-paste0("modis_fsca_", date_v2, ".tif")
     }
-    as.Date(38, origin = "2020-01-01")
 }
 # crop modis ndsi down 
 ndsi_crop <-crop(ndsi, ext(flm))
