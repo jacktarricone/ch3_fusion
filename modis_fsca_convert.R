@@ -67,7 +67,11 @@ ndsi_to_fsca <-function(x){
         date <-as.Date(doy, origin = "2019-01-01")
         date_v2<-format(date, "%Y%m%d")
         name_v1 <-paste0("modis_fsca_", date_v2, ".tif")
-    }
+      }
+    
+    # save
+    saving_path <-file.path("./rasters/MOD10A1F_wy2020/fsca/")
+    writeRaster(fsca, paste0(saving_path, name_v1))
 }
 # crop modis ndsi down 
 ndsi_crop <-crop(ndsi, ext(flm))
