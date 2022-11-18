@@ -21,7 +21,6 @@ flm <-project(flm_raw, 'EPSG:4326')
 rm(flm_raw)
 flm
 
-
 # function for concerting, cropping, and saving
 # MODIS ndsi to fsca
 ndsi_to_fsca <-function(x){

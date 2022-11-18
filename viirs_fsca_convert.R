@@ -23,24 +23,17 @@ xml_parse <-xmlParse(xml_list[1])
 xml <-xmlToList(xml_parse)
 coords <-xml[["GranuleURMetaData"]][["SpatialDomainContainer"]][["HorizontalSpatialDomainContainer"]][["GPolygon"]][["Boundary"]]
 coords_df <-as.data.frame(coords)
-coords_df
 
-# pull out extent
+# pull out extent box corners
 xmn <-as.numeric(coords_df$Point.PointLongitude.3)
 xmx <-as.numeric(coords_df$Point.PointLongitude)
 ymn <-as.numeric(coords_df$Point.PointLatitude.3)
 ymx <-as.numeric(coords_df$Point.PointLatitude)
 
+## projection info
 viirs_proj <-"+proj=sinu +lon_0=0 +x_0=0 +y_0=0 +R=6371007.181 +no_defs"
-viirs_ext <-ext(xmx,xmn,ymn,ymx) # length=4; order= xmin, xmax, ymin, ymax)
-viirs_ext_m <-ext(-11119505, -10007555, 3335852, 4447802)
-
-viirs_rast <-rast(h5_list[160])
-crs(viirs_rast) <-viirs_proj
-viirs_rast
-ext(viirs_rast) <-viirs_ext_m
-viirs_rast
-plot(viirs_rast[[3]])
+# viirs_ext <-ext(xmx,xmn,ymn,ymx) # length=4; order= xmin, xmax, ymin, ymax)
+viirs_ext_m <-ext(-11119505, -10007555, 3335852, 4447802) # from modis
 
 # for extent cropping
 flm_raw <-rast("./rasters/flm/SSN.downscaled.20200403.v4.3e+05.tif")
@@ -48,22 +41,17 @@ flm <-project(flm_raw, 'EPSG:4326')
 rm(flm_raw)
 flm
 
-# reproject to geographic coords
-fsca_reproj <-project(viirs_rast, 'EPSG:4326')
-fsca_reproj
-
-# crop down to flm ext
-fsca <-crop(fsca_reproj, ext(flm))
-plot(fsca)
-writeRaster(fsca, "./rasters/VNP10A1F_wy2020/viirs_test4.tif")
-
-
 # function for concerting, cropping, and saving
-# MODIS ndsi to fsca
-ndsi_to_fsca <-function(x){
+# VIIRS ndsi to fsca
+
+viirs_ndsi_to_fsca <-function(x){
     
     # read in raw raster
     ndsi_rast <-rast(x)
+    
+    # project
+    crs(ndsi_rast) <-viirs_proj
+    ext(ndsi_rast) <-viirs_ext_m
     
     # convert to fsca using equation presented in stillinger et al. 2022
     # fsca = −0.01 + (1.45 × ndsi)
@@ -78,6 +66,7 @@ ndsi_to_fsca <-function(x){
     
     # pull out file name
     file_name <-basename(x)
+    file_name
     
     # file naming for both 2019 and 2020 files
     wy2020 <-grepl("A2020", file_name, fixed = TRUE)
@@ -85,28 +74,28 @@ ndsi_to_fsca <-function(x){
     if (wy2020 == TRUE){
       
       doy_raw <-str_sub(file_name,15) # remove first 15 characters
-      doy <-as.numeric(str_sub(doy_raw, end=-30)) # move last 30, leaving just doy
+      doy <-as.numeric(str_sub(doy_raw, end=-29)) # move last 30, leaving just doy
       date <-as.Date(doy, origin = "2020-01-01") # convert doy to date using correct origin
       date_v2<-format(date, "%Y%m%d") # reformat for saving 
-      name_v1 <-paste0("modis_fsca_", date_v2, ".tif") # create file name
+      name_v1 <-paste0("viirs_fsca_", date_v2, ".tif") # create file name
       
       } else{
         
         doy_raw <-str_sub(file_name,15)
-        doy <-as.numeric(str_sub(doy_raw, end=-30))
+        doy <-as.numeric(str_sub(doy_raw, end=-29))
         date <-as.Date(doy, origin = "2019-01-01")
         date_v2<-format(date, "%Y%m%d")
-        name_v1 <-paste0("modis_fsca_", date_v2, ".tif")
+        name_v1 <-paste0("viirs_fsca_", date_v2, ".tif")
       }
     
     # save
-    saving_path <-file.path("./rasters/MOD10A1F_wy2020/fsca/")
+    saving_path <-file.path("./rasters/VNP10A1F_wy2020/fsca/")
     writeRaster(fsca, paste0(saving_path, name_v1))
 }
 
 # lapp
-lapply(date_list, 
-       ndsi_to_fsca)
+lapply(h5_list, 
+       viirs_ndsi_to_fsca)
 
 
 
