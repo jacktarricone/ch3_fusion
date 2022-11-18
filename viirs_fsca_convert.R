@@ -31,12 +31,14 @@ xmx <-as.numeric(coords_df$Point.PointLongitude)
 ymn <-as.numeric(coords_df$Point.PointLatitude.3)
 ymx <-as.numeric(coords_df$Point.PointLatitude)
 
-viirs_proj <-"+proj=sinu +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+viirs_proj <-"+proj=sinu +lon_0=0 +x_0=0 +y_0=0 +R=6371007.181 +no_defs"
 viirs_ext <-ext(xmx,xmn,ymn,ymx) # length=4; order= xmin, xmax, ymin, ymax)
+viirs_ext_m <-ext(-11119505, -10007555, 3335852, 4447802)
 
-viirs_rast <-rast(h5_list[120])
+viirs_rast <-rast(h5_list[160])
 crs(viirs_rast) <-viirs_proj
-ext(viirs_rast) <-viirs_ext
+viirs_rast
+ext(viirs_rast) <-viirs_ext_m
 viirs_rast
 plot(viirs_rast[[3]])
 
@@ -48,11 +50,12 @@ flm
 
 # reproject to geographic coords
 fsca_reproj <-project(viirs_rast, 'EPSG:4326')
+fsca_reproj
 
 # crop down to flm ext
 fsca <-crop(fsca_reproj, ext(flm))
 plot(fsca)
-writeRaster(fsca, "./rasters/VNP10A1F_wy2020/viirs_test2.tif")
+writeRaster(fsca, "./rasters/VNP10A1F_wy2020/viirs_test4.tif")
 
 
 # function for concerting, cropping, and saving
