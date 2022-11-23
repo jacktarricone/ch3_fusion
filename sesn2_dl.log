@@ -1,0 +1,27 @@
+[2022-11-18 12:13:11] Searching for available SAFE products...
+[2022-11-18 12:14:04] Ordering 21 Sentinel-2 images stored in the Long Term Archive...
+Request failed [403]. Retrying in 1 seconds...
+Request failed [403]. Retrying in 3.6 seconds...
+[2022-11-18 12:14:40] 20 of 21 Sentinel-2 images were correctly ordered.
+[2022-11-18 12:14:40] 1 of 21 Sentinel-2 images were not correctly ordered (HTML status code:
+         403) because user 'jacktarricone' offline products retrieval quota exceeded. Please
+         retry later, otherwise use different SciHub credentials (see ?write_scihub_login or
+         set a specific value for argument "apihub").
+╔════════════════════════════════════════════════════════════════════════════════════════════
+║ sen2r Processing Report
+╟────────────────────────────────────────────────────────────────────────────────────────────
+║ Dates to be processed based on processing parameters: 14
+║ Processing completed for: 0 out of 14 expected dates.
+║ Outputs for: 14 out of 14 expected dates not created because all/some required images are
+║ currently offline.
+║ Order for: 20 out of 21 offline images successfull.
+║ Order for: 1 out of 21 offline images failed due to exceeded user quota or other reasons.
+║ You can try placing the order again later with the command:
+║   s2_order("/Users/jacktarricone/.sen2r/lta_orders/lta_20221118_121440.json")
+║ You can check later if the ordered images are with the command:
+║   safe_is_online("/Users/jacktarricone/.sen2r/lta_orders/lta_20221118_121440.json")
+║ When additional images are online, you can relaunch the processing chain using the command:
+║   sen2r("/Users/jacktarricone/.sen2r/proc_par/s2proc_20221118_121310.json")
+╚════════════════════════════════════════════════════════════════════════════════════════════
+[2022-11-18 12:14:40] #### sen2r session terminated. ####
+Spherical geometry (s2) switched on
