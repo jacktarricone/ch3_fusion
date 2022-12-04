@@ -37,12 +37,14 @@ plot(usj, add = TRUE)
 
 # modis
 modis <-rast("./MOD10A1F_wy2020/fsca/modis_fsca_20200304.tif")
+values(modis[[1]])[values(modis[[1]]) < 15] = NA
 modis
 plot(modis[[1]])
 plot(usj, add = TRUE)
 
 # viirs
 viirs <-rast("./VNP10A1F_wy2020/sierra_fsca/viirs_fsca_20200304.tif")
+values(viirs[[3]])[values(viirs[[3]]) < 15] = NA
 viirs
 plot(viirs[[3]])
 plot(usj, add = TRUE)
@@ -86,26 +88,55 @@ plot(modis[[1]], add = TRUE)
 plot(usj, add = TRUE)
 
 ##########
-## mask all data for USJ
+## mask and crop all data for USJ
 ##########
 
+##### nisar
+# unw
+unw_usj_v1 <-mask(unw, usj)
+unw_usj <-crop(unw_usj_v1, ext(usj))
+plot(unw_usj)
+# writeRaster(unw_usj, "./clips/usj/unw_usj_20200305.tif")
+
+# cor
+cor_usj_v1 <-mask(cor, usj)
+cor_usj <-crop(cor_usj_v1, ext(usj))
+plot(cor_usj)
+# writeRaster(cor_usj, "./clips/usj/cor_usj_20200305.tif")
+
+# amp_db
+amp_db_usj_v1 <-mask(amp_db, usj)
+amp_db_usj <-crop(amp_db_usj_v1, ext(usj))
+plot(amp_db_usj)
+# writeRaster(amp_db_usj, "./clips/usj/amp_db_usj_20200305.tif")
+
+
+###### optical
+
 # landsat
-landsat_usj <-mask(landsat, usj)
+landsat_usj_v1 <-mask(landsat, usj)
+landsat_usj <-crop(landsat_usj_v1, ext(usj))
 plot(landsat_usj)
-#writeRaster(landsat_usj, "./for_Q/landsat_usj_20200304.tif")
+#writeRaster(landsat_usj, "./clips/usj/landsat_usj_20200304.tif")
 
 # flm
-flm_usj <-mask(flm, usj)
+flm_usj_v1 <-mask(flm, usj)
+flm_usj <-crop(flm_usj_v1, ext(usj))
 plot(flm_usj)
-# writeRaster(flm_usj, "./for_Q/flm_usj_20200304.tif")
+# writeRaster(flm_usj, "./clips/usj/flm_usj_20200304.tif")
 
-# grey background
-grey_raw <-landsat_usj
-values(grey_raw)[values(grey_raw) >= 0] = 1
-# plot(grey_raw)
-# writeRaster(grey_raw, "./for_Q/grey_usj.tif")
+# modis
+modis_usj_v1 <-mask(modis, usj)
+modis_usj <-crop(modis_usj_v1, ext(usj))
+plot(modis_usj[[1]])
+#writeRaster(modis_usj, "./clips/usj/modis_usj_20200304.tif")
 
-unw <-uavsar_80m
+# viirs
+viirs_usj_v1 <-mask(viirs, usj)
+viirs_usj <-crop(viirs_usj_v1, ext(usj))
+plot(viirs_usj[[3]])
+# writeRaster(viirs_usj, "./clips/usj/viirs_usj_20200304.tif")
+
 
 #### testing cropping to uavsar extent
 # flm
