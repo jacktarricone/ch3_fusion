@@ -3,7 +3,6 @@
 # november 23, 2022
 
 library(terra)
-library(Metrics)
 
 setwd("./ch3_fusion/rasters/")
 list.files()
@@ -19,9 +18,17 @@ cor
 plot(cor)
  
 # unwrapped phase
-unw_nisar <-rast("./sen1_nisar_sim/wy2020/S1-GUNW-D-R-144-tops-20200305_20200222-135950-38726N_36751N-PP-0915-v2_0_2-unwrappedPhase.tif")
-unw_nisar
-plot(unw_nisar)
+unw <-rast("./sen1_nisar_sim/wy2020/S1-GUNW-D-R-144-tops-20200305_20200222-135950-38726N_36751N-PP-0915-v2_0_2-unwrappedPhase.tif")
+unw
+plot(unw)
+plot(usj, add = TRUE)
+
+# amp
+# amp <-rast("./sen1_nisar_sim/wy2020/S1-GUNW-D-R-144-tops-20200305_20200222-135950-38726N_36751N-PP-0915-v2_0_2-amplitude.tif")
+# amp_db <- 10.0 * log10(1/amp)
+# writeRaster(amp_db, "./sen1_nisar_sim/wy2020/20200305_amp_db.tif")
+amp_db <-rast("./sen1_nisar_sim/wy2020/20200305_amp_db.tif")
+plot(amp_db)
 plot(usj, add = TRUE)
 
 #####
@@ -41,44 +48,42 @@ plot(viirs[[3]])
 plot(usj, add = TRUE)
 
 # landsat march 4th
-# bring in other tile so it covers full basin
-landsat_10 <-rast("./landsat_fsca/h3_v10_2020/LC08_CU_003010_20200304_20210504_02_SNOW/LC08_CU_003010_20200304_20210504_02_GROUND_SNOW.TIF")
-landsat_9 <-rast("./landsat_fsca/h3_v09_2020/LC08_CU_003009_20200304_20210504_02_SNOW/LC08_CU_003009_20200304_20210504_02_GROUND_SNOW.TIF")
 
-# merge and reproject
-landsat_r <-merge(landsat_10, landsat_9)
-plot(landsat_r)
+# format
+# # bring in other tile so it covers full basin
+# landsat_10 <-rast("./landsat_fsca/h3_v10_2020/LC08_CU_003010_20200304_20210504_02_SNOW/LC08_CU_003010_20200304_20210504_02_GROUND_SNOW.TIF")
+# landsat_9 <-rast("./landsat_fsca/h3_v09_2020/LC08_CU_003009_20200304_20210504_02_SNOW/LC08_CU_003009_20200304_20210504_02_GROUND_SNOW.TIF")
+# 
+# # merge and reproject
+# landsat_r <-merge(landsat_10, landsat_9)
+# values(landsat_r)[values(landsat_r) < 150] = NA
+# plot(landsat_r)
+# 
+# # reproj
+# landsat <-project(landsat_r, "EPSG:4326", method = "bilinear")
+# writeRaster(landsat, "./for_Q/landsat_20200304_resamp.tif")
 
-# reproj
-landsat <-project(landsat_r, "EPSG:4326", method = "bilinear")
-landsat
+landsat <-rast("./for_Q/landsat_20200304_resamp.tif")
 plot(landsat)
 plot(usj, add = TRUE)
 
+### format for read in
 # fused landsat-modis (flm) march 4th
-flm_r <-rast("./flm/SSN.downscaled.20200304.v4.3e+05.tif")
-flm <-project(flm_r, "EPSG:4326", method = "bilinear")
-values(flm)[values(flm) < 15] = NA
+# flm_raw <-rast("./flm/SSN.downscaled.20200304.v4.3e+05.tif")
+# flm <-project(flm_raw, "EPSG:4326", method = "bilinear")
+# values(flm)[values(flm) < 15] = NA
+# writeRaster(flm, "./for_Q/flm_20200304_resamp.tif")
+
+flm <-rast("./for_Q/flm_20200304_resamp.tif")
 flm
 plot(flm)
 plot(usj, add = TRUE)
 
-# uavsar from feb 26 - march 11
-unw_6m <-rast("./uavsar/UA_sierra_17305_20014-000_20016-005_0014d_s01_L090_01/sierra_17305_20014-000_20016-005_0014d_s01_L090HH_01.unw.grd.tif")
-values(unw_6m)[values(unw_6m) == 0] = NA
-plot(unw_6m)
-
 # test plot with all the data
-plot(unw_nisar)
+plot(unw)
 plot(flm, col = "blue", add = TRUE)
-plot(unw_6m, col = "red", add = TRUE)
+plot(modis[[1]], add = TRUE)
 plot(usj, add = TRUE)
-
-# rasample uavsar to NISAR resolution
-uavsar_80m <-resample(unw_6m, unw_nisar, method = "bilinear")
-uavsar_80m <-crop(uavsar_80m, ext(unw_6m))
-plot(uavsar_80m)
-# writeRaster(uavsar_80m, "./for_Q/uavsar_unw_80m.tif")
 
 ##########
 ## mask all data for USJ
