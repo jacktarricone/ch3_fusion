@@ -8,15 +8,16 @@ library(Metrics)
 setwd("./ch3_fusion/rasters/")
 list.files()
 
-# usj
+# bring in usj shape file
 usj <-vect("/Users/jacktarricone/ch3_fusion/shapefiles/upper_san_joaquin.gpkg")
 plot(usj)
 
-# nisar sim
-# cor <-rast("./sen1_nisar_sim/wy2020/S1-GUNW-D-R-144-tops-20200305_20200222-135950-38726N_36751N-PP-0915-v2_0_2-coherence.tif")
-# cor
-# plot(cor)
-# 
+### bring nisar sim data from feb 22 - march 5th
+cor <-rast("./sen1_nisar_sim/wy2020/S1-GUNW-D-R-144-tops-20200305_20200222-135950-38726N_36751N-PP-0915-v2_0_2-coherence.tif")
+cor
+plot(cor)
+ 
+
 unw_nisar <-rast("./sen1_nisar_sim/wy2020/S1-GUNW-D-R-144-tops-20200305_20200222-135950-38726N_36751N-PP-0915-v2_0_2-unwrappedPhase.tif")
 unw_nisar
 plot(unw_nisar)
@@ -29,7 +30,7 @@ plot(modis[[1]])
 plot(usj, add = TRUE)
 
 # viirs
-viirs <-rast("./VNP10A1F_wy2020/sierra_fsca/viirs_fsca_20200303.tif")
+viirs <-rast("./VNP10A1F_wy2020/sierra_fsca/viirs_fsca_20200304.tif")
 viirs
 plot(viirs[[3]])
 plot(usj, add = TRUE)
@@ -59,7 +60,7 @@ plot(usj, add = TRUE)
 
 # uavsar from feb 26 - march 11
 unw_6m <-rast("./uavsar/UA_sierra_17305_20014-000_20016-005_0014d_s01_L090_01/sierra_17305_20014-000_20016-005_0014d_s01_L090HH_01.unw.grd.tif")
-values(unw_6m)[values(unw_6m ) == 0] = NA
+values(unw_6m)[values(unw_6m) == 0] = NA
 plot(unw_6m)
 
 # test plot with all the data
@@ -88,9 +89,11 @@ flm_usj <-mask(flm, usj)
 plot(flm_usj)
 # writeRaster(flm_usj, "./for_Q/flm_usj_20200304.tif")
 
-# flm
-
-
+# grey background
+grey_raw <-landsat_usj
+values(grey_raw)[values(grey_raw) >= 0] = 1
+# plot(grey_raw)
+# writeRaster(grey_raw, "./for_Q/grey_usj.tif")
 
 unw <-uavsar_80m
 
