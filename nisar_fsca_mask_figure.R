@@ -57,8 +57,9 @@ plot(usj, add = TRUE)
 # landsat_9 <-rast("./landsat_fsca/h3_v09_2020/LC08_CU_003009_20200304_20210504_02_SNOW/LC08_CU_003009_20200304_20210504_02_GROUND_SNOW.TIF")
 # 
 # # merge and reproject
-# landsat_r <-merge(landsat_10, landsat_9)
-# values(landsat_r)[values(landsat_r) < 150] = NA
+# landsat_r1 <-merge(landsat_10, landsat_9)
+# landsat_r <-landsat_r1 / 10 # convert units
+# values(landsat_r)[values(landsat_r) < 15] = NA
 # plot(landsat_r)
 # 
 # # reproj
@@ -117,19 +118,19 @@ plot(amp_db_usj)
 landsat_usj_v1 <-mask(landsat, usj)
 landsat_usj <-crop(landsat_usj_v1, ext(usj))
 plot(landsat_usj)
-#writeRaster(landsat_usj, "./clips/usj/landsat_usj_20200304.tif")
+# writeRaster(landsat_usj, "./clips/usj/landsat_usj_20200304.tif")
 
 # flm
 flm_usj_v1 <-mask(flm, usj)
 flm_usj <-crop(flm_usj_v1, ext(usj))
 plot(flm_usj)
-# writeRaster(flm_usj, "./clips/usj/flm_usj_20200304.tif")
+#writeRaster(flm_usj, "./clips/usj/flm_usj_20200304.tif")
 
 # modis
 modis_usj_v1 <-mask(modis, usj)
 modis_usj <-crop(modis_usj_v1, ext(usj))
 plot(modis_usj[[1]])
-#writeRaster(modis_usj, "./clips/usj/modis_usj_20200304.tif")
+# writeRaster(modis_usj, "./clips/usj/modis_usj_20200304.tif")
 
 # viirs
 viirs_usj_v1 <-mask(viirs, usj)
@@ -137,31 +138,35 @@ viirs_usj <-crop(viirs_usj_v1, ext(usj))
 plot(viirs_usj[[3]])
 # writeRaster(viirs_usj, "./clips/usj/viirs_usj_20200304.tif")
 
-
-#### testing cropping to uavsar extent
-# flm
-flm_u_crop <-crop(flm, ext(unw))
-plot(flm_u_crop)
-#writeRaster(flm_u_crop, "./for_Q/flm_crop.tif")
-plot(unw, add = TRUE)
-
-# landsat
-landsat_u_crop <-crop(landsat, ext(unw))
-plot(landsat_u_crop)
-# writeRaster(landsat_u_crop, "./for_Q/landsat_crop.tif")
+#######
+## resample to 80m nisar res
+#######
 
 # modis
-modis_u_crop <-crop(modis, ext(unw))
-plot(modis_u_crop[[1]])
+modis_resamp_v1 <-resample(modis_usj, unw)
+modis_80m <-crop(modis_resamp_v1, ext(usj))
+plot(modis_80m[[1]])
 
 # viirs
-viirs_u_crop <-crop(viirs, ext(unw))
-plot(viirs_u_crop[[3]])
+viirs_resamp_v1 <-resample(viirs_usj, unw)
+viirs_80m <-crop(viirs_resamp_v1, ext(usj))
+plot(viirs_80m[[3]])
 
-#### resampling test
-modis_resamp <-resample(modis_u_crop, unw)
-plot(modis_resamp[[1]])
-plot(unw,add = TRUE)
+# landsat
+landsat_resamp_v1 <-resample(landsat_usj, unw)
+landsat_80m <-crop(landsat_resamp_v1, ext(usj))
+plot(landsat_80m)
+
+# flm
+flm_resamp_v1 <-resample(flm_usj, unw)
+flm_80m <-crop(flm_resamp_v1, ext(usj))
+plot(flm_80m)
+
+############################################################
+##### mask phase data with the different fsca products #####
+############################################################
+
+
 
 ## modis masking test
 # convert an pixels on 15% to NA
