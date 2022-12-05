@@ -7,10 +7,11 @@ library(terra)
 setwd("/Users/jacktarricone/ch3_fusion/rasters/")
 
 # list modscag files
-list <-list.files("./modscag_test", full.names = TRUE)
+list <-list.files("./modscag/raw", full.names = TRUE)
+head(list)
 
 # rast
-modscag_raw <-rast(list[2])
+modscag_raw <-rast(list[662])
 modscag_raw
 plot(modscag_raw)
 
@@ -45,4 +46,5 @@ ms_reproj <-project(ms_c, 'EPSG:4326')
 # crop down to flm extent
 modscag_final <-crop(ms_reproj, ext(modis_fsca))
 plot(modscag_final)
-writeRaster(modscag_final, "./modscag_test/modscag_reproj_test_v2.tif")
+writeRaster(modscag_final, "./modscag/modscag_reproj_20200304.tif")
+list[622]

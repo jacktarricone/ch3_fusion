@@ -36,7 +36,7 @@ plot(usj, add = TRUE)
 #####
 
 # modis
-modis <-rast("./MOD10A1F_wy2020/fsca/modis_fsca_20200304.tif")
+modis <-rast("./modscag_test/raw/westernUS_Terra_20191001_snow_fraction_v03.tif")
 values(modis[[1]])[values(modis[[1]]) < 15] = NA
 modis
 plot(modis[[1]])
@@ -114,18 +114,6 @@ plot(amp_db_usj)
 
 ###### optical
 
-# landsat
-landsat_usj_v1 <-mask(landsat, usj)
-landsat_usj <-crop(landsat_usj_v1, ext(usj))
-plot(landsat_usj)
-# writeRaster(landsat_usj, "./clips/usj/landsat_usj_20200304.tif")
-
-# flm
-flm_usj_v1 <-mask(flm, usj)
-flm_usj <-crop(flm_usj_v1, ext(usj))
-plot(flm_usj)
-#writeRaster(flm_usj, "./clips/usj/flm_usj_20200304.tif")
-
 # modis
 modis_usj_v1 <-mask(modis, usj)
 modis_usj <-crop(modis_usj_v1, ext(usj))
@@ -138,34 +126,70 @@ viirs_usj <-crop(viirs_usj_v1, ext(usj))
 plot(viirs_usj[[3]])
 # writeRaster(viirs_usj, "./clips/usj/viirs_usj_20200304.tif")
 
+# landsat
+landsat_usj_v1 <-mask(landsat, usj)
+landsat_usj <-crop(landsat_usj_v1, ext(usj))
+plot(landsat_usj)
+# writeRaster(landsat_usj, "./clips/usj/landsat_usj_20200304.tif")
+
+# flm
+flm_usj_v1 <-mask(flm, usj)
+flm_usj <-crop(flm_usj_v1, ext(usj))
+plot(flm_usj)
+#writeRaster(flm_usj, "./clips/usj/flm_usj_20200304.tif")
+
+
 #######
 ## resample to 80m nisar res
 #######
 
 # modis
 modis_resamp_v1 <-resample(modis_usj, unw)
-modis_80m <-crop(modis_resamp_v1, ext(usj))
-plot(modis_80m[[1]])
+modis_usj_80m <-crop(modis_resamp_v1, ext(usj))
+plot(modis_usj_80m[[1]])
+# writeRaster(modis_usj_80m[[1]], "./clips/usj/modis_usj_80m.tif")
 
 # viirs
 viirs_resamp_v1 <-resample(viirs_usj, unw)
-viirs_80m <-crop(viirs_resamp_v1, ext(usj))
-plot(viirs_80m[[3]])
+viirs_usj_80m <-crop(viirs_resamp_v1, ext(usj))
+plot(viirs_usj_80m[[3]])
+# writeRaster(viirs_usj_80m[[3]], "./clips/usj/viirs_usj_80m.tif")
 
 # landsat
 landsat_resamp_v1 <-resample(landsat_usj, unw)
-landsat_80m <-crop(landsat_resamp_v1, ext(usj))
-plot(landsat_80m)
+landsat_usj_80m <-crop(landsat_resamp_v1, ext(usj))
+plot(landsat_usj_80m)
+# writeRaster(landsat_usj_80m, "./clips/usj/landsat_usj_80m.tif")
 
 # flm
 flm_resamp_v1 <-resample(flm_usj, unw)
-flm_80m <-crop(flm_resamp_v1, ext(usj))
-plot(flm_80m)
+flm_usj_80m <-crop(flm_resamp_v1, ext(usj))
+plot(flm_usj_80m)
+# writeRaster(flm_usj_80m, "./clips/usj/flm_usj_80m.tif")
 
 ############################################################
 ##### mask phase data with the different fsca products #####
 ############################################################
 
+# modis
+unw_modis <-mask(unw_usj, modis_usj_80m[[1]], maskvalue = NA)
+plot(unw_modis)
+# writeRaster(unw_modis, "./clips/usj/unw_modis.tif")
+
+# viirs
+unw_viirs <-mask(unw_usj, viirs_usj_80m[[3]], maskvalue = NA)
+plot(unw_viirs)
+# writeRaster(unw_viirs, "./clips/usj/unw_viirs.tif")
+
+# landsat
+unw_landsat <-mask(unw_usj, landsat_usj_80m, maskvalue = NA)
+plot(unw_landsat)
+# writeRaster(unw_landsat, "./clips/usj/unw_landsat.tif")
+
+# flm
+unw_flm <-mask(unw_usj, flm_usj_80m, maskvalue = NA)
+plot(unw_flm)
+# writeRaster(unw_flm, "./clips/usj/unw_flm.tif")
 
 
 ## modis masking test
