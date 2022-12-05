@@ -168,93 +168,28 @@ flm_sierra_80m
 ##### mask phase data with the different fsca products #####
 ############################################################
 
+# modscag
+unw_modscag <-mask(unw_80m, modscag_sierra_80m, maskvalue = NA)
+plot(unw_modscag)
+# writeRaster(unw_modscag, "./uavsar/feb26_march11_80m/unw_modscag_mask.tif")
+
 # modis
-unw_modis <-mask(unw_usj, modis_usj_80m[[1]], maskvalue = NA)
-plot(unw_modis)
-# writeRaster(unw_modis, "./clips/usj/unw_modis.tif")
+unw_modis <-mask(unw_80m, modis_sierra_80m, maskvalue = NA)
+plot(unw_modis[[1]])
+# writeRaster(unw_modis[[1]], "./uavsar/feb26_march11_80m/unw_modis_mask.tif")
 
 # viirs
-unw_viirs <-mask(unw_usj, viirs_usj_80m[[3]], maskvalue = NA)
-plot(unw_viirs)
-# writeRaster(unw_viirs, "./clips/usj/unw_viirs.tif")
+unw_viirs <-mask(unw_80m, viirs_sierra_80m, maskvalue = NA)
+plot(unw_viirs[[3]])
+# writeRaster(unw_viirs[[3]], "./uavsar/feb26_march11_80m/unw_viirs_mask.tif")
 
 # landsat
-unw_landsat <-mask(unw_usj, landsat_usj_80m, maskvalue = NA)
+unw_landsat <-mask(unw_80m, landsat_sierra_80m, maskvalue = NA)
 plot(unw_landsat)
-# writeRaster(unw_landsat, "./clips/usj/unw_landsat.tif")
+# writeRaster(unw_landsat, "./uavsar/feb26_march11_80m/unw_landsat_mask.tif")
 
 # flm
-unw_flm <-mask(unw_usj, flm_usj_80m, maskvalue = NA)
+unw_flm <-mask(unw_80m, flm_sierra_80m, maskvalue = NA)
 plot(unw_flm)
-# writeRaster(unw_flm, "./clips/usj/unw_flm.tif")
-
-
-## modis masking test
-# convert an pixels on 15% to NA
-values(modis_resamp[[1]])[values(modis_resamp) < 15] = NA
-plot(modis_resamp[[1]])
-
-# mask for NA
-unw_mask_modis <-mask(unw, modis_resamp[[1]], maskvalue = NA)
-plot(unw_mask_modis)
-
-## flm
-# reample
-flm_resamp <-resample(flm_u_crop, unw)
-plot(flm_resamp)
-
-# mask
-unw_mask_flm <-mask(unw, flm_resamp, maskvalue = NA)
-plot(unw_mask_flm)
-
-# save
-writeRaster(unw_mask_flm, "./for_Q/unw_mask_flm_80m_20200304.tif")
-writeRaster(unw_mask_modis, "./for_Q/unw_mask_modis_80m_20200304.tif")
-
-# number of non na pixels
-unw_num_pix <-as.numeric(global(unw, fun="notNA"))
-flm_mask_pix <-as.numeric(global(unw_mask_flm, fun="notNA"))
-modis_mask_pix <-as.numeric(global(unw_mask_modis, fun="notNA"))
-
-# how many pixels were masked?
-unw_flm_diff <-unw_num_pix - flm_mask_pix
-unw_modis_diff <-unw_num_pix - modis_mask_pix
-
-
-?rmse
-rmse_test <-rmse(unw_flm_diff,unw_modis_diff)
-sqrt(mean((data$actual - data$predicted)^2))
-
-#### crop/mask all
-# cor
-cor_c <-crop(cor, ext(usj))
-cor_mc <-mask(cor_c, usj)
-plot(cor_mc)
-
-# unw
-unw_c <-crop(unw, ext(usj))
-unw_mc <-mask(unw_c, usj)
-plot(unw_mc)
-
-# flm
-flm_c <-crop(flm, ext(usj))
-flm_mc <-mask(flm_c, usj)
-plot(flm_mc)
-
-# viirs
-viirs_c <-crop(viirs, ext(usj))
-viirs_mc <-mask(viirs_c, usj)
-plot(viirs_mc[[3]])
-
-# modis
-modis_c <-crop(modis, ext(usj))
-modis_mc <-mask(modis_c, usj)
-plot(modis_mc[[1]])
-
-# landsat
-landsat_c <-crop(landsat, ext(usj))
-landsat_mc <-mask(landsat_c, usj)
-plot(landsat_mc[[1]])
-
-
+# writeRaster(unw_flm, "./uavsar/feb26_march11_80m/unw_flm_mask.tif")
 
