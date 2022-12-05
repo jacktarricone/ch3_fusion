@@ -1,4 +1,4 @@
-# sierra swe calc with different fsca masks
+# process rasters for sierra swe calc
 # jack tarricone
 # decemeber 5, 2022
 
