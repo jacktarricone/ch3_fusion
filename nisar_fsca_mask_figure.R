@@ -4,7 +4,7 @@
 
 library(terra)
 
-setwd("./ch3_fusion/rasters/")
+setwd("/Users/jacktarricone/ch3_fusion/rasters/")
 list.files()
 
 # bring in usj shape file
@@ -35,8 +35,15 @@ plot(usj, add = TRUE)
 ## optical data
 #####
 
+# modscag march 4th
+modscag <-rast("./modscag/modscag_reproj_20200304.tif")
+values(modscag)[values(modscag) < 15] = NA
+modscag
+plot(modscag)
+plot(sierra, add = TRUE)
+
 # modis
-modis <-rast("./modscag_test/raw/westernUS_Terra_20191001_snow_fraction_v03.tif")
+modis <-rast("./MOD10A1F_wy2020/fsca/modis_fsca_20200304.tif")
 values(modis[[1]])[values(modis[[1]]) < 15] = NA
 modis
 plot(modis[[1]])
@@ -114,6 +121,12 @@ plot(amp_db_usj)
 
 ###### optical
 
+# modscag
+modscag_usj_v1 <-mask(modscag, usj)
+modscag_usj <-crop(modscag_usj_v1, ext(usj))
+plot(modscag_usj)
+# writeRaster(modscag_usj, "./clips/usj/modscag_usj_20200304.tif")
+
 # modis
 modis_usj_v1 <-mask(modis, usj)
 modis_usj <-crop(modis_usj_v1, ext(usj))
@@ -143,6 +156,12 @@ plot(flm_usj)
 ## resample to 80m nisar res
 #######
 
+# modscag
+modscag_resamp_v1 <-resample(modscag_usj, unw)
+modscag_usj_80m <-crop(modscag_resamp_v1, ext(usj))
+plot(modscag_usj_80m)
+# writeRaster(modscag_usj_80m, "./clips/usj/modscag_usj_80m.tif")
+
 # modis
 modis_resamp_v1 <-resample(modis_usj, unw)
 modis_usj_80m <-crop(modis_resamp_v1, ext(usj))
@@ -171,6 +190,11 @@ plot(flm_usj_80m)
 ##### mask phase data with the different fsca products #####
 ############################################################
 
+# modscag
+unw_modscag <-mask(unw_usj, modscag_usj_80m, maskvalue = NA)
+plot(unw_modscag)
+# writeRaster(unw_modscag, "./clips/usj/unw_modscag.tif")
+
 # modis
 unw_modis <-mask(unw_usj, modis_usj_80m[[1]], maskvalue = NA)
 plot(unw_modis)
@@ -190,74 +214,4 @@ plot(unw_landsat)
 unw_flm <-mask(unw_usj, flm_usj_80m, maskvalue = NA)
 plot(unw_flm)
 # writeRaster(unw_flm, "./clips/usj/unw_flm.tif")
-
-
-## modis masking test
-# convert an pixels on 15% to NA
-values(modis_resamp[[1]])[values(modis_resamp) < 15] = NA
-plot(modis_resamp[[1]])
-
-# mask for NA
-unw_mask_modis <-mask(unw, modis_resamp[[1]], maskvalue = NA)
-plot(unw_mask_modis)
-
-## flm
-# reample
-flm_resamp <-resample(flm_u_crop, unw)
-plot(flm_resamp)
-
-# mask
-unw_mask_flm <-mask(unw, flm_resamp, maskvalue = NA)
-plot(unw_mask_flm)
-
-# save
-writeRaster(unw_mask_flm, "./for_Q/unw_mask_flm_80m_20200304.tif")
-writeRaster(unw_mask_modis, "./for_Q/unw_mask_modis_80m_20200304.tif")
-
-# number of non na pixels
-unw_num_pix <-as.numeric(global(unw, fun="notNA"))
-flm_mask_pix <-as.numeric(global(unw_mask_flm, fun="notNA"))
-modis_mask_pix <-as.numeric(global(unw_mask_modis, fun="notNA"))
-
-# how many pixels were masked?
-unw_flm_diff <-unw_num_pix - flm_mask_pix
-unw_modis_diff <-unw_num_pix - modis_mask_pix
-
-
-?rmse
-rmse_test <-rmse(unw_flm_diff,unw_modis_diff)
-sqrt(mean((data$actual - data$predicted)^2))
-
-#### crop/mask all
-# cor
-cor_c <-crop(cor, ext(usj))
-cor_mc <-mask(cor_c, usj)
-plot(cor_mc)
-
-# unw
-unw_c <-crop(unw, ext(usj))
-unw_mc <-mask(unw_c, usj)
-plot(unw_mc)
-
-# flm
-flm_c <-crop(flm, ext(usj))
-flm_mc <-mask(flm_c, usj)
-plot(flm_mc)
-
-# viirs
-viirs_c <-crop(viirs, ext(usj))
-viirs_mc <-mask(viirs_c, usj)
-plot(viirs_mc[[3]])
-
-# modis
-modis_c <-crop(modis, ext(usj))
-modis_mc <-mask(modis_c, usj)
-plot(modis_mc[[1]])
-
-# landsat
-landsat_c <-crop(landsat, ext(usj))
-landsat_mc <-mask(landsat_c, usj)
-plot(landsat_mc[[1]])
-
-
 

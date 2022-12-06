@@ -33,7 +33,7 @@ plot(usj, add = TRUE)
 plot(sierra, add = TRUE)
 
 # save
-writeRaster(cc, "./rasters/geo_layers/cc_domain.tif")
+# writeRaster(cc, "./rasters/geo_layers/cc_domain.tif")
 
 ########## nlcd canopy cover 2016
 lc_raw <-rast("./rasters/geo_layers/raw/NLCD_2019_Land_Cover_L48_20210604_8ILcwOA0bCSdi15EeQtJ.tiff")
@@ -52,7 +52,7 @@ plot(usj, add = TRUE)
 plot(sierra, add = TRUE)
 
 # save
-writeRaster(lc, "./rasters/geo_layers/lc_domain.tif")
+# writeRaster(lc, "./rasters/geo_layers/lc_domain.tif")
 
 ## dem
 dem_raw <-rast("./rasters/geo_layers/raw/output_COP30.tif")
@@ -71,4 +71,6 @@ plot(usj, add = TRUE)
 plot(sierra, add = TRUE)
 
 # save
-writeRaster(dem, "./rasters/geo_layers/dem_domain.tif")
+# writeRaster(dem, "./rasters/geo_layers/dem_domain.tif")
+
+

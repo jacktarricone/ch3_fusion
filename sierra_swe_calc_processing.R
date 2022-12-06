@@ -4,7 +4,7 @@
 
 library(terra)
 
-setwd("./ch3_fusion/rasters/")
+setwd("/Users/jacktarricone/ch3_fusion/rasters/")
 list.files()
 
 # bring in sierra shape

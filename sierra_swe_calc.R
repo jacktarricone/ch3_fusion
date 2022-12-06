@@ -57,7 +57,7 @@ modscag_depth_change <-depth_from_phase(delta_phase = unw_modscag,
 modscag_dswe_raw <-modscag_depth_change*(270/1000)
 plot(modscag_dswe_raw)
 hist(modscag_dswe_raw , breaks = 100)
-
+writeRaster()
 
 ##### 
 ## modis
@@ -87,40 +87,48 @@ viirs_dswe_raw <-viirs_depth_change*(270/1000)
 plot(viirs_dswe_raw)
 hist(viirs_dswe_raw , breaks = 100)
 
+##### 
+## landsat
+#####
 
+landsat_depth_change <-depth_from_phase(delta_phase = unw_landsat,
+                                      inc_angle = inc,
+                                      perm = 1.3,
+                                      wavelength = uavsar_wL)
 
+# convert to SWE change
+landsat_dswe_raw <-landsat_depth_change*(270/1000)
+plot(landsat_dswe_raw)
+hist(landsat_dswe_raw , breaks = 100)
 
+##### 
+## flm
+#####
 
-
-# testing
 flm_depth_change <-depth_from_phase(delta_phase = unw_flm,
-                                inc_angle = inc,
-                                perm = 1.3,
-                                wavelength = uavsar_wL)
+                                        inc_angle = inc,
+                                        perm = 1.3,
+                                        wavelength = uavsar_wL)
 
 # convert to SWE change
 flm_dswe_raw <-flm_depth_change*(270/1000)
-plot(flm_dswe_raw )
+plot(flm_dswe_raw)
 hist(flm_dswe_raw , breaks = 100)
-writeRaster(flm_dswe_raw, "./flm_dswe_raw.tif")
 
-# testing
-modis_depth_change <-depth_from_phase(delta_phase = unw_modis,
-                                    inc_angle = inc,
-                                    perm = 1.3,
-                                    wavelength = uavsar_wL)
+####### bring in snow pillow data
 
-# convert to SWE change
-modis_dswe_raw <-modis_depth_change*(270/1000)
+# pull out location info into separate df
+vlc_loc <-read.csv("/Users/jacktarricone/ch3_fusion/in_situ/vlc_loc.csv", header = TRUE)
+
+loc <-data.frame(lat = vlc_loc$lat[1],
+                 lon = vlc_loc$lon[1])
+
+# plot pillow location using terra vector functionality
+pillow_point <-vect(loc, geom = c("lon","lat"), crs = crs(unw_modis)) #needs to be 
 plot(modis_dswe_raw)
-hist(modis_dswe_raw, breaks = 100)
-#writeRaster(modis_dswe_raw, "./modis_dswe_raw.tif")
+points(pillow_point, cex = 1)
 
-
-
-
-
-# bring in snow pillow data
+# calculate SWE change at pillow
 vlc <-read.csv("/Users/jacktarricone/ch3_fusion/in_situ/VOLCANIC KNOB (VLC).csv")
 colnames(vlc)[1:2] <-c("date","swe_in")
 vlc$date <-lubridate::mdy(vlc$date)
@@ -137,5 +145,37 @@ sp <-dplyr::filter(vlc, date > "2020-02-26" & date < "2020-03-11")
 ggplot(sp) +
   geom_line(aes(x = date, y = swe_cm))
 
-# calc change in SWE at pillow
+# calc change in SWE at pillow from feb 26 - march 11
 insitu_dswe <-sp$swe_cm[13] - sp$swe_cm[1]
+
+# extract using that vector
+pillow_cell_dswe <-terra::extract(modis_dswe_raw, pillow_point,  cells = TRUE, xy = TRUE)
+
+# create tether value
+tether_value <-insitu_dswe - pillow_cell_dswe
+
+########## calc absolute dswe
+
+# modscag
+modscag_dswe <-modscag_dswe_raw + tether_value$lyr1
+plot(modscag_dswe)
+writeRaster(modscag_dswe, "./modscag_dswe.tif")
+
+# modis
+modis_dswe <-modis_dswe_raw + tether_value$lyr1
+# writeRaster(modis_dswe, "./modis_dswe.tif")
+
+# viirs
+viirs_dswe <-viirs_dswe_raw + tether_value$lyr1
+plot(viirs_dswe)
+# writeRaster(viirs_dswe, "./viirs_dswe.tif")
+
+# landsat
+landsat_dswe <-landsat_dswe_raw + tether_value$lyr1
+plot(landsat_dswe)
+# writeRaster(landsat_dswe, "./landsat_dswe.tif")
+
+# flm
+flm_dswe <-flm_dswe_raw + tether_value$lyr1
+plot(flm_dswe)
+# writeRaster(flm_dswe, "./flm_dswe.tif")
