@@ -60,3 +60,9 @@ modis_mp <-percent_snow(unw_modis)
 viirs_mp <-percent_snow(unw_viirs)
 landsat_mp <-percent_snow(unw_landsat)
 flm_mp <-percent_snow(unw_flm)
+
+df <-data.frame(c("MODSCAG","MODIS","VIIRS","Landsat","FLM"),
+                c(modscag_mp,modis_mp,viirs_mp,landsat_mp,flm_mp))
+
+colnames(df)[1:2] <-c("sensor","pecernt")
+write.csv(df, "/Users/jacktarricone/ch3_fusion/in_situ/mask_stats.csv")
