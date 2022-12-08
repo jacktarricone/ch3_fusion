@@ -75,19 +75,19 @@ swe_stats <-function(x){
   values(gain_m3)[values(gain_m3) < 0] = NA
   # plot(gain_m3)
   swe_gain_m3 <-as.integer(global(gain_m3, "sum", na.rm = TRUE))
-  swe_gain_km3 <-swe_gain_m3 * (1e-9)
+  swe_gain_m3_scaled <-swe_gain_m3 * (1e-6)
   
   ### swe_loss
   loss_m3 <-(x / 100)*(80^2)
   values(loss_m3)[values(loss_m3) > 0] = NA
   # plot(loss_m3)
   swe_loss_m3 <-as.integer(global(loss_m3, "sum", na.rm = TRUE))
-  swe_loss_km3 <-swe_loss_m3 * (1e-9)
+  swe_loss_m3_scaled <-swe_loss_m3 * (1e-6)
   
   # net
-  swe_net_km3 <- swe_loss_km3 + swe_gain_km3
+  swe_net_m3_scaled <- swe_loss_m3_scaled + swe_gain_m3_scaled
   
-  string <-c(swe_gain_km3,swe_loss_km3,swe_net_km3)
+  string <-c(swe_gain_m3_scaled,swe_loss_m3_scaled,swe_net_m3_scaled)
   return(string)
 }
 
@@ -102,36 +102,34 @@ landsat_stats <-swe_stats(landsat)
 flm_stas <-swe_stats(flm)
 
 # create df for plotting
-swe_change_km3 <-c(modscag_stats,modis_stats,viirs_stats,landsat_stats,flm_stas) # bind cols
-swe_change_km3 <-as.numeric(round(swe_change_km3, digits = 3)) # round
+swe_change <-c(modscag_stats,modis_stats,viirs_stats,landsat_stats,flm_stas) # bind cols
+#swe_change_km3 <-as.numeric(round(swe_change_km3, digits = 3)) # round
 sensor <-c(rep("MODSCAG",3), rep("MODIS",3), rep("VIIRS",3), rep("Landsat",3), rep("FLM",3)) # create sensor col
 stat <-c("gain","loss","net","gain","loss","net","gain",
          "loss","net","gain","loss","net","gain","loss","net") # create stat col
-stats_df <-as.data.frame(cbind(sensor,swe_change_km3,stat)) # bind as df
-stats_df$swe_change_km3 <-as.numeric(stats_df$swe_change_km3) # convert to numeric
+stats_df <-as.data.frame(cbind(sensor,swe_change,stat)) # bind as df
+stats_df$swe_change <-as.numeric(stats_df$swe_change) # convert to numeric
 stats_df$sensor <- factor(stats_df$sensor, levels = c('MODSCAG', 'MODIS', 'VIIRS', 'Landsat', 'FLM')) # conver to facor for plotting
 
 
 # make group bar plot
-ggplot(stats_df, aes(fill=stat, x = sensor, y=swe_change_km3)) + 
+ggplot(stats_df, aes(fill=stat, x = sensor, y=swe_change)) + 
   geom_bar(position="dodge", stat="identity", color = "black", width = .5)+
   geom_hline(yintercept = 0)+
-  scale_y_continuous(breaks = seq(-.01,.03,.01),limits = c(-.01,.03))+
+  #scale_y_continuous(breaks = seq(-.01,.03,.01),limits = c(-.01,.03))+
+  scale_y_continuous(breaks = seq(-10,30,10),limits = c(-10,30))+
   scale_fill_manual(values=c('darkblue','darkred','grey90'),name="")+
-  ylab(expression(Delta~SWE~(km^3)))+ 
+  ylab(expression(Delta~SWE~(10^-6~m^3)))+ 
   xlab("fSCA Product") +
   theme_classic(12) +
   theme(panel.border = element_rect(colour = "black", fill=NA, size = 1))
 
 # save
-ggsave(file = "/Users/jacktarricone/ch3_fusion/plots/dswe_stats_v4.png",
-       width = 6,
-       height = 3,
-       dpi = 500)
+# ggsave(file = "/Users/jacktarricone/ch3_fusion/plots/dswe_stats_v5.png",
+#        width = 6,
+#        height = 3,
+#        dpi = 500)
 
 # make table for poster
 data <-rbind(modscag_stats,modis_stats,viirs_stats,landsat_stats,flm_stas)
-write.csv(data, "/Users/jacktarricone/ch3_fusion/in_situ/dswe_table.csv")
-
-
-[(Number at later time ÷ Number at earlier time) - 1] × 100.
+write.csv(data, "/Users/jacktarricone/ch3_fusion/in_situ/dswe_table_v2.csv")
