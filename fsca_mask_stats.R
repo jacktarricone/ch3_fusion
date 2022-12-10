@@ -50,6 +50,7 @@ plot(unw_flm)
 # define function
 percent_snow <-function(x){
   x_pixels <-as.integer(global(x, fun="notNA", na.rm = TRUE))
+  print(x_pixels)
   percent_masked <-as.integer((x_pixels / usj_pixels) * 100)
   return(percent_masked)
 }

@@ -119,13 +119,13 @@ ggplot(stats_df, aes(fill=stat, x = sensor, y=swe_change)) +
   #scale_y_continuous(breaks = seq(-.01,.03,.01),limits = c(-.01,.03))+
   scale_y_continuous(breaks = seq(-10,30,10),limits = c(-10,30))+
   scale_fill_manual(values=c('darkblue','darkred','grey90'),name="")+
-  ylab(expression(Delta~SWE~(10^-6~m^3)))+ 
+  ylab(expression(Delta~SWE~(10^6~m^3)))+ 
   xlab("fSCA Product") +
   theme_classic(12) +
   theme(panel.border = element_rect(colour = "black", fill=NA, size = 1))
 
-# save
-# ggsave(file = "/Users/jacktarricone/ch3_fusion/plots/dswe_stats_v5.png",
+# saves
+# ggsave(file = "/Users/jacktarricone/ch3_fusion/plots/dswe_stats_v7.png",
 #        width = 6,
 #        height = 3,
 #        dpi = 500)
@@ -133,3 +133,6 @@ ggplot(stats_df, aes(fill=stat, x = sensor, y=swe_change)) +
 # make table for poster
 data <-rbind(modscag_stats,modis_stats,viirs_stats,landsat_stats,flm_stas)
 write.csv(data, "/Users/jacktarricone/ch3_fusion/in_situ/dswe_table_v2.csv")
+
+
+## swe percent stats
