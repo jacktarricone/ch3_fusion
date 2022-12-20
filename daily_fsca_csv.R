@@ -7,6 +7,19 @@ library(terra)
 setwd("/Users/jacktarricone/ch3_fusion/rasters/")
 list.files()
 
+# bring in modis stack
+modis_list <-list.files("./MOD10A1F_wy2020/fsca/", pattern = '.tif', full.names = TRUE)
+modis_stack <-rast(modis_list)
+modis_stack
+
+# pull out modis snow cover
+sc_seq <-seq(1,1825,5)
+modis_fsca <-modis_stack[[sc_seq]]
+modis_fsca
+
+# usj shp
+usj <-vect("/Users/jacktarricone/ch3_fusion/shapefiles/upper_san_joaquin.gpkg")
+
 ### bring nisar sim data from feb 22 - march 5th
 # coherence
 nisar_cor_raw <-rast("./sen1_nisar_sim/wy2020/S1-GUNW-D-R-144-tops-20200305_20200222-135950-38726N_36751N-PP-0915-v2_0_2-coherence.tif")
@@ -14,42 +27,47 @@ nisar_cor <-project(nisar_cor_raw, crs('EPSG:4326'))
 nisar_cor
 plot(nisar_cor)
 
-## resampling test
-modis <-rast("./MOD10A1F_wy2020/fsca/modis_fsca_20200217.tif")
-
-#### test the different resample methods
-
-# modis_bi <-resample(modis, nisar_cor, method = "bilinear")
-# modis_nn <-resample(modis, nisar_cor, method = "near")
-# modis_cubic <-resample(modis, nisar_cor, method = "cubic")
-# modis_cs <-resample(modis, nisar_cor, method = "cubicspline")  
-# modis_la <-resample(modis, nisar_cor, method = "lanczos")  
-# modis_sum <-resample(modis, nisar_cor, method = "sum") 
-# 
-# modis_bi
-# modis_nn
-# modis_cubic
-# modis_cs
-# modis_la
-# modis_sum
-# 
-# plot(modis_bi[[1]])
-# plot(modis_nn[[1]])
-# plot(modis_cubic[[1]])
-# plot(modis_cs[[1]])
-# plot(modis_la[[1]])
-# plot(modis_sum[[1]])
-  
-
 #### bring in full usj rast: coherence
-cor <-rast("./clips/usj/cor_usj_20200305.tif")
-cor
+cor_v1 <-rast("./clips/usj/cor_usj_20200305.tif")
+cor <-project(cor_v1, crs('EPSG:4326'))
 plot(cor)
+cor
 
-# count pixels for NA and value
-usj_pixels <-as.integer(global(cor, fun="notNA", na.rm = TRUE))
+# resample and mask
+modis_nisar_v1 <-resample(modis_fsca, cor, method = "bilinear")
+modis_fsca_usj_80m <-mask(modis_nisar_v1, usj)
+modis_fsca_usj_80m
+# writeRaster(modis_fsca_usj_80m, "./MOD10A1F_wy2020/fsca_usj_80m/modis_fsca_usj_80m_stack.tif")
+plot(modis_usj_80m[[1]])
+
+# calculate area in basin
+expanse(modis_usj_80m[[1]], unit = "km")
+usj_area <-expanse(cor, unit = "km")
+
+# define function for calculating percent fsca area
+# at given fsca threshold
+fsca_percent_calc <-function(fsca_rast, total_area, threshold){
+  
+  # fsca_rast: rast object
+  # threshold: number above which pixel is considered snow covered
+  test <-fsca_rast # create dummy stack
+  values(test)[values(test) < threshold] = NA # mask for threshold
+  fsca_area <-expanse(test, unit = "km") # calculate fsca area
+  fsca_percent <-(fsca_area/total_area)*100 # calculate percent of basin covered
+  return(fsca_percent)
+}
+
+
+# test on full stack
+fsca_percent_calc(modis_fsca, total_area = usj_area, threshold = 90)
 
 # pixels in domain = 624613
+test <-modis_usj_80m[[1]]
+values(test)[values(test) < 15] = NA
+plot(test)
+fsca_area <-expanse(test, unit = "km")
+fsca_percent <-(fsca_area/usj_area)*100
+
 
 ############################################################
 ##### mask phase data with the different fsca products #####
