@@ -45,7 +45,7 @@ writeRaster(modis_fsca_usj_80m, "./MOD10A1F_wy2020/fsca_usj_80m/modis_fsca_usj_8
 #####################
 
 # bring in viirs stack
-viirs_list <-list.files("./VNP10A1F_wy2020/sierra_fsca//", pattern = '.tif', full.names = TRUE)
+viirs_list <-list.files("./VNP10A1F_wy2020/sierra_fsca", pattern = '.tif', full.names = TRUE)
 viirs_stack <-rast(viirs_list)
 viirs_stack
 
@@ -61,3 +61,40 @@ viirs_fsca_usj_80m <-mask(viirs_nisar_v1, usj)
 viirs_fsca_usj_80m
 plot(viirs_fsca_usj_80m[[20]])
 writeRaster(viirs_fsca_usj_80m, "./fsca_usj_80m/viirs_fsca_usj_80m_stack.tif")
+
+#####################
+######  flm  ########
+#####################
+
+# bring in flm stack
+flm_list <-list.files("./flm/raw", full.names = TRUE)
+x <-200
+
+reproj_fun <-function(x){
+  
+  name <-basename(flm_list[x])
+  r <-rast(flm_list[x])
+  values(r)[values(r) < 15] = NA
+  reproj <-project(r, "EPSG:4326", method = "bilinear")
+  usj_clip <-resample(reproj, cor, method = "bilinear")
+  usj_mask <-mask(usj_clip, usj)
+  saving_name <-paste0("./flm/formatted/flm_fsca_usj_80m_",name)
+  writeRaster(usj_mask, saving_name)
+}
+
+test <-rast("./flm/formatted/")
+plot(test)
+
+flm_stack <-rast(flm_list)
+flm_stack
+plot(flm_stack[[70]])
+
+# resample, reproject, and mask
+flm_p1 <-project(flm_stack[[1:30]], "EPSG:4326", method = "bilinear")
+
+values(flm)[values(flm) < 15] = NA
+flm_nisar_v1 <-resample(flm, cor, method = "bilinear")
+flm_fsca_usj_80m <-mask(flm_nisar_v1, usj)
+flm_fsca_usj_80m
+plot(flm_fsca_usj_80m[[20]])
+writeRaster(flm_fsca_usj_80m, "./fsca_usj_80m/flm_fsca_usj_80m_stack.tif")
