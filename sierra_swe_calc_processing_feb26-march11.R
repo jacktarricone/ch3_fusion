@@ -19,14 +19,14 @@ nisar_cor
 plot(nisar_cor)
 plot(sierra, add = TRUE)
  
-###### feb 26 - march 11 UAVSAR data
+###### feb 26 - march 11 UAVSAR VV data
 ## cor
-cor <-rast("./uavsar/sierra_17305_20014-000_20016-005_0014d_s01_L090_01_int_grd/sierra_17305_20014-000_20016-005_0014d_s01_L090HH_01.cor.grd.tiff")
+cor <-rast("./uavsar/sierra_17305_20014-000_20016-005_0014d_s01_L090_01_int_grd/sierra_17305_20014-000_20016-005_0014d_s01_L090VV_01.cor.grd.tiff")
 cor
 plot(cor)
 
 ## unw
-unw <-rast("./uavsar/sierra_17305_20014-000_20016-005_0014d_s01_L090_01_int_grd/sierra_17305_20014-000_20016-005_0014d_s01_L090HH_01.unw.grd.tiff")
+unw <-rast("./uavsar/sierra_17305_20014-000_20016-005_0014d_s01_L090_01_int_grd/sierra_17305_20014-000_20016-005_0014d_s01_L090VV_01.unw.grd.tiff")
 unw
 plot(unw)
 
