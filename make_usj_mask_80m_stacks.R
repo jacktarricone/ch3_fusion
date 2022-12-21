@@ -16,8 +16,9 @@ plot(usj)
 #### bring in full usj rast: coherence
 cor_v1 <-rast("./clips/usj/cor_usj_20200305.tif")
 cor <-project(cor_v1, crs('EPSG:4326'))
-plot(cor)
-cor
+cor_utm <-project(cor_v1, crs('EPSG:32611'))
+plot(cor_utm)
+cor_utm
 
 #####################
 ###### modis ########
@@ -67,23 +68,29 @@ writeRaster(viirs_fsca_usj_80m, "./fsca_usj_80m/viirs_fsca_usj_80m_stack.tif")
 #####################
 
 # bring in flm stack
-flm_list <-list.files("./flm/raw", full.names = TRUE)
-x <-200
+flm_list <-list.files("/Users/jacktarricone/ch3_fusion/rasters/flm/raw", full.names = TRUE)
+flm_rast <-rast(flm_list)
 
-reproj_fun <-function(x){
+# loop for processing
+for (i in 1:length(flm_list)){
   
-  name <-basename(flm_list[x])
-  r <-rast(flm_list[x])
-  values(r)[values(r) < 15] = NA
-  reproj <-project(r, "EPSG:4326", method = "bilinear")
-  usj_clip <-resample(reproj, cor, method = "bilinear")
-  usj_mask <-mask(usj_clip, usj)
-  saving_name <-paste0("./flm/formatted/flm_fsca_usj_80m_",name)
-  writeRaster(usj_mask, saving_name)
+  r <-flm_rast[[i]] # bring in rast
+  r_c <-crop(r, ext(cor_utm)) # crop, this makes things much better
+  values(r_c)[values(r_c) < 15] = NA # mask for 
+  reproj <-project(r_c, "EPSG:4326", method = "bilinear") # reproject
+  usj_clip <-resample(reproj, cor, method = "bilinear") # resample to NISAR usj extent
+  usj_mask <-mask(usj_clip, usj) # mask for usj
+  name <-basename(flm_list[i]) # extract basename
+  saving_name <-paste0("/Users/jacktarricone/ch3_fusion/rasters/flm/formatted/flm_fsca_usj_80m_",name) # create saving location
+  writeRaster(usj_mask, saving_name) # save
+  
 }
 
-test <-rast("./flm/formatted/")
-plot(test)
+# read in rasters, stack, save
+flm_formatted <-list.files("/Users/jacktarricone/ch3_fusion/rasters/flm/formatted/", full.names = TRUE)
+flm_stack <-rast(flm_formatted)
+writeRaster(flm_stack, "/Users/jacktarricone/ch3_fusion/rasters/fsca_usj_80m/flm_fsca_usj_80m_stack.tif")
+
 
 flm_stack <-rast(flm_list)
 flm_stack
