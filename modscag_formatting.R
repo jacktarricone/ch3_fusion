@@ -17,6 +17,7 @@ plot(modscag_raw)
 
 # bring in modis fsca
 modis_fsca <-rast("./MOD10A1F_wy2020/fsca/modis_fsca_20200403.tif")
+plot(modis_fsca)
 
 # bring in modis raw
 modis_raw <-rast("./MOD10A1F_wy2020/raw/MOD10A1F.A2019274.h08v05.061.2020312180452.hdf")
@@ -24,12 +25,13 @@ modis_raw
 plot(modis_raw[[1]])
 
 # set cropping extent down to same tile
-# using dimension sof modis raw which is just one tile
+# using dimensions of modis raw which is just one tile
 modis_lower_left_tile <- ext(0, 2400, 0, 2400)
 
 # crop down
 ms_c <- crop(modscag_raw, modis_lower_left_tile)
 plot(ms_c)
+plot(modis_raw[[5]])
 
 # geolocate
 crs(ms_c) <-crs(modis_raw)
@@ -47,4 +49,3 @@ ms_reproj <-project(ms_c, 'EPSG:4326')
 modscag_final <-crop(ms_reproj, ext(modis_fsca))
 plot(modscag_final)
 writeRaster(modscag_final, "./modscag/modscag_reproj_20200304.tif")
-list[622]

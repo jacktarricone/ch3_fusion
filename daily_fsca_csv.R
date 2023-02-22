@@ -108,7 +108,7 @@ ggplot(df) +
   theme(panel.border = element_rect(colour = "black", fill=NA, size = 1))
 
 # saves
-ggsave(file = "/Users/jacktarricone/ch3_fusion/plots/sca_15_rough_v3.png",
+ggsave(file = "/Users/jacktarricone/ch3_fusion/plots/fsca_15_rough_v3.png",
        width = 6,
        height = 3,
        dpi = 500)
