@@ -100,7 +100,7 @@ plot(modis_raw[[1]])
 
 # check current projection
 modscag_crop
-
+s
 # the modis meta data uses notation called a PROJ sting
 # this is outdated, and you should always use and EPSG code when you can
 # info on EPSG codes: https://en.wikipedia.org/wiki/EPSG_Geodetic_Parameter_Dataset
