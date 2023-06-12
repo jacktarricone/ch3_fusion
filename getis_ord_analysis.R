@@ -4,6 +4,7 @@ library(terra)
 library(raster)
 remotes::install_github("biggis-project/soh")
 library(soh)
+library(ggplot2)
 
 setwd("~/ch3_fusion")
 
@@ -70,12 +71,18 @@ plot(diff_masked)
 cc_mean_v2 <-mask(cc_mean, diff_masked)
 plot(cc_mean_v2)
 
-
-cc_diff_stack <-c(diff,cc_mean)
+cc_diff_stack <-c(diff_masked, cc_mean_v2)
 cc_diff_df <-as.data.frame(cc_diff_stack, xy = TRUE, cells = TRUE)
 colnames(cc_diff_df)[4:5] <-c("dswe_sum", "cc_mean")
 head(cc_diff_df)
-plot(x = cc_diff_df$cc_mean, cc_diff_df$dswe_sum)
+hist(cc_diff_df$dswe_sum, breaks = 100)
+hist(cc_diff_df$cc_mean, breaks = 100)
+
+ggplot(cc_diff_df, aes(x = dswe_sum, y = cc_mean)) +
+  geom_point(size = (1/100), alpha = .05, color = 'darkred') +
+  scale_y_continuous(limits = c(0,10)) +
+  theme(panel.border = element_rect(colour = "black", fill=NA, linewidth =1),
+        legend.position = "none")
 
 
 hist(modis_gains_sum, breaks = 30)
