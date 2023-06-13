@@ -31,33 +31,36 @@ writeRaster(x, "./rasters/focal_3d_uavsar_5x5_v2.tif")
 
 # summing analysis
 landsat_gain <-ifel(landsat < 0, NA, landsat)
-plot(landsat_gain)
+landsat_gain_vol <-landsat_gain*(80^2)
+plot(landsat_gain_vol)
 
-landsat_loss <-ifel(landsat > 0, NA, landsat)
-plot(landsat_loss)
+# landsat_loss <-ifel(landsat > 0, NA, landsat)
+# plot(landsat_loss)
 
-landsat_gains_sum <-focal(landsat_gain, c(11,11), na.rm=TRUE, fun = "sum")
-plot(landsat_gains_sum)
+landsat_gains_sum_vol <-focal(landsat_gain_vol, c(11,11), na.rm=TRUE, fun = "sum")
+plot(landsat_gains_sum_vol)
+writeRaster(landsat_gains_sum_vol, "./rasters/landsat_gains_sum_vol)v2.tif")
 
-loss_sum <- focal(landsat_loss, c(11,11), na.rm=TRUE, fun = "sum")
-plot(loss_sum)
-plot(gains_sum, add = TRUE)
+# loss_sum <- focal(landsat_loss, c(11,11), na.rm=TRUE, fun = "sum")
+# plot(loss_sum)
+# plot(gains_sum, add = TRUE)
 
 
 # summing analysis
-flm_gain <-ifel(flm < 0, NA, flm)
-plot(flm_gain)
+modis_gain <-ifel(modis < 0, NA, modis)
+modis_gain_vol <-modis_gain*(80^2)
+plot(modis_gain_vol)
 
-flm_loss <-ifel(flm > 0, NA, flm)
-plot(flm_loss)
+# modis_loss <-ifel(modis > 0, NA, modis)
+# plot(modis_loss)
 
-flm_gains_sum <- focal(flm_gain, c(11,11), na.rm=TRUE, fun = "sum")
-plot(flm_gains_sum)
-writeRaster(flm_gains_sum, "./rasters/flm_gains_sum_v1.tif")
+modis_gains_sum_vol <- focal(modis_gain_vol, c(11,11), na.rm=TRUE, fun = "sum")
+plot(modis_gains_sum_vol)
+writeRaster(modis_gains_sum_vol, "./rasters/modis_gains_sum_vol)v1.tif")
 # writeRaster(landsat_gains_sum, "./rasters/landsat_gains_sum_v2.tif")
-diff <-flm_gains_sum - landsat_gains_sum
+diff <-modis_gains_sum_vol - landsat_gains_sum_vol
 plot(diff)
-writeRaster(diff, "./rasters/diff_flm_landsat_sum_v1.tif")
+writeRaster(diff, "./rasters/diff_modis_landsat_sum_vol_v1.tif")
 
 ## cc focal
 cc_mean <- focal(flm_gain, c(11,11), na.rm=TRUE, fun = "mean")
