@@ -1,38 +1,34 @@
-# getis-ord test
+# dswe variabilty analysis
+# june 13th, 2023
+# jack tarricone
 
 library(terra)
-library(raster)
-remotes::install_github("biggis-project/soh")
-library(soh)
 library(ggplot2)
 
 setwd("~/ch3_fusion")
 
 # load in 80 m insar dswe products
-flm <-rast("./rasters/uavsar/feb26_march11_80m/flm_dswe.tif")
 modscag <-rast("./rasters/uavsar/feb26_march11_80m/modscag_dswe.tif")
 modis <-rast("./rasters/uavsar/feb26_march11_80m/modis_dswe.tif")
 viirs <-rast("./rasters/uavsar/feb26_march11_80m/viirs_dswe.tif")
 landsat <-rast("./rasters/uavsar/feb26_march11_80m/landsat_dswe.tif")
+flm <-rast("./rasters/uavsar/feb26_march11_80m/flm_dswe.tif")
+
+# bring in cc, mask, and resample
 cc_v2 <-rast("/Users/jacktarricone/ch3_fusion/rasters/geo_layers/cc_domain.tif")
-plot(cc_v2)
 sierra <-vect("./uavsar_shape_files/sierra_17305_20014-000_20016-005_0014d_s01_L090HH_01.cor.grd .shp")
 cc_v1 <-mask(cc_v2, sierra)
 cc <-resample(cc_v1, flm, method = 'bilinear')
 plot(cc)
 
-# stack and inspect
-stack <-c(flm,modscag,modis,viirs,landsat)
-plot(stack)
-x <- focal3D(stack, c(5,5,5), na.rm=TRUE, fun = "sd")
-plot(x)
-writeRaster(x, "./rasters/focal_3d_uavsar_5x5_v2.tif")
-
+# calculate average cell area
+cell_size_v1 <-cellSize(landsat_gain, unit = "m")
+cell_size_m2 <-as.numeric(global(cell_size_v1, 'max') + global(cell_size_v1, 'min'))/2
 
 # summing analysis
 landsat_gain <-ifel(landsat < 0, NA, landsat)
-landsat_gain_vol <-landsat_gain*(80^2)
-plot(landsat_gain_vol)
+landsat_gain_m3 <-landsat_gain*cell_size_m2
+
 
 # landsat_loss <-ifel(landsat > 0, NA, landsat)
 # plot(landsat_loss)
