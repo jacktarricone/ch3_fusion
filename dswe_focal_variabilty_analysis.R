@@ -37,7 +37,7 @@ theme_classic <- function(base_size = 11, base_family = "",
     )
 }
 
-theme_set(theme_classic(14))
+theme_set(theme_classic(16))
 
 setwd("~/ch3_fusion")
 
@@ -166,6 +166,7 @@ cc_sd <-c(cc_mw, gains_sd, loss_sd, landsat_gains_mw, modscag_gains_mw)
 cc_sd_df <-as.data.frame(cc_sd, xy = TRUE, cells = TRUE)
 colnames(cc_sd_df)[4:8] <-c("cc_mean", "gain_sd","loss_sd","landsat_gains","modscag_gains")
 head(cc_sd_df)
+data.table::fwrite(df_v3, "./csvs/cc_sd_df.csv")
 
 # quick hists
 hist(cc_sd_df$cc_mean, breaks = 100)
@@ -198,9 +199,9 @@ cc_scale(13)
 # starting plot
 ### gains
 gains_plot <-ggplot(df_v3, mapping = aes(x = cc_mean, y = gain_sd, fill = as.factor(bin))) +
-  geom_boxplot(linewidth = .5, varwidth = TRUE, outlier.size = .001, outlier.shape = 1) +
-  xlab("CC (%)") + ylab(expression(SWE~Gain~SD~(10^6~m^3)))+ 
-  scale_x_continuous(limits = c(0,65), breaks = seq(0,65,5)) +
+  geom_boxplot(linewidth = .5, varwidth = TRUE, outlier.size = .001, outlier.shape = NA) +
+  xlab("CC (%)") + ylab(expression(SWE~SD~(10^6~m^3)))+ 
+  scale_x_continuous(limits = c(0,65), breaks = seq(0,65,5), expand = c(0,.5)) +
   scale_y_continuous(limits = c(0,15)) +
   scale_fill_discrete(type = cc_scale(13)) +
   theme_classic(14) +
@@ -213,10 +214,10 @@ gains_plot
 
 # loss
 loss_plot <-ggplot(df_v3, mapping = aes(x = cc_mean, y = loss_sd, fill = as.factor(bin))) +
-  geom_boxplot(linewidth = .5, varwidth = TRUE, outlier.size = .001, outlier.shape = 1) +
-  xlab("CC (%)") + ylab(expression(SWE~Gain~SD~(10^6~m^3)))+ 
-  scale_x_continuous(limits = c(0,65), breaks = seq(0,65,5)) +
-  scale_y_continuous(limits = c(0,3)) +
+  geom_boxplot(linewidth = .5, varwidth = TRUE, outlier.size = .001, outlier.shape = NA) +
+  xlab("CC (%)") + ylab(expression(SWE ~SD~(10^6~m^3)))+ 
+  scale_x_continuous(limits = c(0,65), breaks = seq(0,65,5), expand = c(0,.5)) +
+  scale_y_continuous(limits = c(0,2)) +
   scale_fill_discrete(type = cc_scale(13)) +
   theme_classic(14) +
   theme(panel.border = element_rect(colour = "black", fill = NA, size = 1),
@@ -228,20 +229,20 @@ loss_plot
 
 # cowplot test
 cow <-plot_grid(gains_plot, loss_plot,
-                 labels = c("(a)", "(b)"),
-                 nrow = 3, 
+                 labels = c("(a) SWE Gain", "(b) SWE Loss"),
+                 nrow = 2, 
                  align = "hv",
                  label_size = 15,
                  vjust =  3,
-                 hjust = -3,
+                 hjust = -.7,
                  rel_heights = c(1/2,1/2))
 # test save
 # make tighter together
 ggsave(cow,
-       file = "./plots/swe_sd_bp_v1.png",
-       width = 7, 
-       height = 10,
+       file = "./plots/swe_sd_bp_v3.png",
+       width = 8, 
+       height = 6,
        dpi = 300)
 
-system("open ./plots/swe_sd_bp_v1.png")
+system("open ./plots/swe_sd_bp_v3.png")
         
