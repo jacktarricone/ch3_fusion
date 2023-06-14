@@ -5,6 +5,39 @@
 library(terra)
 library(ggplot2)
 library(tidyverse)
+library(RColorBrewer)
+library(cowplot)
+
+theme_classic <- function(base_size = 11, base_family = "",
+                          base_line_size = base_size / 22,
+                          base_rect_size = base_size / 22) {
+  theme_bw(
+    base_size = base_size,
+    base_family = base_family,
+    base_line_size = base_line_size,
+    base_rect_size = base_rect_size
+  ) %+replace%
+    theme(
+      # no background and no grid
+      panel.border     = element_blank(),
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      
+      # show axes
+      # axis.line      = element_line(colour = "black", linewidth = rel(1)),
+      
+      # match legend key to panel.background
+      legend.key       = element_blank(),
+      
+      # simple, black and white strips
+      strip.background = element_rect(fill = "white", colour = "black", linewidth = rel(2)),
+      # NB: size is 1 but clipped, it looks like the 0.5 of the axes
+      
+      complete = TRUE
+    )
+}
+
+theme_set(theme_classic(14))
 
 setwd("~/ch3_fusion")
 
@@ -141,14 +174,12 @@ hist(cc_sd_df$loss_sd, breaks = 100)
 max(cc_sd_df$gain_sd, na.rm = TRUE)
 
 # filter cc of 0
-df_v2 <-dplyr::filter(cc_sd_df, cc_mean >= 1)
+df_v2 <-dplyr::filter(cc_sd_df, cc_mean >= 0)
 hist(cc_sd_df_v2$cc_mean, breaks = 100)
-
 
 # add bins col for box plot
 df_v3 <-df_v2 %>%
   mutate(bin = cut_width(cc_mean, width = 5, boundary=0))
-
 
 ## plot
 scale1 <-c("grey99",viridisLite::viridis(30, option = "H", direction = 1))
@@ -156,22 +187,61 @@ scale1 <-c("grey99",viridisLite::viridis(30, option = "H", direction = 1))
 ## density
 ggplot(df_v3, aes(x = cc_mean, y = gain_sd, fill = ..density..)) +
   geom_bin2d(bins = 50) +
-  # geom_smooth(method = "lm", se = FALSE) +
   scale_fill_gradientn(colors = scale1) +
-  # scale_y_continuous(limits = c(0,10)) +
   theme(panel.border = element_rect(colour = "black", fill=NA, linewidth =1))
 
+# cc scale
+cc_scale <-colorRampPalette(c("#f7fcf5", "#00441b"))
+cc_scale(13)
+
+
 # starting plot
-ggplot(df_v3, mapping = aes(x = cc_mean, y = gain_sd, fill = as.factor(bin))) +
-  geom_boxplot(linewidth = .3, width = .2, outlier.size = .01, outlier.shape = 1) +
-  xlab("CC (%)") + ylab(expression(SWE~Gain~(10^6~m^3)))+ 
-  # scale_y_continuous(limits = c(0,1)) +
-  theme_classic(11) +
+### gains
+gains_plot <-ggplot(df_v3, mapping = aes(x = cc_mean, y = gain_sd, fill = as.factor(bin))) +
+  geom_boxplot(linewidth = .5, varwidth = TRUE, outlier.size = .001, outlier.shape = 1) +
+  xlab("CC (%)") + ylab(expression(SWE~Gain~SD~(10^6~m^3)))+ 
+  scale_x_continuous(limits = c(0,65), breaks = seq(0,65,5)) +
+  scale_y_continuous(limits = c(0,15)) +
+  scale_fill_discrete(type = cc_scale(13)) +
+  theme_classic(14) +
   theme(panel.border = element_rect(colour = "black", fill = NA, size = 1),
-        legend.position = 'none',
+        legend.position = "none",
         legend.title = element_blank(),
-        legend.margin=margin(-5,1,1,1),
+        legend.margin = margin(-5,1,1,1),
         legend.box.background = element_rect(colour = "black"))
+gains_plot
 
+# loss
+loss_plot <-ggplot(df_v3, mapping = aes(x = cc_mean, y = loss_sd, fill = as.factor(bin))) +
+  geom_boxplot(linewidth = .5, varwidth = TRUE, outlier.size = .001, outlier.shape = 1) +
+  xlab("CC (%)") + ylab(expression(SWE~Gain~SD~(10^6~m^3)))+ 
+  scale_x_continuous(limits = c(0,65), breaks = seq(0,65,5)) +
+  scale_y_continuous(limits = c(0,3)) +
+  scale_fill_discrete(type = cc_scale(13)) +
+  theme_classic(14) +
+  theme(panel.border = element_rect(colour = "black", fill = NA, size = 1),
+        legend.position = "none",
+        legend.title = element_blank(),
+        legend.margin = margin(-5,1,1,1),
+        legend.box.background = element_rect(colour = "black"))
+loss_plot
 
+# cowplot test
+cow <-plot_grid(gains_plot, loss_plot,
+                 labels = c("(a)", "(b)"),
+                 nrow = 3, 
+                 align = "hv",
+                 label_size = 15,
+                 vjust =  3,
+                 hjust = -3,
+                 rel_heights = c(1/2,1/2))
+# test save
+# make tighter together
+ggsave(cow,
+       file = "./plots/swe_sd_bp_v1.png",
+       width = 7, 
+       height = 10,
+       dpi = 300)
+
+system("open ./plots/swe_sd_bp_v1.png")
         
