@@ -1,17 +1,13 @@
 # format ims data
+# june 16th
 
 library(terra)
-library(ggplot2)
-library(tidyterra)
 library(ncdf4)
-library(R.utils)
 
 setwd("~/ch3_fusion")
 
 # list the raw netcdf files
 nc_list <-list.files('./rasters/ims/raw/', full.names = TRUE)
-
-x <-nc_list[180]
 
 format_ims_data <-function(x){
 
@@ -34,9 +30,9 @@ format_ims_data <-function(x){
   rough_crop <-ext(-5008000.0,0,-5088000.0,0)
   crop <-crop(sc_rast, rough_crop)
 
-  # reproject
-  reproj <-project(crop, "epsg:4326")
-
+  # reproject using near neighbor bc categorical data
+  reproj <-project(crop, "epsg:4326", method = "near")
+  
   # crop and mask to snsr
   snsr <-vect('~/ch1_margulis/vectors/snsr_shp.gpkg')
   ct <-crop(reproj ,ext(snsr))
@@ -49,6 +45,15 @@ format_ims_data <-function(x){
   name3 <-gsub(".nc",".tif",name2)
   
   # save
-  writeR
+  writeRaster(final, paste0("./rasters/ims/snsr_tifs/",name3))
+  print(paste0(name3," is done!"))
 }
 
+lapply(nc_list, format_ims_data)
+
+# stack
+tifs_list <-list.files("./rasters/ims/snsr_tifs/", full.names = TRUE)
+stack <-rast(tifs_list)
+stack
+plot(stack[[50]])
+plot(stack[[220]])
