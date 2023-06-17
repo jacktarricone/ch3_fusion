@@ -4,11 +4,11 @@
 
 library(terra)
 
-setwd("/Users/jacktarricone/ch3_fusion/rasters/")
+setwd("~/ch3_fusion/rasters")
 list.files()
 
 # bring in sierra shape
-sierra <-vect("/Users/jacktarricone/ch3_fusion/uavsar_shape_files/sierra_17305_20014-000_20016-005_0014d_s01_L090HH_01.cor.grd .shp")
+sierra <-vect("~/ch3_fusion/uavsar_shape_files/sierra_17305_20014-000_20016-005_0014d_s01_L090HH_01.cor.grd .shp")
 plot(sierra)
 
 ### bring nisar sim data from feb 22 - march 5th
@@ -70,6 +70,15 @@ flm <-rast("./for_Q/flm_20200304_resamp.tif")
 flm
 plot(flm)
 plot(sierra, add = TRUE)
+
+# flm march 4th
+flm <-rast("./for_Q/flm_20200304_resamp.tif")
+flm
+plot(flm)
+plot(sierra, add = TRUE)
+
+
+
 
 ##########
 ## mask and crop all data for USJ

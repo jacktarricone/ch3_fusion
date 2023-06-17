@@ -131,6 +131,8 @@ points(pillow_point, cex = 1)
 # calculate SWE change at pillow
 vlc <-read.csv("/Users/jacktarricone/ch3_fusion/in_situ/VOLCANIC KNOB (VLC).csv")
 colnames(vlc)[1:2] <-c("date","swe_in")
+vlc
+
 vlc$date <-lubridate::mdy(vlc$date)
 vlc$swe_in <-as.numeric(vlc$swe_in)
 vlc$swe_cm <-as.numeric(vlc$swe_in *2.54)
