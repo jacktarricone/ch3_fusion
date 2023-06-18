@@ -118,24 +118,18 @@ hist(flm_dswe_raw , breaks = 100)
 ####### bring in snow pillow data
 
 # pull out location info into separate df
-vlc_loc <-read.csv("/Users/jacktarricone/ch3_fusion/in_situ/vlc_loc.csv", header = TRUE)
+pillow_locations <-read.csv("/Users/jacktarricone/ch3_fusion/csvs/cadwr_pillows_meta_uavsar_v1.csv", header = TRUE)
 
-loc <-data.frame(lat = vlc_loc$lat[1],
-                 lon = vlc_loc$lon[1])
+# loc <-data.frame(lat = pillow_locations$lat[1],
+#                  lon = vlc_loc$lon[1])
 
 # plot pillow location using terra vector functionality
-pillow_point <-vect(loc, geom = c("lon","lat"), crs = crs(unw_modis)) #needs to be 
+pillow_point <-vect(pillow_locations, geom = c("lon","lat"), crs = crs(unw_modis)) #needs to be 
 plot(modis_dswe_raw)
 points(pillow_point, cex = 1)
 
 # calculate SWE change at pillow
-vlc <-read.csv("/Users/jacktarricone/ch3_fusion/in_situ/VOLCANIC KNOB (VLC).csv")
-colnames(vlc)[1:2] <-c("date","swe_in")
-vlc
-
-vlc$date <-lubridate::mdy(vlc$date)
-vlc$swe_in <-as.numeric(vlc$swe_in)
-vlc$swe_cm <-as.numeric(vlc$swe_in *2.54)
+cadwr_swe <-
 
 # test plot from vlc cadwr pillow
 ggplot(vlc) +
