@@ -5,28 +5,26 @@
 library(terra)
 library(ggplot2);theme_set(theme_classic(12))
 
-setwd("/Users/jacktarricone/ch3_fusion/rasters/uavsar/feb26_march11_80m/")
+setwd("~/ch3_fusion/rasters/uavsar/")
 list.files()
 
 ## bring in inc
-inc <-rast("./inc_80m.tif")
-plot(inc)
+inc <-rast("./data_80m_0226_0311/inc_80m.tif")
+unw <-rast("./data_80m_0226_0311/unw_80m.tif")
+cor <-rast("./data_80m_0226_0311/cor_80m.tif")
 
 # bring masked unwrapped phase rastesr
-unw_modscag <-rast("./unw_modscag_mask.tif")
-plot(unw_modscag)
+ims <-rast("./data_80m_0226_0311/ims_sierra_80m.tif")
+modscag <-rast("./data_80m_0226_0311/modscag_sierra_80m.tif")
+modis <-rast("./data_80m_0226_0311/modis_sierra_80m.tif")
+viirs <-rast("./data_80m_0226_0311/viirs_sierra_80m.tif")
+flm <-rast("./data_80m_0226_0311/flm_sierra_80m.tif")
+landsat <-rast("./data_80m_0226_0311/landsat_sierra_80m.tif")
 
-unw_modis <-rast("./unw_modis_mask.tif")
-plot(unw_modis)
-
-unw_viirs <-rast("./unw_viirs_mask.tif")
-plot(unw_viirs)
-
-unw_landsat <-rast("./unw_landsat_mask.tif")
-plot(unw_landsat)
-
-unw_flm <-rast("./unw_flm_mask.tif")
-plot(unw_flm)
+# stack
+stack <-c(inc,unw,cor,modscag,modis, viirs,landsat,flm,ims)
+names(stack) <-c("inc","unw","cor","modscag","modis","viirs","landsat","flm","ims")
+stack
 
 # stack, yup that works
 stack <-c(inc,unw_modscag,unw_modis,unw_viirs,unw_landsat,unw_flm)
