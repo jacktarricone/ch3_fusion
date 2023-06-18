@@ -159,7 +159,7 @@ pillow_cell_dswe
 
 # bind and find average swe change
 bind <-left_join(pillow_cell_dswe, station_dswe)
-bind_v2 <-dplyr::filter(bind, id != "MHP" & id != "DPO")
+bind_v2 <-dplyr::filter(bind, id != "DPO" & id != "WWC")
 bind_v2
 
 # calc mean
@@ -167,14 +167,14 @@ mean_pillow_dswe <-mean(bind_v2$dswe_cm)
 mean_insar_dswe <-mean(bind_v2$'sierra_17305_20014-000_20016-005_0014d_s01_L090HH_01.unw.grd')
 
 # create tether value
-tether_value <-mean_pillow_dswe - mean_insar_dswe
+tether_value <- -2.1844 - -11.08041
 
 ########## calc absolute dswe
-
 # modscag
 modscag_dswe <-modscag_dswe_raw + tether_value
 plot(modscag_dswe)
-writeRaster(modscag_dswe, "~/ch3_fusion/rasters/uavsar/dswe/modscag_dswe_v2.tif")
+hist(modscag_dswe, breaks = 100)
+writeRaster(modscag_dswe, "~/ch3_fusion/rasters/uavsar/dswe/modscag_dswe_v5.tif")
 
 # modis
 modis_dswe <-modis_dswe_raw + tether_value$lyr1
