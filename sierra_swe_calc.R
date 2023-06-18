@@ -21,13 +21,21 @@ viirs <-rast("./data_80m_0226_0311/viirs_sierra_80m.tif")
 flm <-rast("./data_80m_0226_0311/flm_sierra_80m.tif")
 landsat <-rast("./data_80m_0226_0311/landsat_sierra_80m.tif")
 
-# stack
-stack <-c(inc,unw,cor,modscag,modis, viirs,landsat,flm,ims)
-names(stack) <-c("inc","unw","cor","modscag","modis","viirs","landsat","flm","ims")
-stack
+# bring masked unwrapped phase rastesr
+unw_ims <-mask(unw, ims, maskvalue = NA)
+unw_modscag <-mask(unw, modscag, maskvalue = NA)
+unw_modis <-mask(unw, modis, maskvalue = NA)
+unw_viirs <-mask(unw, viirs, maskvalue = NA)
+unw_flm <-mask(unw, flm, maskvalue = NA)
+unw_landsat <-mask(unw, landsat, maskvalue = NA)
 
-# stack, yup that works
-stack <-c(inc,unw_modscag,unw_modis,unw_viirs,unw_landsat,unw_flm)
+# # stack
+# stack <-c(inc,unw,cor,modscag,modis, viirs,landsat,flm,ims)
+# names(stack) <-c("inc","unw","cor","modscag","modis","viirs","landsat","flm","ims")
+# stack
+# 
+# # stack, yup that works
+# stack <-c(inc,unw_modscag,unw_modis,unw_viirs,unw_landsat,unw_flm)
 
 # radar wave length from uavsar annotation file
 uavsar_wL <- 23.8403545
@@ -42,9 +50,9 @@ devtools::source_url("https://raw.githubusercontent.com/jacktarricone/snowex_uav
 #   
 # }
 
-##### 
-## modscag
-#####
+############# 
+## modscag ##
+#############
 
 modscag_depth_change <-depth_from_phase(delta_phase = unw_modscag,
                                         inc_angle = inc,
@@ -52,10 +60,9 @@ modscag_depth_change <-depth_from_phase(delta_phase = unw_modscag,
                                         wavelength = uavsar_wL)
 
 # convert to SWE change
-modscag_dswe_raw <-modscag_depth_change*(270/1000)
+modscag_dswe_raw <-modscag_depth_change*(370/1000)
 plot(modscag_dswe_raw)
 hist(modscag_dswe_raw , breaks = 100)
-writeRaster()
 
 ##### 
 ## modis
@@ -116,44 +123,58 @@ hist(flm_dswe_raw , breaks = 100)
 ####### bring in snow pillow data
 
 # pull out location info into separate df
-pillow_locations <-read.csv("/Users/jacktarricone/ch3_fusion/csvs/cadwr_pillows_meta_uavsar_v1.csv", header = TRUE)
-
-# loc <-data.frame(lat = pillow_locations$lat[1],
-#                  lon = vlc_loc$lon[1])
+pillow_locations <-read.csv("~/ch3_fusion/csvs/cadwr_pillows_meta_uavsar_v1.csv", header = TRUE)
 
 # plot pillow location using terra vector functionality
 pillow_point <-vect(pillow_locations, geom = c("lon","lat"), crs = crs(unw_modis)) #needs to be 
-plot(modis_dswe_raw)
+plot(modscag_dswe_raw)
 points(pillow_point, cex = 1)
+text(pillow_point, labels = c("VLC", "DPO", "MHP","UBC","WWC"), pos = 3)
 
 # calculate SWE change at pillow
-cadwr_swe <-
+cadwr_swe <-read.csv("~/ch3_fusion/csvs/cadwr_swe_depth_qaqc_v1.csvs")
+cadwr_swe$date <-as.Date(cadwr_swe$date)
 
 # test plot from vlc cadwr pillow
-ggplot(vlc) +
-  geom_line(aes(x = date, y = swe_cm))
+ggplot(cadwr_swe, aes(x = date, y = swe_cm, color = id)) +
+  geom_line()
 
 # study period filter
-sp <-dplyr::filter(vlc, date > "2020-02-26" & date < "2020-03-11")
+sp <-dplyr::filter(cadwr_swe, date > "2020-02-26" & date < "2020-03-11")
 
-ggplot(sp) +
-  geom_line(aes(x = date, y = swe_cm))
+ggplot(sp, aes(x = date, y = swe_cm, color = id)) +
+  geom_line()
 
 # calc change in SWE at pillow from feb 26 - march 11
-insitu_dswe <-sp$swe_cm[13] - sp$swe_cm[1]
+station_dswe <- sp %>%
+  group_by(id) %>%
+  summarize(dswe_cm = swe_cm[13] - swe_cm[1])
+
+station_dswe
 
 # extract using that vector
-pillow_cell_dswe <-terra::extract(modis_dswe_raw, pillow_point,  cells = TRUE, xy = TRUE)
+pillow_cell_dswe <-terra::extract(modscag_dswe_raw, pillow_point,  cells = TRUE, xy = TRUE, ID = TRUE)
+pillow_cell_dswe$id <-c("VLC", "DPO", "MHP","UBC","WWC")
+pillow_cell_dswe
+
+# bind and find average swe change
+bind <-left_join(pillow_cell_dswe, station_dswe)
+bind_v2 <-dplyr::filter(bind, id != "MHP" & id != "DPO")
+bind_v2
+
+# calc mean
+mean_pillow_dswe <-mean(bind_v2$dswe_cm)
+mean_insar_dswe <-mean(bind_v2$'sierra_17305_20014-000_20016-005_0014d_s01_L090HH_01.unw.grd')
 
 # create tether value
-tether_value <-insitu_dswe - pillow_cell_dswe
+tether_value <-mean_pillow_dswe - mean_insar_dswe
 
 ########## calc absolute dswe
 
 # modscag
-modscag_dswe <-modscag_dswe_raw + tether_value$lyr1
+modscag_dswe <-modscag_dswe_raw + tether_value
 plot(modscag_dswe)
-writeRaster(modscag_dswe, "./modscag_dswe.tif")
+writeRaster(modscag_dswe, "~/ch3_fusion/rasters/uavsar/dswe/modscag_dswe_v2.tif")
 
 # modis
 modis_dswe <-modis_dswe_raw + tether_value$lyr1
