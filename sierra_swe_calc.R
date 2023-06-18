@@ -167,6 +167,7 @@ mean_pillow_dswe <-mean(bind_v2$dswe_cm)
 mean_insar_dswe <-mean(bind_v2$'sierra_17305_20014-000_20016-005_0014d_s01_L090HH_01.unw.grd')
 
 # create tether value
+####### NOT DZONEEEEEIHEHIEHIUE
 tether_value <- -2.1844 - -11.08041
 
 ########## calc absolute dswe
