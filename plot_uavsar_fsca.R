@@ -9,6 +9,7 @@ library(sf)
 library(cowplot)
 library(scales)
 library(viridis)
+library(ggpubr)
 
 theme_classic <- function(base_size = 11, base_family = "",
                           base_line_size = base_size / 22,
@@ -39,7 +40,7 @@ theme_classic <- function(base_size = 11, base_family = "",
     )
 }
 
-theme_set(theme_classic(17))
+theme_set(theme_classic(19))
 
 setwd("~/ch3_fusion")
 
@@ -77,7 +78,7 @@ fsca_plot_no_scale <-function(data, label){
   geom_raster(mapping = aes(x,y, fill = data)) + 
   geom_sf(data = sierra_sf, fill = NA, color = "black", linewidth = .2, inherit.aes = FALSE, alpha = 1) +
   annotate("text", x = -118.98, y = 37.87, label = label, size = 10) +
-  scale_fill_gradientn(colors = scale1, limits = c(15,100), oob = squish, na.value = "gray50") + # max of color bar so it saturates
+  scale_fill_gradientn(colors = scale1, limits = c(15,100), oob = squish, na.value = "gray50", guide = "none") + # max of color bar so it saturates
   labs(fill = "fSCA (%)") +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
@@ -85,53 +86,80 @@ fsca_plot_no_scale <-function(data, label){
         axis.title.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks = element_blank(),
-        legend.position = "bottom",
-        plot.margin = unit(c(0,0,0,0), "cm"),
-        legend.box.spacing = unit(0, "pt")) +
-  guides(fill = guide_colorbar(direction = "horizontal",
-                               label.position = 'top',
-                               title.position ='bottom',
-                               title.hjust = .5,
-                               barwidth = 11,
-                               barheight = 1,
-                               frame.colour = "black", 
-                               ticks.colour = "black")) 
+        plot.margin = unit(c(0,0,0,0), "cm")) 
+  
   return(p)
 }
 
+# plot funciton
+fsca_plot_scale_right <-function(data, label){
+  
+  p <-ggplot(stack_df) +
+    geom_sf(data = sierra_sf, fill = "gray50", color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
+    geom_raster(mapping = aes(x,y, fill = data)) + 
+    geom_sf(data = sierra_sf, fill = NA, color = "black", linewidth = .2, inherit.aes = FALSE, alpha = 1) +
+    annotate("text", x = -118.98, y = 37.87, label = label, size = 10) +
+    scale_fill_gradientn(colors = scale1, limits = c(15,100), oob = squish, na.value = "gray50") + # max of color bar so it saturates
+    labs(fill = "fSCA (%)") +
+    theme(panel.border = element_blank(),
+          axis.text.x = element_blank(),
+          axis.title.y = element_blank(),
+          axis.title.x = element_blank(),
+          axis.text.y = element_blank(),
+          axis.ticks = element_blank(),
+          legend.position = "bottom",
+          plot.margin = unit(c(0,0,0,0), "cm"),
+          legend.box.spacing = unit(0, "pt")) +
+    guides(fill = guide_colorbar(direction = "horizontal",
+                                 label.position = 'top',
+                                 title.position ='bottom',
+                                 title.hjust = .5,
+                                 barwidth = 36,
+                                 barheight = 2,
+                                 frame.colour = "black", 
+                                 ticks.colour = "black")) 
+  return(p)
+}
 
-# make
-ims_p <-fsca_plot(data = stack_df$ims, label = "IMS")
-modscag_p <-fsca_plot(data = stack_df$modscag, label = "MODSCAG")
-modis_p <-fsca_plot(data = stack_df$modis, label = "MODIS")
-viirs_p <-fsca_plot(data = stack_df$viirs, label = "VIIRS")
-flm_p <-fsca_plot(data = stack_df$flm, label = "FLM")
-landsat_p <-fsca_plot(data = stack_df$landsat, label = "Landsat")
-ims_p
+# make plots with no scale
+ims_p <-fsca_plot_no_scale(data = stack_df$ims, label = "IMS")
+modscag_p <-fsca_plot_no_scale(data = stack_df$modscag, label = "MODSCAG")
+modis_p <-fsca_plot_no_scale(data = stack_df$modis, label = "MODIS")
+viirs_p <-fsca_plot_no_scale(data = stack_df$viirs, label = "VIIRS")
+flm_p <-fsca_plot_no_scale(data = stack_df$flm, label = "FLM")
 
-# plot
-modis_p <-ggplot(stack_df) +
-  geom_sf(data = sierra_sf, fill = "black", color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
-  geom_raster(mapping = aes(x,y, fill = modis)) + 
-  geom_sf(data = sierra_sf, fill = NA, color = "black", linewidth = .7, inherit.aes = FALSE, alpha = 1) +
-  annotate("text", x = -118.98, y = 37.87, label = "MODIS", size = 10) +
-  scale_fill_gradientn(colors = scale1, limits = c(0,100), oob = squish, na.value = "black") + # max of color bar so it saturates
-  labs(fill = "fSCA (%)") +
-  theme(panel.border = element_blank(),
-        axis.text.x = element_blank(),
-        axis.title.y = element_blank(),
-        axis.title.x = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks = element_blank(),
-        legend.position = "bottom",
-        plot.margin = unit(c(0,0,0,0), "cm"),
-        legend.box.spacing = unit(0, "pt")) +
-  guides(fill = guide_colorbar(direction = "horizontal",
-                               label.position = 'top',
-                               title.position ='bottom',
-                               title.hjust = .5,
-                               barwidth = 11,
-                               barheight = 1,
-                               frame.colour = "black", 
-                               ticks.colour = "black")) 
-modis_p
+# last plot with scale
+landsat_p <-fsca_plot_scale_right(data = stack_df$landsat, label = "Landsat")
+landsat_p
+
+# # cowplot test
+# cow <-plot_grid(ims_p,modscag_p,modis_p,viirs_p,flm_p,landsat_p,
+#                 labels = c("(a)", "(b)", "(c)","(d)", "(e)", "(f)"),
+#                 ncol = 3,
+#                 nrow = 2,
+#                 align = "hv",
+#                 label_size = 22,
+#                 vjust =  2,
+#                 hjust = -.2,
+#                 rel_widths = c(.156, .156, .156, .156, .156, .22))
+??ggarrange
+# Create grid
+cow <-ggarrange(ims_p,modscag_p,modis_p,viirs_p,flm_p,landsat_p, # list of plots
+                  labels = c("(a)", "(b)", "(c)","(d)", "(e)", "(f)"), # labels
+                  common.legend = T, # COMMON LEGEND
+                  legend = "bottom", # legend position
+                  align = "hv", # Align them both, horizontal and vertical
+                  ncol = 3,
+                  nrow = 2,
+                  vjust =  2,
+                  hjust = -.2,
+                  font.label = list(size = 23, color = "black", face = "bold"))  
+
+# test save
+# make tighter together
+ggsave(cow,
+       file = "./plots/fsca_usvar_v2.pdf",
+       width = 10.5, 
+       height = 18)
+
+system("open ./plots/fsca_usvar_v2.pdf") 
