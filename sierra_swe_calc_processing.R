@@ -4,7 +4,7 @@
 
 library(terra)
 
-setwd("~/ch3_fusion/rasters/")
+setwd("~/ch3_fusion/rasters")
 list.files()
 
 # bring in sierra shape
@@ -182,11 +182,13 @@ flm_sierra_80m
 
 # ims
 ims_resamp_v1 <-resample(ims_sierra, nisar_cor_sierra, method = 'near')
-ims_sierra_80m_v1 <-crop(ims_resamp_v1, ext(sierra))
-ims_sierra_80m <-mask(ims_sierra_80m_v1, sierra)
+ims_sierra_80m_v2 <-crop(ims_resamp_v1, ext(sierra))
+ims_sierra_80m_v1 <-mask(ims_sierra_80m_v2, sierra)
+ims_sierra_80m <-subst(ims_sierra_80m_v1, 2, NA)
+ims_sierra_80m <-subst(ims_sierra_80m, 4, 100)
 plot(ims_sierra_80m)
 ims_sierra_80m
-# writeRaster(ims_sierra_80m, "./uavsar/feb26_march11_80m/ims_sierra_80m.tif")
+# writeRaster(ims_sierra_80m, "./uavsar/data_80m_0226_0311/ims_sierra_80m.tif")
 
 
 ############################################################
