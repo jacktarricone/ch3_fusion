@@ -34,34 +34,44 @@ theme_classic <- function(base_size = 11, base_family = "",
     )
 }
 
-setwd("/Users/jacktarricone/ch3_fusion/rasters/uavsar/feb26_march11_80m/")
+setwd("~/ch3_fusion/rasters/uavsar/dswe")
 list.files()
 
 #### bring in dswe rasters
 # modscag
-modscag <-rast("./modscag_dswe.tif")
+modscag <-rast("./modscag_dswe_v2.tif")
 modscag
 plot(modscag)
 
 # modis
-modis <-rast("./modis_dswe.tif")
+modis <-rast("./modis_dswe_v2.tif")
 modis
 plot(modis)
 
 # viirs
-viirs <-rast("./viirs_dswe.tif")
+viirs <-rast("./viirs_dswe_v2.tif")
 viirs
 plot(viirs)
 
 # landsat
-landsat <-rast("./landsat_dswe.tif")
+landsat <-rast("./landsat_dswe_v2.tif")
 landsat
 plot(landsat)
 
 # flm
-flm <-rast("./flm_dswe.tif")
+flm <-rast("./flm_dswe_v2.tif")
 flm
 plot(flm)
+
+# ims
+ims <-rast("./ims_dswe_v2.tif")
+ims
+plot(ims)
+
+
+# calculate average cell area
+cell_size_v1 <-cellSize(landsat, unit = "m")
+cell_size_m2 <-as.numeric(global(cell_size_v1, 'max') + global(cell_size_v1, 'min'))/2
 
 # define stat generator funciton
 # x <-flm
@@ -71,14 +81,14 @@ swe_stats <-function(x){
   ### swe_gain
   # convert rasters m^3 water
   # assuming 80 m pixel size
-  gain_m3 <-(x / 100)*(80^2)
+  gain_m3 <-(x / 100)*cell_size_m2
   values(gain_m3)[values(gain_m3) < 0] = NA
   # plot(gain_m3)
   swe_gain_m3 <-as.integer(global(gain_m3, "sum", na.rm = TRUE))
   swe_gain_m3_scaled <-swe_gain_m3 * (1e-6)
   
   ### swe_loss
-  loss_m3 <-(x / 100)*(80^2)
+  loss_m3 <-(x / 100)*cell_size_m2
   values(loss_m3)[values(loss_m3) > 0] = NA
   # plot(loss_m3)
   swe_loss_m3 <-as.integer(global(loss_m3, "sum", na.rm = TRUE))
@@ -99,25 +109,26 @@ modscag_stats <-swe_stats(modscag)
 modis_stats <-swe_stats(modis)
 viirs_stats <-swe_stats(viirs)
 landsat_stats <-swe_stats(landsat)
-flm_stas <-swe_stats(flm)
+flm_stats <-swe_stats(flm)
+ims_stats <-swe_stats(ims)
 
 # create df for plotting
-swe_change <-c(modscag_stats,modis_stats,viirs_stats,landsat_stats,flm_stas) # bind cols
+swe_change <-c(modscag_stats,modis_stats,viirs_stats,landsat_stats,flm_stats, ims_stats) # bind cols
 #swe_change_km3 <-as.numeric(round(swe_change_km3, digits = 3)) # round
-sensor <-c(rep("MODSCAG",3), rep("MODIS",3), rep("VIIRS",3), rep("Landsat",3), rep("FLM",3)) # create sensor col
+sensor <-c(rep("MODSCAG",3), rep("MODIS",3), rep("VIIRS",3), rep("Landsat",3), rep("FLM",3), rep("IMS",3)) # create sensor col
 stat <-c("gain","loss","net","gain","loss","net","gain",
-         "loss","net","gain","loss","net","gain","loss","net") # create stat col
+         "loss","net","gain","loss","net","gain","loss","net","gain","loss","net") # create stat col
 stats_df <-as.data.frame(cbind(sensor,swe_change,stat)) # bind as df
 stats_df$swe_change <-as.numeric(stats_df$swe_change) # convert to numeric
-stats_df$sensor <- factor(stats_df$sensor, levels = c('MODSCAG', 'MODIS', 'VIIRS', 'Landsat', 'FLM')) # conver to facor for plotting
-
+stats_df$sensor <- factor(stats_df$sensor, levels = c('MODSCAG', 'MODIS', 'VIIRS', 'Landsat', 'FLM', 'IMS')) # conver to facor for plotting
+stats_df
 
 # make group bar plot
 ggplot(stats_df, aes(fill=stat, x = sensor, y=swe_change)) + 
   geom_bar(position="dodge", stat="identity", color = "black", width = .5)+
   geom_hline(yintercept = 0)+
   #scale_y_continuous(breaks = seq(-.01,.03,.01),limits = c(-.01,.03))+
-  scale_y_continuous(breaks = seq(-10,30,10),limits = c(-10,30))+
+  scale_y_continuous(breaks = seq(-20,5,5),limits = c(-20,5))+
   scale_fill_manual(values=c('darkblue','darkred','grey90'),name="")+
   ylab(expression(Delta~SWE~(10^6~m^3)))+ 
   xlab("fSCA Product") +
@@ -125,10 +136,10 @@ ggplot(stats_df, aes(fill=stat, x = sensor, y=swe_change)) +
   theme(panel.border = element_rect(colour = "black", fill=NA, size = 1))
 
 # saves
-# ggsave(file = "/Users/jacktarricone/ch3_fusion/plots/dswe_stats_v7.png",
-#        width = 6,
-#        height = 3,
-#        dpi = 500)
+ggsave(file = "/Users/jacktarricone/ch3_fusion/plots/dswe_stats_new_v8.png",
+       width = 6,
+       height = 3,
+       dpi = 300)
 
 # make table for poster
 data <-rbind(modscag_stats,modis_stats,viirs_stats,landsat_stats,flm_stas)

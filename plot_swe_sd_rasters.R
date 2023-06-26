@@ -63,7 +63,7 @@ scale1 <-c(viridis(10, option = "H", direction = 1))
 sd_gain <-ggplot(df) +
   geom_sf(data = sierra_sf, fill = "gray80", color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
   geom_raster(mapping = aes(x,y, fill = gain_sd)) + 
-  geom_sf(data = sierra_sf, fill = NA, color = "black", linewidth = .7, inherit.aes = FALSE, alpha = 1) +
+  # geom_sf(data = sierra_sf, fill = NA, color = "black", linewidth = .7, inherit.aes = FALSE, alpha = 1) +
   annotate("text", x = -118.98, y = 37.87, label = "SWE Gain", size = 10) +
   scale_fill_gradientn(colors = scale1, limits = c(0,10), oob = squish) + # max of color bar so it saturates
   labs(fill = expression(Delta~SWE~SD~(10^6~m^3))) +
@@ -178,8 +178,9 @@ cow <-plot_grid(sd_gain, sd_loss, cc,
 # test save
 # make tighter together
 ggsave(cow,
-       file = "./plots/sd_vs_cc_map_17x17.pdf",
-       width = 10.5, 
-       height = 9)
+       file = "./plots/sd_vs_cc_map_17x17.png",
+       width = 9, 
+       height = 9,
+       dpi = 300)
 
-system("open ./plots/sd_vs_cc_map_17x17.pdf")
+system("open ./plots/sd_vs_cc_map_17x17.png")
