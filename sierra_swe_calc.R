@@ -3,6 +3,7 @@
 # decemeber 5, 2022
 
 library(terra)
+library(dplyr)
 library(ggplot2);theme_set(theme_classic(12))
 
 setwd("~/ch3_fusion/rasters/uavsar/")
@@ -29,14 +30,6 @@ unw_viirs <-mask(unw, viirs, maskvalue = NA)
 unw_flm <-mask(unw, flm, maskvalue = NA)
 unw_landsat <-mask(unw, landsat, maskvalue = NA)
 
-# # stack
-# stack <-c(inc,unw,cor,modscag,modis, viirs,landsat,flm,ims)
-# names(stack) <-c("inc","unw","cor","modscag","modis","viirs","landsat","flm","ims")
-# stack
-# 
-# # stack, yup that works
-# stack <-c(inc,unw_modscag,unw_modis,unw_viirs,unw_landsat,unw_flm)
-
 # radar wave length from uavsar annotation file
 uavsar_wL <- 23.8403545
 
@@ -50,13 +43,19 @@ devtools::source_url("https://raw.githubusercontent.com/jacktarricone/snowex_uav
 #   
 # }
 
+# approx density from mammoth pits
+sierra_density <-370
+
+# calc perm using guni equation
+sierra_perm <- 1 + 1.6 * (density/1000) + 1.8 * (density/1000)^3
+
 ############# 
 ## modscag ##
 #############
 
 modscag_depth_change <-depth_from_phase(delta_phase = unw_modscag,
                                         inc_angle = inc,
-                                        perm = 1.3,
+                                        perm = sierra_perm,
                                         wavelength = uavsar_wL)
 
 # convert to SWE change
@@ -70,11 +69,11 @@ hist(modscag_dswe_raw , breaks = 100)
 
 modis_depth_change <-depth_from_phase(delta_phase = unw_modis,
                                         inc_angle = inc,
-                                        perm = 1.3,
+                                        perm = sierra_perm,
                                         wavelength = uavsar_wL)
 
 # convert to SWE change
-modis_dswe_raw <-modis_depth_change*(270/1000)
+modis_dswe_raw <-modis_depth_change*(sierra_density/1000)
 plot(modis_dswe_raw)
 hist(modis_dswe_raw , breaks = 100)
 
@@ -84,11 +83,11 @@ hist(modis_dswe_raw , breaks = 100)
 
 viirs_depth_change <-depth_from_phase(delta_phase = unw_viirs,
                                       inc_angle = inc,
-                                      perm = 1.3,
+                                      perm = sierra_perm,
                                       wavelength = uavsar_wL)
 
 # convert to SWE change
-viirs_dswe_raw <-viirs_depth_change*(270/1000)
+viirs_dswe_raw <-viirs_depth_change*(sierra_density/1000)
 plot(viirs_dswe_raw)
 hist(viirs_dswe_raw , breaks = 100)
 
@@ -98,11 +97,11 @@ hist(viirs_dswe_raw , breaks = 100)
 
 landsat_depth_change <-depth_from_phase(delta_phase = unw_landsat,
                                       inc_angle = inc,
-                                      perm = 1.3,
+                                      perm = sierra_perm,
                                       wavelength = uavsar_wL)
 
 # convert to SWE change
-landsat_dswe_raw <-landsat_depth_change*(270/1000)
+landsat_dswe_raw <-landsat_depth_change*(sierra_density/1000)
 plot(landsat_dswe_raw)
 hist(landsat_dswe_raw , breaks = 100)
 
@@ -112,16 +111,30 @@ hist(landsat_dswe_raw , breaks = 100)
 
 flm_depth_change <-depth_from_phase(delta_phase = unw_flm,
                                         inc_angle = inc,
-                                        perm = 1.3,
+                                        perm = sierra_perm,
                                         wavelength = uavsar_wL)
 
 # convert to SWE change
-flm_dswe_raw <-flm_depth_change*(270/1000)
+flm_dswe_raw <-flm_depth_change*(sierra_density/1000)
 plot(flm_dswe_raw)
 hist(flm_dswe_raw , breaks = 100)
 
-####### bring in snow pillow data
 
+##### 
+## ims
+#####
+
+ims_depth_change <-depth_from_phase(delta_phase = unw_ims,
+                                    inc_angle = inc,
+                                    perm = sierra_perm,
+                                    wavelength = uavsar_wL)
+
+# convert to SWE change
+ims_dswe_raw <-ims_depth_change*(sierra_density/1000)
+plot(ims_dswe_raw)
+hist(ims_dswe_raw , breaks = 100)
+
+####### bring in snow pillow data
 # pull out location info into separate df
 pillow_locations <-read.csv("~/ch3_fusion/csvs/cadwr_pillows_meta_uavsar_v1.csv", header = TRUE)
 
@@ -157,41 +170,69 @@ pillow_cell_dswe <-terra::extract(modscag_dswe_raw, pillow_point,  cells = TRUE,
 pillow_cell_dswe$id <-c("VLC", "DPO", "MHP","UBC","WWC")
 pillow_cell_dswe
 
+# extract 8 surronding cells
+test_cells <-adjacent(modscag_dswe_raw, pillow_cell_dswe$cell, direction = 8)
+
+# for five stations
+vlc_cells <-c(pillow_cell_dswe$cell[1],test_cells[1,])
+dpo_cells <-c(pillow_cell_dswe$cell[2],test_cells[2,])
+mhp_cells <-c(pillow_cell_dswe$cell[3],test_cells[3,])
+ubc_cells <-c(pillow_cell_dswe$cell[4],test_cells[4,])
+wwc_cells <-c(pillow_cell_dswe$cell[5],test_cells[5,])
+
+# extract
+vlc_vals <-terra::extract(modscag_dswe_raw, vlc_cells)
+colnames(vlc_vals) <-"vlc"
+dpo_vals <-terra::extract(modscag_dswe_raw, dpo_cells)
+colnames(dpo_vals) <-"dpo"
+mhp_vals <-terra::extract(modscag_dswe_raw, mhp_cells)
+colnames(mhp_vals) <-"mhp"
+ubc_vals <-terra::extract(modscag_dswe_raw, ubc_cells)
+colnames(ubc_vals) <-"ubc"
+wwc_vals <-terra::extract(modscag_dswe_raw, wwc_cells)
+colnames(wwc_vals) <-"wwc"
+
+# make df
+vals_df <-cbind(vlc_vals, dpo_vals, mhp_vals, ubc_vals, wwc_vals)
+
+
 # bind and find average swe change
 bind <-left_join(pillow_cell_dswe, station_dswe)
-bind_v2 <-dplyr::filter(bind, id != "DPO" & id != "WWC")
+bind_v2 <-dplyr::filter(bind, id != "DPO")
 bind_v2
+
+# mean them all, pretty much the same
+mean_insar_dswe <-mean(c(vals_df$vlc, vals_df$mhp, vals_df$ubc, vals_df$wwc), na.rm = TRUE)
 
 # calc mean
 mean_pillow_dswe <-mean(bind_v2$dswe_cm)
-mean_insar_dswe <-mean(bind_v2$'sierra_17305_20014-000_20016-005_0014d_s01_L090HH_01.unw.grd')
+# mean_insar_dswe <-mean(bind_v2$'sierra_17305_20014-000_20016-005_0014d_s01_L090HH_01.unw.grd')
 
 # create tether value
-####### NOT DZONEEEEEIHEHIEHIUE
-tether_value <- -2.1844 - -11.08041
+tether_value <- mean_pillow_dswe - mean_insar_dswe
 
 ########## calc absolute dswe
 # modscag
 modscag_dswe <-modscag_dswe_raw + tether_value
 plot(modscag_dswe)
 hist(modscag_dswe, breaks = 100)
-writeRaster(modscag_dswe, "~/ch3_fusion/rasters/uavsar/dswe/modscag_dswe_v5.tif")
+writeRaster(modscag_dswe, "~/ch3_fusion/rasters/uavsar/dswe/modscag_dswe_v6.tif")
 
 # modis
-modis_dswe <-modis_dswe_raw + tether_value$lyr1
-# writeRaster(modis_dswe, "./modis_dswe.tif")
+modis_dswe <-modis_dswe_raw + tether_value
+writeRaster(modis_dswe, "./modis_dswe.tif")
 
 # viirs
-viirs_dswe <-viirs_dswe_raw + tether_value$lyr1
+viirs_dswe <-viirs_dswe_raw + tether_value
 plot(viirs_dswe)
 # writeRaster(viirs_dswe, "./viirs_dswe.tif")
 
 # landsat
-landsat_dswe <-landsat_dswe_raw + tether_value$lyr1
+landsat_dswe <-landsat_dswe_raw + tether_value
 plot(landsat_dswe)
 # writeRaster(landsat_dswe, "./landsat_dswe.tif")
 
 # flm
-flm_dswe <-flm_dswe_raw + tether_value$lyr1
+flm_dswe <-flm_dswe_raw + tether_value
 plot(flm_dswe)
 # writeRaster(flm_dswe, "./flm_dswe.tif")

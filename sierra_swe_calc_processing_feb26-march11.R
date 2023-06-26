@@ -24,6 +24,7 @@ plot(sierra, add = TRUE)
 cor <-rast("./uavsar/sierra_17305_20014-000_20016-005_0014d_s01_L090_01_int_grd/sierra_17305_20014-000_20016-005_0014d_s01_L090VV_01.cor.grd.tiff")
 cor
 plot(cor)
+expanse(cor, unit = "km")
 
 ## unw
 unw <-rast("./uavsar/sierra_17305_20014-000_20016-005_0014d_s01_L090_01_int_grd/sierra_17305_20014-000_20016-005_0014d_s01_L090VV_01.unw.grd.tiff")
