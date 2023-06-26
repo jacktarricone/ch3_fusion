@@ -44,11 +44,9 @@ theme_set(theme_classic(17))
 setwd("~/ch3_fusion")
 
 # read in plotting df
-df <-data.table::fread("./csvs/cc_sd_df.csv")
+df <-data.table::fread("./csvs/cc_sd_df_v2.csv")
 hist(df$loss_sd, breaks = 100)
 
-gain_df <- df %>% drop_na(loss_sd)
-loss_df <- df %>% drop_na(loss_sd)
 
 # read in sierra shp
 sierra_v1 <-st_read("./uavsar_shape_files/sierra_17305_20014-000_20016-005_0014d_s01_L090HH_01.cor.grd .shp")
@@ -67,7 +65,7 @@ sd_gain <-ggplot(df) +
   geom_raster(mapping = aes(x,y, fill = gain_sd)) + 
   geom_sf(data = sierra_sf, fill = NA, color = "black", linewidth = .7, inherit.aes = FALSE, alpha = 1) +
   annotate("text", x = -118.98, y = 37.87, label = "SWE Gain", size = 10) +
-  scale_fill_gradientn(colors = scale1, limits = c(0,15), oob = squish) + # max of color bar so it saturates
+  scale_fill_gradientn(colors = scale1, limits = c(0,6), oob = squish) + # max of color bar so it saturates
   labs(fill = expression(Delta~SWE~SD~(10^6~m^3))) +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
@@ -89,11 +87,12 @@ sd_gain <-ggplot(df) +
 
 # save
 ggsave(sd_gain,
-       file = "./plots/sd_gain_map_v3.pdf",
+       file = "./plots/sd_gain_map_v4.png",
        width = 3.5, 
-       height = 8)
+       height = 8,
+       dpi = 300)
 
-system("open ./plots/sd_gain_map_v3.pdf")
+system("open ./plots/sd_gain_map_v4.png")
 
 #### loss
 sd_loss <-ggplot(loss_df) +
@@ -101,7 +100,7 @@ sd_loss <-ggplot(loss_df) +
   geom_raster(mapping = aes(x,y, fill = loss_sd)) + 
   geom_sf(data = sierra_sf, fill = NA, color = "black", linewidth = .7, inherit.aes = FALSE, alpha = 1) +
   annotate("text", x = -118.98, y = 37.87, label = "SWE Loss", size = 10) +
-  scale_fill_gradientn(colors = scale1, limits = c(0,5), oob = squish) + # max of color bar so it saturates
+  scale_fill_gradientn(colors = scale1, limits = c(0,6), oob = squish) + # max of color bar so it saturates
   labs(fill = expression(Delta~SWE~SD~(10^6~m^3))) +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
@@ -123,11 +122,11 @@ sd_loss <-ggplot(loss_df) +
 sd_loss
 # save
 ggsave(sd_loss,
-       file = "./plots/sd_loss_map_v3.pdf",
+       file = "./plots/sd_loss_map_v4.png",
        width = 3.5, 
        height = 8)
 
-system("open ./plots/sd_loss_map_v3.pdf")
+system("open ./plots/sd_loss_map_v4.png")
 
 #### loss
 # set scale 
@@ -138,7 +137,7 @@ cc <-ggplot(df) +
   geom_raster(mapping = aes(x,y, fill = cc_mean)) + 
   geom_sf(data = sierra_sf, fill = NA, color = "black", linewidth = .7, inherit.aes = FALSE, alpha = 1) +
   annotate("text", x = -118.98, y = 37.87, label = "CC", size = 10) +
-  scale_fill_gradientn(colors = cc_scale, limits = c(0,65), oob = squish) + # max of color bar so it saturates
+  scale_fill_gradientn(colors = cc_scale, limits = c(0,60), oob = squish) + # max of color bar so it saturates
   labs(fill = "CC (%)") +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
@@ -179,8 +178,8 @@ cow <-plot_grid(sd_gain, sd_loss, cc,
 # test save
 # make tighter together
 ggsave(cow,
-       file = "./plots/sd_vs_cc_map_v3.pdf",
+       file = "./plots/sd_vs_cc_map_v4.pdf",
        width = 10.5, 
        height = 9)
 
-system("open ./plots/sd_vs_cc_map_v3.pdf")
+system("open ./plots/sd_vs_cc_map_v4.pdf")

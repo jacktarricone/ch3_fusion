@@ -40,7 +40,7 @@ theme_classic <- function(base_size = 11, base_family = "",
     )
 }
 
-theme_set(theme_classic(19))
+theme_set(theme_classic(23))
 
 setwd("~/ch3_fusion")
 
@@ -56,9 +56,20 @@ ims <-rast("./rasters/uavsar/dswe/ims_dswe_v2.tif")
 sierra_v1 <-st_read("./uavsar_shape_files/sierra_17305_20014-000_20016-005_0014d_s01_L090HH_01.cor.grd .shp")
 sierra_sf <-st_geometry(sierra_v1)
 
+# read in nan valus
+nans_v1 <-rast("/Users/jacktarricone/ch3_fusion/rasters/uavsar/feb26_march11_80m/unw_NA_80m.tif")
+nans <-subst(nans_v1, 1, NA)
+plot(nans)
+nans_shp <-as.polygons(nans, trunc=TRUE, dissolve=FALSE, values=FALSE,
+            na.rm=TRUE, na.all=FALSE)
+
+nans_sf <-st_as_sf(nans_shp)
+plot(nans_sf)
+# nans <-subst(nans_v1, 99, "NaN")
+  
 # stack
-stack <-c(modscag,modis, viirs,landsat,flm,ims)
-names(stack) <-c("modscag","modis","viirs","landsat","flm","ims")
+stack <-c(modscag,modis, viirs,landsat,flm,ims,nans_v1)
+names(stack) <-c("modscag","modis","viirs","landsat","flm","ims","nans")
 
 # make df
 stack_df <-as.data.frame(stack, xy = TRUE, cell = TRUE)
@@ -76,9 +87,10 @@ dswe_plot_no_scale <-function(data, label){
   p <-ggplot(stack_df) +
   geom_sf(data = sierra_sf, fill = "gray50", color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
   geom_raster(mapping = aes(x,y, fill = data)) + 
+  scale_fill_gradientn(colors = scale1, limits = c(-8,8), oob = squish, na.value = "gray50", guide = "none") + 
   geom_sf(data = sierra_sf, fill = NA, color = "black", linewidth = .2, inherit.aes = FALSE, alpha = 1) +
+  geom_sf(data = nans_sf, fill = "black", color = "black", linewidth = .2, inherit.aes = FALSE, alpha = 1) +
   annotate("text", x = -118.98, y = 37.87, label = label, size = 10) +
-  scale_fill_gradientn(colors = scale1, limits = c(-8,8), oob = squish, na.value = "gray50", guide = "none") + # max of color bar so it saturates
   labs(fill = expression(Delta~SWE~(cm))) +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
@@ -87,20 +99,21 @@ dswe_plot_no_scale <-function(data, label){
         axis.text.y = element_blank(),
         axis.ticks = element_blank(),
         plot.margin = unit(c(0,0,0,0), "cm")) 
-  
+
   return(p)
 }
 
 # plot funciton
-fsca_plot_scale_right <-function(data, label){
+dswe_plot_scale_right <-function(data, label){
   
   p <-ggplot(stack_df) +
     geom_sf(data = sierra_sf, fill = "gray50", color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
     geom_raster(mapping = aes(x,y, fill = data)) + 
+    scale_fill_gradientn(colors = scale1, limits = c(-8,8), oob = squish, na.value = "gray50", guide = "none") + 
     geom_sf(data = sierra_sf, fill = NA, color = "black", linewidth = .2, inherit.aes = FALSE, alpha = 1) +
+    geom_sf(data = nans_sf, fill = "black", color = "black", linewidth = .2, inherit.aes = FALSE, alpha = 1) +
+    labs(fill = expression(Delta~SWE~(cm)))+
     annotate("text", x = -118.98, y = 37.87, label = label, size = 10) +
-    scale_fill_gradientn(colors = scale1, limits = c(15,100), oob = squish, na.value = "gray50") + # max of color bar so it saturates
-    labs(fill = "fSCA (%)") +
     theme(panel.border = element_blank(),
           axis.text.x = element_blank(),
           axis.title.y = element_blank(),
@@ -122,28 +135,17 @@ fsca_plot_scale_right <-function(data, label){
 }
 
 # make plots with no scale
-ims_p <-fsca_plot_no_scale(data = stack_df$ims, label = "IMS")
+ims_p <-dswe_plot_no_scale(data = stack_df$ims, label = "IMS")
 ims_p
-modscag_p <-fsca_plot_no_scale(data = stack_df$modscag, label = "MODSCAG")
-modis_p <-fsca_plot_no_scale(data = stack_df$modis, label = "MODIS")
-viirs_p <-fsca_plot_no_scale(data = stack_df$viirs, label = "VIIRS")
-flm_p <-fsca_plot_no_scale(data = stack_df$flm, label = "FLM")
+modscag_p <-dswe_plot_no_scale(data = stack_df$modscag, label = "MODSCAG")
+modis_p <-dswe_plot_no_scale(data = stack_df$modis, label = "MODIS")
+viirs_p <-dswe_plot_no_scale(data = stack_df$viirs, label = "VIIRS")
+flm_p <-dswe_plot_no_scale(data = stack_df$flm, label = "FLM")
 
 # last plot with scale
-landsat_p <-fsca_plot_scale_right(data = stack_df$landsat, label = "Landsat")
+landsat_p <-dswe_plot_scale_right(data = stack_df$landsat, label = "Landsat")
 landsat_p
 
-# # cowplot test
-# cow <-plot_grid(ims_p,modscag_p,modis_p,viirs_p,flm_p,landsat_p,
-#                 labels = c("(a)", "(b)", "(c)","(d)", "(e)", "(f)"),
-#                 ncol = 3,
-#                 nrow = 2,
-#                 align = "hv",
-#                 label_size = 22,
-#                 vjust =  2,
-#                 hjust = -.2,
-#                 rel_widths = c(.156, .156, .156, .156, .156, .22))
-??ggarrange
 # Create grid
 cow <-ggarrange(ims_p,modscag_p,modis_p,viirs_p,flm_p,landsat_p, # list of plots
                   labels = c("(a)", "(b)", "(c)","(d)", "(e)", "(f)"), # labels
@@ -159,8 +161,9 @@ cow <-ggarrange(ims_p,modscag_p,modis_p,viirs_p,flm_p,landsat_p, # list of plots
 # test save
 # make tighter together
 ggsave(cow,
-       file = "./plots/fsca_usvar_v2.pdf",
+       file = "./plots/dswe_uavsar_v2.png",
        width = 10.5, 
-       height = 18)
+       height = 18,
+       dpi = 300)
 
-system("open ./plots/fsca_usvar_v2.pdf") 
+system("open ./plots/dswe_uavsar_v2.png") 
