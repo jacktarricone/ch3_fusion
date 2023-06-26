@@ -216,23 +216,28 @@ tether_value <- mean_pillow_dswe - mean_insar_dswe
 modscag_dswe <-modscag_dswe_raw + tether_value
 plot(modscag_dswe)
 hist(modscag_dswe, breaks = 100)
-writeRaster(modscag_dswe, "~/ch3_fusion/rasters/uavsar/dswe/modscag_dswe_v6.tif")
+# writeRaster(modscag_dswe, "~/ch3_fusion/rasters/uavsar/dswe/modscag_dswe_v2.tif")
 
 # modis
 modis_dswe <-modis_dswe_raw + tether_value
-writeRaster(modis_dswe, "./modis_dswe.tif")
+# writeRaster(modis_dswe, "./rasters/uavsar/dswe/modis_dswe_v2.tif")
 
 # viirs
 viirs_dswe <-viirs_dswe_raw + tether_value
 plot(viirs_dswe)
-# writeRaster(viirs_dswe, "./viirs_dswe.tif")
+# writeRaster(viirs_dswe, "./rasters/uavsar/dswe/viirs_dswe_v2.tif")
 
 # landsat
 landsat_dswe <-landsat_dswe_raw + tether_value
 plot(landsat_dswe)
-# writeRaster(landsat_dswe, "./landsat_dswe.tif")
+# writeRaster(landsat_dswe, "./rasters/uavsar/dswe/landsat_dswe_v2.tif")
 
 # flm
 flm_dswe <-flm_dswe_raw + tether_value
 plot(flm_dswe)
-# writeRaster(flm_dswe, "./flm_dswe.tif")
+# writeRaster(flm_dswe, "./rasters/uavsar/dswe/flm_dswe_v2.tif")
+
+# ims
+ims_dswe <-ims_dswe_raw + tether_value
+plot(ims_dswe)
+# writeRaster(ims_dswe, "./rasters/uavsar/dswe/ims_dswe_v2.tif")
