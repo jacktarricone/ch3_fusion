@@ -44,9 +44,9 @@ theme_set(theme_classic(17))
 setwd("~/ch3_fusion")
 
 # read in plotting df
-df <-data.table::fread("./csvs/cc_sd_df_55x55.csv")
-hist(df$loss_sd, breaks = 100)
-
+df <-data.table::fread("./csvs/cc_sd_df_dam3_41x41.csv")
+hist(df$loss_sd_dam3, breaks = 100)
+hist(df$gain_sd_dam3, breaks = 100)
 
 # read in sierra shp
 sierra_v1 <-st_read("./uavsar_shape_files/sierra_17305_20014-000_20016-005_0014d_s01_L090HH_01.cor.grd .shp")
@@ -62,11 +62,11 @@ scale1 <-c(viridis(10, option = "H", direction = 1))
 # plot
 sd_gain <-ggplot(df) +
   geom_sf(data = sierra_sf, fill = "gray80", color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
-  geom_raster(mapping = aes(x,y, fill = gain_sd)) + 
+  geom_raster(mapping = aes(x,y, fill = gain_sd_dam3)) + 
   # geom_sf(data = sierra_sf, fill = NA, color = "black", linewidth = .7, inherit.aes = FALSE, alpha = 1) +
   annotate("text", x = -118.98, y = 37.87, label = "SWE Gain", size = 10) +
-  scale_fill_gradientn(colors = scale1, limits = c(0,8), oob = squish) + # max of color bar so it saturates
-  labs(fill = expression(Delta~SWE~SD~(10^6~m^3))) +
+  scale_fill_gradientn(colors = scale1, limits = c(0,50), oob = squish) + # max of color bar so it saturates
+  labs(fill = expression(Delta~SWE~SD~(dam^3))) +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
         axis.title.y = element_blank(),
@@ -87,20 +87,21 @@ sd_gain <-ggplot(df) +
 
 # save
 ggsave(sd_gain,
-       file = "./plots/sd_gain_map_55x55.png",
+       file = "./plots/sd_gain_map_dam3_41x41.png",
        width = 3.5, 
        height = 8,
        dpi = 300)
 
-system("open ./plots/sd_gain_map_55x55.png")
+system("open ./plots/sd_gain_map_dam3_41x41.png")
+
 
 #### loss
 sd_loss <-ggplot(df) +
   geom_sf(data = sierra_sf, fill = "gray80", color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
-  geom_raster(mapping = aes(x,y, fill = loss_sd)) + 
+  geom_raster(mapping = aes(x,y, fill = loss_sd_dam3)) + 
   # geom_sf(data = sierra_sf, fill = NA, color = "black", linewidth = .7, inherit.aes = FALSE, alpha = 1) +
   annotate("text", x = -118.98, y = 37.87, label = "SWE Loss", size = 10) +
-  scale_fill_gradientn(colors = scale1, limits = c(0,12), oob = squish) + # max of color bar so it saturates
+  scale_fill_gradientn(colors = scale1, limits = c(0,100), oob = squish) + # max of color bar so it saturates
   labs(fill = expression(Delta~SWE~SD~(10^6~m^3))) +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
@@ -123,11 +124,11 @@ sd_loss
 
 # save
 ggsave(sd_loss,
-       file = "./plots/sd_loss_map_55x55.png",
+       file = "./plots/sd_loss_map_dam3_41x41.png",
        width = 3.5, 
        height = 8)
 
-system("open ./plots/sd_loss_map_55x55.png")
+system("open ./plots/sd_loss_map_dam3_41x41.png")
 
 #### loss
 # set scale 
@@ -160,7 +161,7 @@ cc <-ggplot(df) +
 
 # save
 ggsave(cc,
-       file = "./plots/cc_map_55x55.pdf",
+       file = "./plots/cc_map_41x41.png",
        width = 3.5, 
        height = 8)
 
@@ -179,9 +180,9 @@ cow <-plot_grid(sd_gain, sd_loss, cc,
 # test save
 # make tighter together
 ggsave(cow,
-       file = "./plots/sd_vs_cc_map_55x55.png",
+       file = "./plots/sd_vs_cc_map_dam3_41x41.png",
        width = 9, 
        height = 9,
        dpi = 300)
 
-system("open ./plots/sd_vs_cc_map_55x55.png")
+system("open ./plots/sd_vs_cc_map_dam3_41x41.png")

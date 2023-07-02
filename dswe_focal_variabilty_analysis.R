@@ -83,12 +83,12 @@ hist(loss_stack_m3[[5]])
 # 55 x 55 moving window sum in cubic meters
 # gain
 gain_mw_41x41 <-focal(gain_stack_m3, c(41,41), na.rm=TRUE, fun = "sum")
-writeRaster(gain_mw_41x41, "./rasters/dswe_variabilty_analysis/gain_stack_m3_41x41_v1.tif")
+# writeRaster(gain_mw_41x41, "./rasters/dswe_variabilty_analysis/gain_stack_m3_41x41_v1.tif")
 
 # loss
 loss_mw_41x41 <-focal(loss_stack_m3, c(41,41), na.rm=TRUE, fun = "sum")
 plot(loss_mw_41x41[[4]])
-writeRaster(loss_mw_41x41, "./rasters/dswe_variabilty_analysis/loss_stack_m3_41x41_v1.tif")
+# writeRaster(loss_mw_41x41, "./rasters/dswe_variabilty_analysis/loss_stack_m3_41x41_v1.tif")
 
 # define sd with na remove
 sd_na_rm <-function(x){sd(x, na.rm = TRUE)}
@@ -98,18 +98,18 @@ sd_na_rm <-function(x){sd(x, na.rm = TRUE)}
 gain_sd <-app(gain_mw_41x41, fun = sd_na_rm)
 gain_sd_dam3 <-gain_sd/1e3
 plot(gain_sd_dam3)
-writeRaster(gain_sd_dam3, "./rasters/dswe_variabilty_analysis/gain_sd_dam3_41x41_v1.tif")
+# writeRaster(gain_sd_dam3, "./rasters/dswe_variabilty_analysis/gain_sd_dam3_41x41_v1.tif")
 
 # loss
 loss_sd <-app(loss_mw_41x41, fun = sd_na_rm)
 loss_sd_dam3 <-loss_sd/1e3
 plot(loss_sd_dam3)
-writeRaster(loss_sd_dam3, "./rasters/dswe_variabilty_analysis/loss_sd_dam3_41x41_v1.tif")
+# writeRaster(loss_sd_dam3, "./rasters/dswe_variabilty_analysis/loss_sd_dam3_41x41_v1.tif")
 
 ## cc focal
 cc_mw <-focal(cc, c(41,41), na.rm=TRUE, fun = "mean")
 plot(cc_mw)
-writeRaster(cc_mw, "./rasters/dswe_variabilty_analysis/cc_mw_mean_41x41.tif")
+# writeRaster(cc_mw, "./rasters/dswe_variabilty_analysis/cc_mw_mean_41x41.tif")
 
 ######### cc vs sd scatter plot
 # mask out low change values
@@ -120,6 +120,8 @@ cc_sd_df <-as.data.frame(cc_sd, xy = TRUE, cells = TRUE)
 colnames(cc_sd_df)[4:6] <-c("cc_mean", "gain_sd_dam3","loss_sd_dam3")
 head(cc_sd_df)
 # data.table::fwrite(cc_sd_df, "./csvs/cc_sd_df_dam3_41x41.csv")
+
+cc_sd_df <-data.table::fread("./csvs/cc_sd_df_dam3_41x41.csv")
 
 # quick hists
 hist(cc_sd_df$cc_mean, breaks = 100)
@@ -159,12 +161,12 @@ gains_plot <-ggplot(df_v3, mapping = aes(x = cc_mean, y = gain_sd_dam3, fill = a
 gains_plot
 
 # loss
-loss_plot <-ggplot(df_v3, mapping = aes(x = cc_mean, y = loss_sd, fill = as.factor(bin))) +
+loss_plot <-ggplot(df_v3, mapping = aes(x = cc_mean, y = loss_sd_dam3, fill = as.factor(bin))) +
   geom_boxplot(linewidth = .6, varwidth = TRUE, outlier.size = .001, outlier.shape = 4,
                outlier.colour = "grey80", outlier.alpha  = .01) +
-  xlab("CC (%)") + ylab(expression(SWE ~SD~(10^6~m^3)))+ 
+  xlab("CC (%)") + ylab(expression(SWE~SD~(dam^3)))+ 
   scale_x_continuous(limits = c(0,50), breaks = seq(0,65,5), expand = c(0,.5)) +
-  scale_y_continuous(limits = c(0,15)) +
+  scale_y_continuous(limits = c(0,100)) +
   scale_fill_discrete(type = cc_scale(13)) +
   theme_classic(10) +
   theme(panel.border = element_rect(colour = "black", fill = NA, size = 1),
@@ -186,10 +188,10 @@ cow <-plot_grid(gains_plot, loss_plot,
 # test save
 # make tighter together
 ggsave(cow,
-       file = "./plots/swe_sd_bp_41,41.png",
+       file = "./plots/swe_sd_bp_dam3_41x41_v1.png",
        width = 8, 
        height = 6,
        dpi = 300)
 
-system("open ./plots/swe_sd_bp_41,41.png")
+system("open ./plots/swe_sd_bp_dam3_41x41_v1.png")
         
