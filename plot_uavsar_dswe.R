@@ -63,9 +63,9 @@ nans_sf <-st_as_sf(nans_shp)
 plot(nans_sf)
 # nans <-subst(nans_v1, 99, "NaN")
   
-# stack
-stack <-c(modscag,modis, viirs,landsat,flm,ims,nans_v1)
+# names
 names(stack) <-c("modscag","modis","viirs","landsat","flm","ims","nans")
+gains_stack
 
 # make df
 stack_df <-as.data.frame(stack, xy = TRUE, cell = TRUE)

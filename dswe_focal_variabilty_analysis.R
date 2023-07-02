@@ -42,172 +42,98 @@ theme_set(theme_classic(16))
 setwd("~/ch3_fusion")
 
 # load in 80 m insar dswe products
-modscag <-rast("./rasters/uavsar/dswe/modscag_dswe_v2.tif")
-modis <-rast("./rasters/uavsar/dswe/modis_dswe_v2.tif")
-viirs <-rast("./rasters/uavsar/dswe/viirs_dswe_v2.tif")
-landsat <-rast("./rasters/uavsar/dswe/landsat_dswe_v2.tif")
-flm <-rast("./rasters/uavsar/dswe/flm_dswe_v2.tif")
-ims <-rast("./rasters/uavsar/dswe/ims_dswe_v2.tif")
+modscag_cm <-rast("./rasters/uavsar/dswe/modscag_dswe_v2.tif")
+modis_cm <-rast("./rasters/uavsar/dswe/modis_dswe_v2.tif")
+viirs_cm <-rast("./rasters/uavsar/dswe/viirs_dswe_v2.tif")
+landsat_cm <-rast("./rasters/uavsar/dswe/landsat_dswe_v2.tif")
+flm_cm <-rast("./rasters/uavsar/dswe/flm_dswe_v2.tif")
+ims_cm <-rast("./rasters/uavsar/dswe/ims_dswe_v2.tif")
+
+# stack
+stack_cm <-c(ims_cm,modis_cm,modscag_cm,viirs_cm,flm_cm,landsat_cm)
+names(stack_cm) <-c("ims","modis","modscag","viirs","flm","landsat")
+stack_cm
+
+# conert to meters
+stack_m <-stack_cm/100
 
 # bring in cc, mask, and resample
 cc_v2 <-rast("/Users/jacktarricone/ch3_fusion/rasters/geo_layers/cc_domain.tif")
 sierra <-vect("./uavsar_shape_files/sierra_17305_20014-000_20016-005_0014d_s01_L090HH_01.cor.grd .shp")
 cc_v1 <-mask(cc_v2, sierra)
-cc <-resample(cc_v1, flm, method = 'bilinear')
+cc <-resample(cc_v1, stack_cm, method = 'bilinear')
 plot(cc)
 
-# calculate average cell area
-cell_size_v1 <-cellSize(landsat, unit = "m")
+# calculate average cell area in cubic meters
+cell_size_v1 <-cellSize(stack_m, unit = "m")
 cell_size_m2 <-as.numeric(global(cell_size_v1, 'max') + global(cell_size_v1, 'min'))/2
 
 #### calculate SWE gains in cubic meters
-modscag_gain <-ifel(modscag < 0, NA, modscag)
-modscag_gain_m3 <-modscag_gain*cell_size_m2
-
-modis_gain <-ifel(modis < 0, NA, modis)
-modis_gain_m3 <-modis_gain*cell_size_m2
-
-viirs_gain <-ifel(viirs < 0, NA, viirs)
-viirs_gain_m3 <-viirs_gain*cell_size_m2
-
-landsat_gain <-ifel(landsat < 0, NA, landsat)
-landsat_gain_m3 <-landsat_gain*cell_size_m2
-
-flm_gain <-ifel(flm < 0, NA, flm)
-flm_gain_m3 <-flm_gain*cell_size_m2
-
-ims_gain <-ifel(ims < 0, NA, ims)
-ims_gain_m3 <-ims_gain*cell_size_m2
+gain_stack_m <-ifel(stack_m < 0, NA, stack_m)
+gain_stack_m3 <-gain_stack_m*cell_size_m2
+hist(gain_stack_m3[[5]])
 
 #### calculate SWE losss in cubic meters
-modscag_loss <-ifel(modscag > 0, NA, modscag)
-modscag_loss_m3 <-modscag_loss*cell_size_m2
+loss_stack_m <-ifel(stack_m > 0, NA, stack_m)
+loss_stack_m3 <-loss_stack_m*cell_size_m2
+hist(loss_stack_m3[[5]])
 
-modis_loss <-ifel(modis > 0, NA, modis)
-modis_loss_m3 <-modis_loss*cell_size_m2
+####################
+###################
+# 55 x 55 moving window sum in cubic meters
+# gain
+gain_mw_41x41 <-focal(gain_stack_m3, c(41,41), na.rm=TRUE, fun = "sum")
+writeRaster(gain_mw_41x41, "./rasters/dswe_variabilty_analysis/gain_stack_m3_41x41_v1.tif")
 
-viirs_loss <-ifel(viirs > 0, NA, viirs)
-viirs_loss_m3 <-viirs_loss*cell_size_m2
+# loss
+loss_mw_41x41 <-focal(loss_stack_m3, c(41,41), na.rm=TRUE, fun = "sum")
+plot(loss_mw_41x41[[4]])
+writeRaster(loss_mw_41x41, "./rasters/dswe_variabilty_analysis/loss_stack_m3_41x41_v1.tif")
 
-landsat_loss <-ifel(landsat > 0, NA, landsat)
-landsat_loss_m3 <-landsat_loss*cell_size_m2
-
-flm_loss <-ifel(flm > 0, NA, flm)
-flm_loss_m3 <-flm_loss*cell_size_m2
-
-ims_loss <-ifel(ims > 0, NA, ims)
-ims_loss_m3 <-ims_loss*cell_size_m2
-
-# sum gains using 11x11 moving window
-modscag_gains_mw <-focal(modscag_gain_m3, c(55,55), na.rm=TRUE, fun = "sum")
-plot(modscag_gains_mw)
-# writeRaster(modscag_gains_mw, "./rasters/dswe_variabilty_analysis/modscag_gains_m3_11x11_v2.tif")
-
-modis_gains_mw <-focal(modis_gain_m3, c(55,55), na.rm=TRUE, fun = "sum")
-plot(modis_gains_mw)
-# writeRaster(modis_gains_mw, "./rasters/dswe_variabilty_analysis/modis_gains_m3_11x11_v2.tif")
-
-viirs_gains_mw <-focal(viirs_gain_m3, c(55,55), na.rm=TRUE, fun = "sum")
-plot(viirs_gains_mw)
-# writeRaster(viirs_gains_mw, "./rasters/dswe_variabilty_analysis/viirs_gains_m3_11x11_v2.tif")
-
-landsat_gains_mw <-focal(landsat_gain_m3, c(55,55), na.rm=TRUE, fun = "sum")
-plot(landsat_gains_mw)
-# writeRaster(landsat_gains_mw, "./rasters/dswe_variabilty_analysis/landsat_gains_m3_11x11_v2.tif")
-
-flm_gains_mw <-focal(flm_gain_m3, c(55,55), na.rm=TRUE, fun = "sum")
-plot(flm_gains_mw)
-# writeRaster(flm_gains_mw, "./rasters/dswe_variabilty_analysis/flm_gains_m3_11x11_v2.tif")
-
-ims_gains_mw <-focal(ims_gain_m3, c(55,55), na.rm=TRUE, fun = "sum")
-plot(ims_gains_mw)
-# writeRaster(ims_gains_mw, "./rasters/dswe_variabilty_analysis/ims_gains_m3_11x11_v2.tif")
-
-# sum loss using 11x11 moving window
-modscag_loss_mw <-focal(modscag_loss_m3, c(55,55), na.rm=TRUE, fun = "sum")
-plot(modscag_loss_mw)
-# writeRaster(modscag_loss_mw, "./rasters/dswe_variabilty_analysis/modscag_loss_m3_11x11_v2.tif")
-
-modis_loss_mw <-focal(modis_loss_m3, c(55,55), na.rm=TRUE, fun = "sum")
-plot(modis_loss_mw)
-# writeRaster(modis_loss_mw, "./rasters/dswe_variabilty_analysis/modis_loss_m3_11x11_v2.tif")
-
-viirs_loss_mw <-focal(viirs_loss_m3, c(55,55), na.rm=TRUE, fun = "sum")
-plot(viirs_loss_mw)
-# writeRaster(viirs_loss_mw, "./rasters/dswe_variabilty_analysis/viirs_loss_m3_11x11_v2.tif")
-
-landsat_loss_mw <-focal(landsat_loss_m3, c(55,55), na.rm=TRUE, fun = "sum")
-plot(landsat_loss_mw)
-# writeRaster(landsat_loss_mw, "./rasters/dswe_variabilty_analysis/landsat_loss_m3_11x11_v2.tif")
-
-flm_loss_mw <-focal(flm_loss_m3, c(55,55), na.rm=TRUE, fun = "sum")
-plot(flm_loss_mw)
-# writeRaster(flm_loss_mw, "./rasters/dswe_variabilty_analysis/flm_loss_m3_11x11_v2.tif")
-
-ims_loss_mw <-focal(ims_loss_m3, c(55,55), na.rm=TRUE, fun = "sum")
-plot(ims_loss_mw)
-# writeRaster(ims_loss_mw, "./rasters/dswe_variabilty_analysis/ims_loss_m3_11x11_v2.tif")
-
-# stack gains and losses
-gains_stack_v1 <-c(ims_gains_mw, modscag_gains_mw, modis_gains_mw, viirs_gains_mw, flm_gains_mw, landsat_gains_mw)
-loss_stack_v1  <-c(ims_loss_mw, modscag_loss_mw, modis_loss_mw, viirs_loss_mw, flm_loss_mw, landsat_loss_mw)
-gains_stack <-gains_stack_v1/(10^6)
-loss_stack <-loss_stack_v1/(10^6)
-
-# names
-names(gains_stack) <-c("ims","modscag","modis","viirs","flm","landsat")
-names(loss_stack) <-c("ims","modscag","modis","viirs","flm","landsat")
-
-# save
-writeRaster(gains_stack, "./rasters/dswe_variabilty_analysis/gains_stack_55x55.tif")
-writeRaster(loss_stack, "./rasters/dswe_variabilty_analysis/loss_stack_55x55.tif")
-
-plot(gains_stack[[1]])
-plot(loss_stack[[1]])
-
-# sd with na remove
+# define sd with na remove
 sd_na_rm <-function(x){sd(x, na.rm = TRUE)}
 
-# caculate pixelwise standard deviation
-gains_sd_v1 <-app(gains_stack, fun = sd_na_rm)
-gains_sd <-gains_sd_v1
-plot(gains_sd)
-writeRaster(gains_sd, "./rasters/dswe_variabilty_analysis/gains_sd_55x15.tif")
+# calculate pixelwise standard deviation
+# gain
+gain_sd <-app(gain_mw_41x41, fun = sd_na_rm)
+gain_sd_dam3 <-gain_sd/1e3
+plot(gain_sd_dam3)
+writeRaster(gain_sd_dam3, "./rasters/dswe_variabilty_analysis/gain_sd_dam3_41x41_v1.tif")
 
-loss_sd_v1 <-app(loss_stack, sd_na_rm)
-loss_sd <-loss_sd_v1
-plot(loss_sd)
-writeRaster(loss_sd, "./rasters/dswe_variabilty_analysis/loss_sd_55x55.tif", overwrite=T)
+# loss
+loss_sd <-app(loss_mw_41x41, fun = sd_na_rm)
+loss_sd_dam3 <-loss_sd/1e3
+plot(loss_sd_dam3)
+writeRaster(loss_sd_dam3, "./rasters/dswe_variabilty_analysis/loss_sd_dam3_41x41_v1.tif")
 
 ## cc focal
-plot(cc)
-cc_mw_v1 <-focal(cc, c(55,55), na.rm=TRUE, fun = "mean")
-cc_mw <-mask(cc_mw_v1, gains_sd)
+cc_mw <-focal(cc, c(41,41), na.rm=TRUE, fun = "mean")
 plot(cc_mw)
-writeRaster(cc_mw, "./rasters/dswe_variabilty_analysis/cc_mw_mean_55x55.tif")
+writeRaster(cc_mw, "./rasters/dswe_variabilty_analysis/cc_mw_mean_41x41.tif")
 
 ######### cc vs sd scatter plot
 # mask out low change values
-cc_sd <-c(cc_mw, gains_sd, loss_sd, landsat_gains_mw, modscag_gains_mw)
+cc_sd <-c(cc_mw, gain_sd_dam3, loss_sd_dam3)
 
 # convert to df
 cc_sd_df <-as.data.frame(cc_sd, xy = TRUE, cells = TRUE)
-colnames(cc_sd_df)[4:8] <-c("cc_mean", "gain_sd","loss_sd","landsat_gains","modscag_gains")
+colnames(cc_sd_df)[4:6] <-c("cc_mean", "gain_sd_dam3","loss_sd_dam3")
 head(cc_sd_df)
-# data.table::fwrite(cc_sd_df, "./csvs/cc_sd_df_17x17.csv")
+# data.table::fwrite(cc_sd_df, "./csvs/cc_sd_df_dam3_41x41.csv")
 
 # quick hists
 hist(cc_sd_df$cc_mean, breaks = 100)
-hist(cc_sd_df$gain_sd, breaks = 100)
-hist(cc_sd_df$loss_sd, breaks = 100)
-max(cc_sd_df$gain_sd, na.rm = TRUE)
+hist(cc_sd_df$gain_sd_dam3, breaks = 100)
+hist(cc_sd_df$loss_sd_dam3, breaks = 100)
+max(cc_sd_df$gain_sd_dam3, na.rm = TRUE)
+max(cc_sd_df$loss_sd_dam3, na.rm = TRUE)
 
-# filter cc of 0
-df_v2 <-dplyr::filter(cc_sd_df, cc_mean >= 0)
-hist(df_v2$cc_mean, breaks = 100)
+# # filter cc of 0
+# df_v2 <-dplyr::filter(cc_sd_df, cc_mean >= 0)
+# hist(df_v2$cc_mean, breaks = 100)
 
 # add bins col for box plot
-df_v3 <-df_v2 %>%
+df_v3 <-cc_sd_df %>%
   mutate(bin = cut_width(cc_mean, width = 5, boundary=0))
 
 # cc scale
@@ -217,12 +143,12 @@ cc_scale(13)
 
 # starting plot
 ### gains
-gains_plot <-ggplot(df_v3, mapping = aes(x = cc_mean, y = gain_sd, fill = as.factor(bin))) +
+gains_plot <-ggplot(df_v3, mapping = aes(x = cc_mean, y = gain_sd_dam3, fill = as.factor(bin))) +
   geom_boxplot(linewidth = .6, varwidth = TRUE, outlier.size = .001, outlier.shape = 4, 
                outlier.colour = "grey80", outlier.alpha  = .01) +
-  xlab("CC (%)") + ylab(expression(SWE~SD~(10^6~m^3)))+ 
+  xlab("CC (%)") + ylab(expression(SWE~SD~(dam^3)))+ 
   scale_x_continuous(limits = c(0,50), breaks = seq(0,65,5), expand = c(0,.5)) +
-  scale_y_continuous(limits = c(0,15)) +
+  scale_y_continuous(limits = c(0,25)) +
   scale_fill_discrete(type = cc_scale(10)) +
   theme_classic(10) +
   theme(panel.border = element_rect(colour = "black", fill = NA, size = 1),
@@ -260,10 +186,10 @@ cow <-plot_grid(gains_plot, loss_plot,
 # test save
 # make tighter together
 ggsave(cow,
-       file = "./plots/swe_sd_bp_55x55.png",
+       file = "./plots/swe_sd_bp_41,41.png",
        width = 8, 
        height = 6,
        dpi = 300)
 
-system("open ./plots/swe_sd_bp_55x55.png")
+system("open ./plots/swe_sd_bp_41,41.png")
         
