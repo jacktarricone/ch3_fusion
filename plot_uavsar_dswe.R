@@ -45,12 +45,8 @@ theme_set(theme_classic(23))
 setwd("~/ch3_fusion")
 
 # load in 80 m insar dswe products
-modscag <-rast("./rasters/uavsar/dswe/modscag_dswe_v2.tif")
-modis <-rast("./rasters/uavsar/dswe/modis_dswe_v2.tif")
-viirs <-rast("./rasters/uavsar/dswe/viirs_dswe_v2.tif")
-landsat <-rast("./rasters/uavsar/dswe/landsat_dswe_v2.tif")
-flm <-rast("./rasters/uavsar/dswe/flm_dswe_v2.tif")
-ims <-rast("./rasters/uavsar/dswe/ims_dswe_v2.tif")
+gains_stack <-rast("./rasters/dswe_variabilty_analysis/gains_stack_17x17.tif")
+loss_stack <-rast("./rasters/dswe_variabilty_analysis/loss_stack_17x17.tif")
 
 # read in sierra shp
 sierra_v1 <-st_read("./uavsar_shape_files/sierra_17305_20014-000_20016-005_0014d_s01_L090HH_01.cor.grd .shp")

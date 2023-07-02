@@ -79,7 +79,6 @@ flm_gain_m3 <-flm_gain*cell_size_m2
 ims_gain <-ifel(ims < 0, NA, ims)
 ims_gain_m3 <-ims_gain*cell_size_m2
 
-
 #### calculate SWE losss in cubic meters
 modscag_loss <-ifel(modscag > 0, NA, modscag)
 modscag_loss_m3 <-modscag_loss*cell_size_m2
@@ -100,82 +99,92 @@ ims_loss <-ifel(ims > 0, NA, ims)
 ims_loss_m3 <-ims_loss*cell_size_m2
 
 # sum gains using 11x11 moving window
-modscag_gains_mw <-focal(modscag_gain_m3, c(17,17), na.rm=TRUE, fun = "sum")
+modscag_gains_mw <-focal(modscag_gain_m3, c(55,55), na.rm=TRUE, fun = "sum")
 plot(modscag_gains_mw)
 # writeRaster(modscag_gains_mw, "./rasters/dswe_variabilty_analysis/modscag_gains_m3_11x11_v2.tif")
 
-modis_gains_mw <-focal(modis_gain_m3, c(17,17), na.rm=TRUE, fun = "sum")
+modis_gains_mw <-focal(modis_gain_m3, c(55,55), na.rm=TRUE, fun = "sum")
 plot(modis_gains_mw)
 # writeRaster(modis_gains_mw, "./rasters/dswe_variabilty_analysis/modis_gains_m3_11x11_v2.tif")
 
-viirs_gains_mw <-focal(viirs_gain_m3, c(17,17), na.rm=TRUE, fun = "sum")
+viirs_gains_mw <-focal(viirs_gain_m3, c(55,55), na.rm=TRUE, fun = "sum")
 plot(viirs_gains_mw)
 # writeRaster(viirs_gains_mw, "./rasters/dswe_variabilty_analysis/viirs_gains_m3_11x11_v2.tif")
 
-landsat_gains_mw <-focal(landsat_gain_m3, c(17,17), na.rm=TRUE, fun = "sum")
+landsat_gains_mw <-focal(landsat_gain_m3, c(55,55), na.rm=TRUE, fun = "sum")
 plot(landsat_gains_mw)
 # writeRaster(landsat_gains_mw, "./rasters/dswe_variabilty_analysis/landsat_gains_m3_11x11_v2.tif")
 
-flm_gains_mw <-focal(flm_gain_m3, c(17,17), na.rm=TRUE, fun = "sum")
+flm_gains_mw <-focal(flm_gain_m3, c(55,55), na.rm=TRUE, fun = "sum")
 plot(flm_gains_mw)
 # writeRaster(flm_gains_mw, "./rasters/dswe_variabilty_analysis/flm_gains_m3_11x11_v2.tif")
 
-ims_gains_mw <-focal(ims_gain_m3, c(17,17), na.rm=TRUE, fun = "sum")
+ims_gains_mw <-focal(ims_gain_m3, c(55,55), na.rm=TRUE, fun = "sum")
 plot(ims_gains_mw)
 # writeRaster(ims_gains_mw, "./rasters/dswe_variabilty_analysis/ims_gains_m3_11x11_v2.tif")
 
 # sum loss using 11x11 moving window
-modscag_loss_mw <-focal(modscag_loss_m3, c(17,17), na.rm=TRUE, fun = "sum")
+modscag_loss_mw <-focal(modscag_loss_m3, c(55,55), na.rm=TRUE, fun = "sum")
 plot(modscag_loss_mw)
 # writeRaster(modscag_loss_mw, "./rasters/dswe_variabilty_analysis/modscag_loss_m3_11x11_v2.tif")
 
-modis_loss_mw <-focal(modis_loss_m3, c(17,17), na.rm=TRUE, fun = "sum")
+modis_loss_mw <-focal(modis_loss_m3, c(55,55), na.rm=TRUE, fun = "sum")
 plot(modis_loss_mw)
 # writeRaster(modis_loss_mw, "./rasters/dswe_variabilty_analysis/modis_loss_m3_11x11_v2.tif")
 
-viirs_loss_mw <-focal(viirs_loss_m3, c(17,17), na.rm=TRUE, fun = "sum")
+viirs_loss_mw <-focal(viirs_loss_m3, c(55,55), na.rm=TRUE, fun = "sum")
 plot(viirs_loss_mw)
 # writeRaster(viirs_loss_mw, "./rasters/dswe_variabilty_analysis/viirs_loss_m3_11x11_v2.tif")
 
-landsat_loss_mw <-focal(landsat_loss_m3, c(17,17), na.rm=TRUE, fun = "sum")
+landsat_loss_mw <-focal(landsat_loss_m3, c(55,55), na.rm=TRUE, fun = "sum")
 plot(landsat_loss_mw)
 # writeRaster(landsat_loss_mw, "./rasters/dswe_variabilty_analysis/landsat_loss_m3_11x11_v2.tif")
 
-flm_loss_mw <-focal(flm_loss_m3, c(17,17), na.rm=TRUE, fun = "sum")
+flm_loss_mw <-focal(flm_loss_m3, c(55,55), na.rm=TRUE, fun = "sum")
 plot(flm_loss_mw)
 # writeRaster(flm_loss_mw, "./rasters/dswe_variabilty_analysis/flm_loss_m3_11x11_v2.tif")
 
-ims_loss_mw <-focal(ims_loss_m3, c(17,17), na.rm=TRUE, fun = "sum")
+ims_loss_mw <-focal(ims_loss_m3, c(55,55), na.rm=TRUE, fun = "sum")
 plot(ims_loss_mw)
 # writeRaster(ims_loss_mw, "./rasters/dswe_variabilty_analysis/ims_loss_m3_11x11_v2.tif")
 
 # stack gains and losses
-gains_stack <-c(modscag_gains_mw, modis_gains_mw, viirs_gains_mw, landsat_gains_mw, flm_gains_mw)
-loss_stack <-c(modscag_loss_mw, modis_loss_mw, viirs_loss_mw, landsat_loss_mw, flm_loss_mw)
+gains_stack_v1 <-c(ims_gains_mw, modscag_gains_mw, modis_gains_mw, viirs_gains_mw, flm_gains_mw, landsat_gains_mw)
+loss_stack_v1  <-c(ims_loss_mw, modscag_loss_mw, modis_loss_mw, viirs_loss_mw, flm_loss_mw, landsat_loss_mw)
+gains_stack <-gains_stack_v1/(10^6)
+loss_stack <-loss_stack_v1/(10^6)
+
+# names
+names(gains_stack) <-c("ims","modscag","modis","viirs","flm","landsat")
+names(loss_stack) <-c("ims","modscag","modis","viirs","flm","landsat")
+
+# save
+writeRaster(gains_stack, "./rasters/dswe_variabilty_analysis/gains_stack_55x55.tif")
+writeRaster(loss_stack, "./rasters/dswe_variabilty_analysis/loss_stack_55x55.tif")
 
 plot(gains_stack[[1]])
-plot(gains_stack[[4]])
+plot(loss_stack[[1]])
 
 # sd with na remove
 sd_na_rm <-function(x){sd(x, na.rm = TRUE)}
 
 # caculate pixelwise standard deviation
 gains_sd_v1 <-app(gains_stack, fun = sd_na_rm)
-gains_sd <-gains_sd_v1*10e-6
+gains_sd <-gains_sd_v1
 plot(gains_sd)
-writeRaster(gains_sd, "./rasters/dswe_variabilty_analysis/gains_sd_17x17.tif")
+writeRaster(gains_sd, "./rasters/dswe_variabilty_analysis/gains_sd_55x15.tif")
 
 loss_sd_v1 <-app(loss_stack, sd_na_rm)
-loss_sd <-loss_sd_v1*10e-6
+loss_sd <-loss_sd_v1
 plot(loss_sd)
-writeRaster(loss_sd, "./rasters/dswe_variabilty_analysis/loss_sd_17x17.tif", overwrite=T)
+writeRaster(loss_sd, "./rasters/dswe_variabilty_analysis/loss_sd_55x55.tif", overwrite=T)
 
 ## cc focal
 plot(cc)
-cc_mw_v1 <-focal(cc, c(17,17), na.rm=TRUE, fun = "mean")
+cc_mw_v1 <-focal(cc, c(55,55), na.rm=TRUE, fun = "mean")
 cc_mw <-mask(cc_mw_v1, gains_sd)
 plot(cc_mw)
-writeRaster(cc_mw, "./rasters/dswe_variabilty_analysis/cc_mw_mean_17x17.tif")
+writeRaster(cc_mw, "./rasters/dswe_variabilty_analysis/cc_mw_mean_55x55.tif")
 
 ######### cc vs sd scatter plot
 # mask out low change values
@@ -209,12 +218,13 @@ cc_scale(13)
 # starting plot
 ### gains
 gains_plot <-ggplot(df_v3, mapping = aes(x = cc_mean, y = gain_sd, fill = as.factor(bin))) +
-  geom_boxplot(linewidth = .5, varwidth = TRUE, outlier.size = .001, outlier.shape = NA) +
+  geom_boxplot(linewidth = .6, varwidth = TRUE, outlier.size = .001, outlier.shape = 4, 
+               outlier.colour = "grey80", outlier.alpha  = .01) +
   xlab("CC (%)") + ylab(expression(SWE~SD~(10^6~m^3)))+ 
-  scale_x_continuous(limits = c(0,65), breaks = seq(0,65,5), expand = c(0,.5)) +
-  scale_y_continuous(limits = c(0,20)) +
-  scale_fill_discrete(type = cc_scale(13)) +
-  theme_classic(14) +
+  scale_x_continuous(limits = c(0,50), breaks = seq(0,65,5), expand = c(0,.5)) +
+  scale_y_continuous(limits = c(0,15)) +
+  scale_fill_discrete(type = cc_scale(10)) +
+  theme_classic(10) +
   theme(panel.border = element_rect(colour = "black", fill = NA, size = 1),
         legend.position = "none",
         legend.title = element_blank(),
@@ -224,12 +234,13 @@ gains_plot
 
 # loss
 loss_plot <-ggplot(df_v3, mapping = aes(x = cc_mean, y = loss_sd, fill = as.factor(bin))) +
-  geom_boxplot(linewidth = .5, varwidth = TRUE, outlier.size = .001, outlier.shape = NA) +
+  geom_boxplot(linewidth = .6, varwidth = TRUE, outlier.size = .001, outlier.shape = 4,
+               outlier.colour = "grey80", outlier.alpha  = .01) +
   xlab("CC (%)") + ylab(expression(SWE ~SD~(10^6~m^3)))+ 
-  scale_x_continuous(limits = c(0,65), breaks = seq(0,65,5), expand = c(0,.5)) +
-  scale_y_continuous(limits = c(0,50)) +
+  scale_x_continuous(limits = c(0,50), breaks = seq(0,65,5), expand = c(0,.5)) +
+  scale_y_continuous(limits = c(0,15)) +
   scale_fill_discrete(type = cc_scale(13)) +
-  theme_classic(14) +
+  theme_classic(10) +
   theme(panel.border = element_rect(colour = "black", fill = NA, size = 1),
         legend.position = "none",
         legend.title = element_blank(),
@@ -249,10 +260,10 @@ cow <-plot_grid(gains_plot, loss_plot,
 # test save
 # make tighter together
 ggsave(cow,
-       file = "./plots/swe_sd_bp_17x17.png",
+       file = "./plots/swe_sd_bp_55x55.png",
        width = 8, 
        height = 6,
        dpi = 300)
 
-system("open ./plots/swe_sd_bp_17x17.png")
+system("open ./plots/swe_sd_bp_55x55.png")
         

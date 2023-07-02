@@ -113,37 +113,40 @@ flm_stats <-swe_stats(flm)
 ims_stats <-swe_stats(ims)
 
 # create df for plotting
-swe_change <-c(modscag_stats,modis_stats,viirs_stats,landsat_stats,flm_stats, ims_stats) # bind cols
-#swe_change_km3 <-as.numeric(round(swe_change_km3, digits = 3)) # round
-sensor <-c(rep("MODSCAG",3), rep("MODIS",3), rep("VIIRS",3), rep("Landsat",3), rep("FLM",3), rep("IMS",3)) # create sensor col
-stat <-c("gain","loss","net","gain","loss","net","gain",
-         "loss","net","gain","loss","net","gain","loss","net","gain","loss","net") # create stat col
+swe_change <-c(ims_stats, modscag_stats,modis_stats,viirs_stats,flm_stats,landsat_stats) # bind cols
+sensor <-c(rep("IMS",3), rep("MODSCAG",3), rep("MODIS",3), rep("VIIRS",3), rep("FLM",3), rep("Landsat",3)) # create sensor col
+stat <-c(rep(c("gain","loss","net"),6)) # create stat col
 stats_df <-as.data.frame(cbind(sensor,swe_change,stat)) # bind as df
 stats_df$swe_change <-as.numeric(stats_df$swe_change) # convert to numeric
-stats_df$sensor <- factor(stats_df$sensor, levels = c('MODSCAG', 'MODIS', 'VIIRS', 'Landsat', 'FLM', 'IMS')) # conver to facor for plotting
+stats_df$sensor <-factor(stats_df$sensor, levels = c('IMS','MODSCAG','MODIS','VIIRS','FLM','Landsat')) # conver to facor for plotting
 stats_df
 
 # make group bar plot
 ggplot(stats_df, aes(fill=stat, x = sensor, y=swe_change)) + 
   geom_bar(position="dodge", stat="identity", color = "black", width = .5)+
   geom_hline(yintercept = 0)+
-  #scale_y_continuous(breaks = seq(-.01,.03,.01),limits = c(-.01,.03))+
   scale_y_continuous(breaks = seq(-20,5,5),limits = c(-20,5))+
   scale_fill_manual(values=c('darkblue','darkred','grey90'),name="")+
   ylab(expression(Delta~SWE~(10^6~m^3)))+ 
   xlab("fSCA Product") +
   theme_classic(12) +
-  theme(panel.border = element_rect(colour = "black", fill=NA, size = 1))
+  theme(panel.border = element_rect(colour = "black", fill=NA, linewidth = 1),
+        legend.position = "top",
+        legend.direction = "horizontal",
+        legend.justification = "center",
+        legend.box.just = "center", 
+        legend.margin = margin(t = 0, r = 0, b = 0, l = 0),
+        legend.title = element_blank())
 
 # saves
-ggsave(file = "/Users/jacktarricone/ch3_fusion/plots/dswe_stats_new_v8.png",
+ggsave(file = "/Users/jacktarricone/ch3_fusion/plots/dswe_stats_new_v10.png",
        width = 6,
        height = 3,
        dpi = 300)
 
 # make table for poster
-data <-rbind(modscag_stats,modis_stats,viirs_stats,landsat_stats,flm_stas)
-write.csv(data, "/Users/jacktarricone/ch3_fusion/in_situ/dswe_table_v2.csv")
+data <-rbind(ims_stats,modscag_stats,modis_stats,viirs_stats,flm_stats,landsat_stats)
+data2 <-round(data, digits = 2)
+write.csv(data2, "/Users/jacktarricone/ch3_fusion/csvs/dswe_stats_table_v4.csv")
 
-
-## swe percent stats
+system("open /Users/jacktarricone/ch3_fusion/csvs/dswe_stats_table_v4.csv")
