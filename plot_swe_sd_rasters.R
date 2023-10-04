@@ -102,7 +102,7 @@ sd_loss <-ggplot(df) +
   # geom_sf(data = sierra_sf, fill = NA, color = "black", linewidth = .7, inherit.aes = FALSE, alpha = 1) +
   annotate("text", x = -118.98, y = 37.87, label = "SWE Loss", size = 10) +
   scale_fill_gradientn(colors = scale1, limits = c(0,100), oob = squish) + # max of color bar so it saturates
-  labs(fill = expression(Delta~SWE~SD~(10^6~m^3))) +
+  labs(fill = expression(Delta~SWE~SD~(dam^3))) +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
         axis.title.y = element_blank(),
@@ -180,9 +180,9 @@ cow <-plot_grid(sd_gain, sd_loss, cc,
 # test save
 # make tighter together
 ggsave(cow,
-       file = "./plots/sd_vs_cc_map_dam3_41x41.png",
+       file = "./plots/sd_vs_cc_map_dam3_41x41_v2.png",
        width = 9, 
        height = 9,
        dpi = 300)
 
-system("open ./plots/sd_vs_cc_map_dam3_41x41.png")
+system("open ./plots/sd_vs_cc_map_dam3_41x41_v2.png")

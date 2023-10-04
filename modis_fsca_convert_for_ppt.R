@@ -9,7 +9,7 @@ library(terra)
 library(stringr)
 library(lubridate)
 
-setwd("/Users/jtarrico/ch3_fusion")
+setwd("/Users/jacktarricone/ch3_fusion")
 
 # list hdf files
 date_list <-list.files("/Users/jacktarricone/proposal_drafts/disseration/ppt/modis", pattern = "\\.hdf$", full.names = TRUE)
@@ -42,30 +42,11 @@ ndsi_to_fsca <-function(x){
     # pull out file name
     file_name <-basename(x)
     
-    # file naming for both 2019 and 2020 files
-    wy2020 <-grepl("A2020", file_name, fixed = TRUE)
-    
-    if (wy2020 == TRUE){
-      
-      doy_raw <-str_sub(file_name,15) # remove first 15 characters
-      doy <-as.numeric(str_sub(doy_raw, end=-30)) # move last 30, leaving just doy
-      date <-as.Date(doy, origin = "2020-01-01") # convert doy to date using correct origin
-      date_v2<-format(date, "%Y%m%d") # reformat for saving 
-      name_v1 <-paste0("modis_fsca_", date_v2, ".tif") # create file name
-      
-      } else{
-        
-        doy_raw <-str_sub(file_name,15)
-        doy <-as.numeric(str_sub(doy_raw, end=-30))
-        date <-as.Date(doy, origin = "2019-01-01")
-        date_v2<-format(date, "%Y%m%d")
-        name_v1 <-paste0("modis_fsca_", date_v2, ".tif")
-      }
-    
     # save
-    saving_path <-file.path("./rasters/MOD10A1F_wy2020/fsca/")
-    writeRaster(fsca, paste0(saving_path, name_v1))
+    saving_path <-file.path("/Users/jacktarricone/proposal_drafts/disseration/ppt/")
+    writeRaster(fsca[[1]], paste0(saving_path, file_name,".tif"))
 }
+
 
 # lapp
 lapply(date_list, 

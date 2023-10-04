@@ -34,70 +34,36 @@ theme_classic <- function(base_size = 11, base_family = "",
     )
 }
 
-setwd("~/ch3_fusion/rasters/uavsar/dswe")
+setwd("~/ch3_fusion")
 list.files()
 
-#### bring in dswe rasters
-# modscag
-modscag <-rast("./modscag_dswe_v2.tif")
-modscag
-plot(modscag)
-
-# modis
-modis <-rast("./modis_dswe_v2.tif")
-modis
-plot(modis)
-
-# viirs
-viirs <-rast("./viirs_dswe_v2.tif")
-viirs
-plot(viirs)
-
-# landsat
-landsat <-rast("./landsat_dswe_v2.tif")
-landsat
-plot(landsat)
-
-# flm
-flm <-rast("./flm_dswe_v2.tif")
-flm
-plot(flm)
-
-# ims
-ims <-rast("./ims_dswe_v2.tif")
-ims
-plot(ims)
-
+# load in rasters
+dswe_stack_m <-rast("./rasters/uavsar/dswe/dswe_stack_m.tif")
 
 # calculate average cell area
-cell_size_v1 <-cellSize(landsat, unit = "m")
+cell_size_v1 <-cellSize(dswe_stack_m, unit = "m")
 cell_size_m2 <-as.numeric(global(cell_size_v1, 'max') + global(cell_size_v1, 'min'))/2
 
 # define stat generator funciton
-# x <-flm
 
 swe_stats <-function(x){
   
-  ### swe_gain
-  # convert rasters m^3 water
-  # assuming 80 m pixel size
-  gain_m3 <-(x / 100)*cell_size_m2
-  values(gain_m3)[values(gain_m3) < 0] = NA
-  # plot(gain_m3)
-  swe_gain_m3 <-as.integer(global(gain_m3, "sum", na.rm = TRUE))
-  swe_gain_m3_scaled <-swe_gain_m3 * (1e-6)
+  ### swe_gain in dam^3
+  gain_dam3 <-(x*cell_size_m2)/1000
+  values(gain_dam3)[values(gain_dam3) < 0] = NA
+  # plot(gain_dam3)
+  swe_gain_dam3 <-as.integer(global(gain_dam3, "sum", na.rm = TRUE))
   
   ### swe_loss
-  loss_m3 <-(x / 100)*cell_size_m2
-  values(loss_m3)[values(loss_m3) > 0] = NA
-  # plot(loss_m3)
-  swe_loss_m3 <-as.integer(global(loss_m3, "sum", na.rm = TRUE))
-  swe_loss_m3_scaled <-swe_loss_m3 * (1e-6)
+  loss_dam3 <-(x*cell_size_m2)/1000
+  values(loss_dam3)[values(loss_dam3) > 0] = NA
+  #plot(loss_dam3)
+  swe_loss_dam3 <-as.integer(global(loss_dam3, "sum", na.rm = TRUE))
   
   # net
-  swe_net_m3_scaled <- swe_loss_m3_scaled + swe_gain_m3_scaled
+  swe_net_dam3 <- swe_loss_dam3+ swe_gain_dam3
   
-  string <-c(swe_gain_m3_scaled,swe_loss_m3_scaled,swe_net_m3_scaled)
+  string <-c(swe_gain_dam3,swe_loss_dam3,swe_net_dam3)
   return(string)
 }
 
@@ -105,12 +71,12 @@ swe_stats <-function(x){
 # hmmt <-test*1e-7
 
 # calculate stats
-modscag_stats <-swe_stats(modscag)
-modis_stats <-swe_stats(modis)
-viirs_stats <-swe_stats(viirs)
-landsat_stats <-swe_stats(landsat)
-flm_stats <-swe_stats(flm)
-ims_stats <-swe_stats(ims)
+ims_stats <-swe_stats(dswe_stack_m[[1]])
+modis_stats <-swe_stats(dswe_stack_m[[2]])
+modscag_stats <-swe_stats(dswe_stack_m[[3]])
+viirs_stats <-swe_stats(dswe_stack_m[[4]])
+flm_stats <-swe_stats(dswe_stack_m[[5]])
+landsat_stats <-swe_stats(dswe_stack_m[[6]])
 
 # create df for plotting
 swe_change <-c(ims_stats, modscag_stats,modis_stats,viirs_stats,flm_stats,landsat_stats) # bind cols
@@ -124,10 +90,11 @@ stats_df
 # make group bar plot
 ggplot(stats_df, aes(fill=stat, x = sensor, y=swe_change)) + 
   geom_bar(position="dodge", stat="identity", color = "black", width = .5)+
-  geom_hline(yintercept = 0)+
-  scale_y_continuous(breaks = seq(-20,5,5),limits = c(-20,5))+
+  geom_hline(yintercept = 0) +
+  # geom_text(aes(label=swe_change), position=position_dodge(width=0.5), vjust=1.5)+
+  scale_y_continuous(breaks = seq(-20000,5000,5000),limits = c(-20000,5000))+
   scale_fill_manual(values=c('darkblue','darkred','grey90'),name="")+
-  ylab(expression(Delta~SWE~(10^6~m^3)))+ 
+  ylab(expression(Delta~SWE~(dam^3)))+ 
   xlab("fSCA Product") +
   theme_classic(12) +
   theme(panel.border = element_rect(colour = "black", fill=NA, linewidth = 1),
@@ -139,14 +106,14 @@ ggplot(stats_df, aes(fill=stat, x = sensor, y=swe_change)) +
         legend.title = element_blank())
 
 # saves
-ggsave(file = "/Users/jacktarricone/ch3_fusion/plots/dswe_stats_new_v10.png",
+ggsave(file = "/Users/jacktarricone/ch3_fusion/plots/dswe_stats_dam3_v1.png",
        width = 6,
        height = 3,
        dpi = 300)
 
 # make table for poster
 data <-rbind(ims_stats,modscag_stats,modis_stats,viirs_stats,flm_stats,landsat_stats)
-data2 <-round(data, digits = 2)
-write.csv(data2, "/Users/jacktarricone/ch3_fusion/csvs/dswe_stats_table_v4.csv")
+data2 <-round(data, digits = 0)
+write.csv(data2, "/Users/jacktarricone/ch3_fusion/csvs/dswe_stats_table_dam_v1.csv")
 
-system("open /Users/jacktarricone/ch3_fusion/csvs/dswe_stats_table_v4.csv")
+system("open /Users/jacktarricone/ch3_fusion/csvs/dswe_stats_table_dam_v1.csv")

@@ -56,6 +56,7 @@ stack_cm
 
 # conert to meters
 stack_m <-stack_cm/100
+writeRaster(stack_m, "./rasters/uavsar/dswe/dswe_stack_m.tif")
 
 # bring in cc, mask, and resample
 cc_v2 <-rast("/Users/jacktarricone/ch3_fusion/rasters/geo_layers/cc_domain.tif")
