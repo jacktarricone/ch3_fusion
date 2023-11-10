@@ -12,14 +12,15 @@ library(lubridate)
 setwd("/Users/jtarrico/ch3_fusion")
 
 # list hdf files
-date_list <-list.files("/Users/jacktarricone/proposal_drafts/disseration/ppt/modis", pattern = "\\.hdf$", full.names = TRUE)
+date_list <-list.files("/Users/jtarrico/proposal_drafts/disseration/ppt/modis", pattern = "\\.hdf$", full.names = TRUE)
 head(date_list)
 
 # for extent cropping
-flm_raw <-rast("./rasters/flm/raw/SSN.downscaled.20191001.v4.3e+05.tif")
+flm_raw <-rast("./rasters/flm/raw/SSN.downscaled.20200401.v4.3e+05.tif")
 flm <-project(flm_raw, 'EPSG:4326')
 rm(flm_raw)
 flm
+plot(flm)
 
 # function for concerting, cropping, and saving
 # MODIS ndsi to fsca
