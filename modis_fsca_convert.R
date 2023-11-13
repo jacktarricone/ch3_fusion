@@ -16,7 +16,7 @@ date_list <-list.files("/Users/jtarrico/proposal_drafts/disseration/ppt/modis", 
 head(date_list)
 
 # for extent cropping
-flm_raw <-rast("./rasters/flm/raw/SSN.downscaled.20200401.v4.3e+05.tif")
+flm_raw <-rast("./rasters/flm/raw/SSN.downscaled.20200131.v4.3e+05.tif")
 flm <-project(flm_raw, 'EPSG:4326')
 rm(flm_raw)
 flm
