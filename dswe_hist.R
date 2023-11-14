@@ -217,6 +217,8 @@ gain_dam3_41x41
 hist(gain_dam3_41x41[[1]])
 head(gain_41x41_df)
 
+data.table::fwrite(gain_41x41_df, "./csvs/swe_gain_dam3_41x41.csv")
+
 # have to take random sample
 # p-value is correlated to sample size: high numbers = low p-values
 # ross used 100
