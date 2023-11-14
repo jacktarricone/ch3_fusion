@@ -1,0 +1,2 @@
+2023-11-14 13:22:18,353 - rasterio.session - DEBUG - Could not import boto3, continuing with reduced functionality.
+2023-11-14 13:25:41,853 - rasterio.session - DEBUG - Could not import boto3, continuing with reduced functionality.
