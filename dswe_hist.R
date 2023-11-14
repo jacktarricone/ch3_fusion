@@ -7,6 +7,7 @@ library(ggplot2)
 library(tidyverse)
 library(RColorBrewer)
 library(cowplot)
+library(dgof)
 
 theme_classic <- function(base_size = 11, base_family = "",
                           base_line_size = base_size / 22,
@@ -67,14 +68,12 @@ hist_fig <-ggplot()+
   geom_density(df, mapping = aes(x=landsat, y=stat(count),color = "Landsat"), linewidth=1) +
   geom_density(df, mapping = aes(x=modis, y=stat(count), color = "MODIS fSCA"), linewidth=1) +
   geom_density(df, mapping = aes(x=modscag, y=stat(count),color = "MODSCAG"), linewidth=1) +
-  geom_density(df, mapping = aes(x=viirs, y=stat(count), color = "VIIRS"), linewidth=1) +
+  geom_density(df, mapping = aes(x=viirs, y=stat(count), color = "VIIRS fSCA"), linewidth=1) +
   geom_density(df, mapping = aes(x=flm, y=stat(count), color = "FLM"), linewidth=1) +
   scale_colour_manual(name = "Snow cover data",
                       labels = c("IMS","MODSCAG","MODIS fSCA", "VIIRS fSCA","FLM","Landsat"),
-                      values = c("#1b9e77","#d95f02",'#7570b3','#e7298a','#e6ab02','#66a61e'))+
-  #scale_fill_manual(name = "Data",
-  #                  labels = c("IMS","MODSCAG","MODIS fSCA", "VIIRS fSCA","FLM","Landsat"),
-  #                  values = c("darkorchid4","goldenrod",'darkred','darkgreen','darkblue','cyan'))+
+                      values = c("#d95f02","#1b9e77",'#7570b3','#e7298a','#e6ab02','#66a61e'),
+                      breaks = c("IMS","MODSCAG","MODIS fSCA", "VIIRS fSCA","FLM","Landsat"))+
   scale_x_continuous(limits = c(-8,4), 
                      breaks = seq(-8,4,2), 
                      expand = c(0,0)) + 
@@ -116,6 +115,7 @@ gain_df <-(gain_stack_m*cell_size_m2)
 hist(gain_df[[5]])
 gain_df <-as.data.frame(gain_df)
 
+ks.test(gain_df$modis, gain_df$ims)
 
 # test plot
 gain_hist <-ggplot()+
@@ -128,8 +128,8 @@ gain_hist <-ggplot()+
   geom_density(gain_df, mapping = aes(x=landsat, y=stat(count),color = "Landsat"), linewidth=1) +
   scale_colour_manual(name = "Snow cover data",
                       labels = c("IMS","MODSCAG","MODIS fSCA", "VIIRS fSCA","FLM","Landsat"),
-                      values = c('IMS' = "#1b9e77",'MODSCAG' = "#d95f02",'MODIS fSCA' = '#7570b3',
-                                 'VIIRS fSCA' = '#e7298a','FLM' = '#e6ab02','Landsat' = '#66a61e'))+
+                      values = c("#d95f02","#1b9e77",'#7570b3','#e7298a','#e6ab02','#66a61e'),
+                      breaks = c("IMS","MODSCAG","MODIS fSCA", "VIIRS fSCA","FLM","Landsat"))+
   #scale_fill_manual(name = "Data",
   #                  labels = c("IMS","MODSCAG","MODIS fSCA", "VIIRS fSCA","FLM","Landsat"),
   #                  values = c("darkorchid4","goldenrod",'darkred','darkgreen','darkblue','cyan'))+
@@ -165,19 +165,16 @@ loss_df <-as.data.frame(loss_stack_m3)
 
 # test plot
 loss_hist <-ggplot() +
-  # geom_vline(xintercept = 0, linetype=3, col = "black") +
   geom_density(loss_df, mapping = aes(x=ims, y=stat(count),color = "IMS"), linewidth=1) +
   geom_density(loss_df, mapping = aes(x=modscag, y=stat(count),color = "MODSCAG"), linewidth=1) +
   geom_density(loss_df, mapping = aes(x=modis, y=stat(count), color = "MODIS fSCA"), linewidth=1) +
-  geom_density(loss_df, mapping = aes(x=viirs, y=stat(count), color = "VIIRS fsca"), linewidth=1) +
+  geom_density(loss_df, mapping = aes(x=viirs, y=stat(count), color = "VIIRS fSCA"), linewidth=1) +
   geom_density(loss_df, mapping = aes(x=flm, y=stat(count), color = "FLM"), linewidth=1) +
   geom_density(loss_df, mapping = aes(x=landsat, y=stat(count),color = "Landsat"), linewidth=1) +
   scale_colour_manual(name = "Snow cover data",
                       labels = c("IMS","MODSCAG","MODIS fSCA", "VIIRS fSCA","FLM","Landsat"),
-                      values = c("#1b9e77","#d95f02",'#7570b3','#e7298a','#e6ab02','#66a61e'))+
-  #scale_fill_manual(name = "Data",
-  #                  labels = c("IMS","MODSCAG","MODIS fSCA", "VIIRS fSCA","FLM","Landsat"),
-  #                  values = c("darkorchid4","goldenrod",'darkred','darkgreen','darkblue','cyan'))+
+                      values = c("#d95f02","#1b9e77",'#7570b3','#e7298a','#e6ab02','#66a61e'),
+                      breaks = c("IMS","MODSCAG","MODIS fSCA", "VIIRS fSCA","FLM","Landsat"))+
   scale_x_continuous(limits = c(-500,0), 
                      breaks = seq(-500,0,100), 
                      expand = c(0,2)) + 
@@ -196,7 +193,7 @@ ggsave2("./plots/dswe_loss_v1.pdf",
         units = "in",
         dpi = 500)
 
-system("open ./plots/dswe_gain_v1.pdf")
+system("open ./plots/dswe_loss_v1.pdf")
 
 
 
@@ -215,11 +212,106 @@ system("open ./plots/dswe_gain_v1.pdf")
 # 55 x 55 moving window sum in cubic meters
 # gain
 gain_mw_41x41 <-focal(gain_df, c(41,41), na.rm=TRUE, fun = "sum")
+gain_dam3_41x41 <-gain_mw_41x41/1e3 
+gain_dam3_41x41 
+hist(gain_dam3_41x41[[1]])
+head(gain_41x41_df)
+
+# have to take random sample
+# p-value is correlated to sample size: high numbers = low p-values
+# ross used 100
+# repeat test 100ish times in loop
+# divide confidence by number of repeat samples
+samp <-sample_n(gain_41x41_df, 150, na.rm = TRUE)
+ks.test(samp$modscag, samp$landsat)
+
+samp <-sample_n(loss_41x41_df, 150, na.rm = TRUE)
+ks.test(samp$modscag, samp$ims)
+
+
+# test plot
+gain_hist_41 <-ggplot()+
+  geom_density(gain_41x41_df, mapping = aes(x=ims, y=stat(count),color = "IMS"), linewidth=1) +
+  geom_density(gain_41x41_df, mapping = aes(x=modscag, y=stat(count),color = "MODSCAG"), linewidth=1) +
+  geom_density(gain_41x41_df, mapping = aes(x=modis, y=stat(count), color = "MODIS fSCA"), linewidth=1) +
+  geom_density(gain_41x41_df, mapping = aes(x=viirs, y=stat(count), color = "VIIRS fSCA"), linewidth=1) +
+  geom_density(gain_41x41_df, mapping = aes(x=flm, y=stat(count), color = "FLM"), linewidth=1) +
+  geom_density(gain_41x41_df, mapping = aes(x=landsat, y=stat(count),color = "Landsat"), linewidth=1) +
+  scale_colour_manual(name = "Snow cover data",
+                      labels = c("IMS","MODSCAG","MODIS fSCA", "VIIRS fSCA","FLM","Landsat"),
+                      values = c("#d95f02","#1b9e77",'#7570b3','#e7298a','#e6ab02','#66a61e'),
+                      breaks = c("IMS","MODSCAG","MODIS fSCA", "VIIRS fSCA","FLM","Landsat"))+
+  scale_x_continuous(limits = c(0,100), 
+                     breaks = seq(0,100,25), 
+                     expand = c(0,2)) + 
+  ylab("Count") +
+  xlab(expression(Delta~SWE~(dam^3)))+
+  scale_y_continuous(expand = c(0,0), limits = c(0,20000)) +
+  theme(legend.position = c(.75,.72)) +
+  theme(panel.border = element_rect(colour = "black", fill=NA, linewidth = 1))
+
+gain_hist_41
+
+ggsave2("./plots/gain_hist_41x41_v1.pdf",
+        gain_hist,
+        width = 7,
+        height = 5,
+        units = "in",
+        dpi = 500)
+
+
+
+
+
+
+
+
 # writeRaster(gain_mw_41x41, "./rasters/dswe_variabilty_analysis/gain_df_41x41_v1.tif")
 
 # loss
 loss_mw_41x41 <-focal(loss_stack_m3, c(41,41), na.rm=TRUE, fun = "sum")
 plot(loss_mw_41x41[[4]])
+
+loss_mw_41x41 <-focal(loss_df, c(41,41), na.rm=TRUE, fun = "sum")
+loss_dam3_41x41 <-loss_mw_41x41/1e3 
+loss_dam3_41x41 
+hist(loss_dam3_41x41[[1]])
+loss_41x41_df <-as.data.frame(loss_dam3_41x41)
+
+# test plot
+loss_hist_41 <-ggplot()+
+  geom_density(loss_41x41_df, mapping = aes(x=ims, y=stat(count),color = "IMS"), linewidth=1) +
+  geom_density(loss_41x41_df, mapping = aes(x=modscag, y=stat(count),color = "MODSCAG"), linewidth=1) +
+  geom_density(loss_41x41_df, mapping = aes(x=modis, y=stat(count), color = "MODIS fSCA"), linewidth=1) +
+  geom_density(loss_41x41_df, mapping = aes(x=viirs, y=stat(count), color = "VIIRS fSCA"), linewidth=1) +
+  geom_density(loss_41x41_df, mapping = aes(x=flm, y=stat(count), color = "FLM"), linewidth=1) +
+  geom_density(loss_41x41_df, mapping = aes(x=landsat, y=stat(count),color = "Landsat"), linewidth=1) +
+  scale_colour_manual(name = "Snow cover data",
+                      labels = c("IMS","MODSCAG","MODIS fSCA", "VIIRS fSCA","FLM","Landsat"),
+                      values = c("#d95f02","#1b9e77",'#7570b3','#e7298a','#e6ab02','#66a61e'),
+                      breaks = c("IMS","MODSCAG","MODIS fSCA", "VIIRS fSCA","FLM","Landsat"))+
+  scale_x_continuous(limits = c(-400,0), 
+                     breaks = seq(-400,0,100), 
+                     expand = c(0,2)) + 
+  ylab("Count") +
+  xlab(expression(Delta~SWE~SD~(dam^3)))+
+  scale_y_continuous(expand = c(0,0), limits = c(0,6000)) +
+  theme(legend.position = c(.35,.72)) +
+  theme(panel.border = element_rect(colour = "black", fill=NA, linewidth = 1))
+
+loss_hist_41
+
+ggsave2("./plots/loss_hist_41x41_v1.pdf",
+        loss_hist_41,
+        width = 7,
+        height = 5,
+        units = "in",
+        dpi = 500)
+
+
+
+
+
 # writeRaster(loss_mw_41x41, "./rasters/dswe_variabilty_analysis/loss_stack_m3_41x41_v1.tif")
 
 # define sd with na remove
