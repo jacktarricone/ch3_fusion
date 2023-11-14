@@ -61,7 +61,7 @@ swe_stats <-function(x){
   swe_loss_dam3 <-as.integer(global(loss_dam3, "sum", na.rm = TRUE))
   
   # net
-  swe_net_dam3 <- swe_loss_dam3+ swe_gain_dam3
+  swe_net_dam3 <- swe_loss_dam3 + swe_gain_dam3
   
   string <-c(swe_gain_dam3,swe_loss_dam3,swe_net_dam3)
   return(string)
@@ -77,6 +77,8 @@ modscag_stats <-swe_stats(dswe_stack_m[[3]])
 viirs_stats <-swe_stats(dswe_stack_m[[4]])
 flm_stats <-swe_stats(dswe_stack_m[[5]])
 landsat_stats <-swe_stats(dswe_stack_m[[6]])
+
+hist(dswe_stack_m[[1]], breaks = )
 
 # create df for plotting
 swe_change <-c(ims_stats, modscag_stats,modis_stats,viirs_stats,flm_stats,landsat_stats) # bind cols
