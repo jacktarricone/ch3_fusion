@@ -608,3 +608,4 @@
 2023-11-14 16:44:44,706 - rasterio.env - DEBUG - Exited env context: <rasterio.env.Env object at 0x1af226040>
 2023-11-16 09:03:02,029 - rasterio.session - DEBUG - Could not import boto3, continuing with reduced functionality.
 2023-11-16 09:03:44,808 - rasterio.session - DEBUG - Could not import boto3, continuing with reduced functionality.
+2023-11-16 09:54:40,968 - rasterio.session - DEBUG - Could not import boto3, continuing with reduced functionality.
