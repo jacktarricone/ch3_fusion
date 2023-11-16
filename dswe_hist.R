@@ -203,12 +203,16 @@ system("open ./plots/dswe_loss_v1.pdf")
 
 # fulls stack
 dswe_41x41 <-focal(stack_m, c(41,41), na.rm=TRUE, fun = "sum")
-dswe_41x41 
+plot(dswe_41x41[[6]]) 
+dswe_41x41[[3]]
 hist(dswe_41x41[[1]])
 head(dswe_41x41_df)
 
 dswe_41x41_df <-as.data.frame(dswe_41x41)
 head(dswe_41x41_df)
+
+writeRaster(dswe_41x41[[6]], "./rasters/dswe_variabilty_analysis/testing/landsat_test.tif")
+writeRaster(dswe_41x41[[3]], "./rasters/dswe_variabilty_analysis/testing/modscag_test.tif")
 
 dswe_hist_41 <-ggplot()+
   geom_density(dswe_41x41_df, mapping = aes(x=ims, y=stat(count),color = "IMS"), linewidth=1) +
