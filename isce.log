@@ -609,3 +609,444 @@
 2023-11-16 09:03:02,029 - rasterio.session - DEBUG - Could not import boto3, continuing with reduced functionality.
 2023-11-16 09:03:44,808 - rasterio.session - DEBUG - Could not import boto3, continuing with reduced functionality.
 2023-11-16 09:54:40,968 - rasterio.session - DEBUG - Could not import boto3, continuing with reduced functionality.
+2023-11-16 12:06:09,183 - rasterio.env - DEBUG - Entering env context: <rasterio.env.Env object at 0x1af200610>
+2023-11-16 12:06:09,186 - rasterio.env - DEBUG - Starting outermost env
+2023-11-16 12:06:09,188 - rasterio.env - DEBUG - No GDAL environment exists
+2023-11-16 12:06:09,189 - rasterio.env - DEBUG - New GDAL environment <rasterio._env.GDALEnv object at 0x1ae7dfe80> created
+2023-11-16 12:06:09,192 - rasterio._filepath - DEBUG - Installing FilePath filesystem handler plugin...
+2023-11-16 12:06:09,194 - rasterio._env - DEBUG - GDAL_DATA found in environment.
+2023-11-16 12:06:09,195 - rasterio._env - DEBUG - PROJ_DATA found in environment.
+2023-11-16 12:06:09,196 - rasterio._env - DEBUG - Started GDALEnv: self=<rasterio._env.GDALEnv object at 0x1ae7dfe80>.
+2023-11-16 12:06:09,197 - rasterio.env - DEBUG - Entered env context: <rasterio.env.Env object at 0x1af200610>
+2023-11-16 12:06:09,201 - rasterio._io - DEBUG - Path: _UnparsedPath(path='/Users/jtarrico/sierra_isce_multi/geocode_test/tmp/llh.lat.tif'), mode: w, driver: GTiff
+2023-11-16 12:06:09,205 - rasterio._io - DEBUG - Skipped delete for overwrite, dataset does not exist: '/Users/jtarrico/sierra_isce_multi/geocode_test/tmp/llh.lat.tif'
+2023-11-16 12:06:09,219 - rasterio._base - DEBUG - Nodata success: 1, Nodata value: 0.000000
+2023-11-16 12:06:09,220 - rasterio.env - DEBUG - Exiting env context: <rasterio.env.Env object at 0x1af200610>
+2023-11-16 12:06:09,221 - rasterio.env - DEBUG - Cleared existing <rasterio._env.GDALEnv object at 0x1ae7dfe80> options
+2023-11-16 12:06:09,222 - rasterio._env - DEBUG - Stopped GDALEnv <rasterio._env.GDALEnv object at 0x1ae7dfe80>.
+2023-11-16 12:06:09,225 - rasterio.env - DEBUG - Exiting outermost env
+2023-11-16 12:06:09,226 - rasterio.env - DEBUG - Exited env context: <rasterio.env.Env object at 0x1af200610>
+2023-11-16 12:06:09,227 - rasterio.env - DEBUG - Entering env context: <rasterio.env.Env object at 0x1af556400>
+2023-11-16 12:06:09,228 - rasterio.env - DEBUG - Starting outermost env
+2023-11-16 12:06:09,229 - rasterio.env - DEBUG - No GDAL environment exists
+2023-11-16 12:06:09,230 - rasterio.env - DEBUG - New GDAL environment <rasterio._env.GDALEnv object at 0x1ae7dfe80> created
+2023-11-16 12:06:09,232 - rasterio._env - DEBUG - GDAL_DATA found in environment.
+2023-11-16 12:06:09,233 - rasterio._env - DEBUG - PROJ_DATA found in environment.
+2023-11-16 12:06:09,234 - rasterio._env - DEBUG - Started GDALEnv: self=<rasterio._env.GDALEnv object at 0x1ae7dfe80>.
+2023-11-16 12:06:09,235 - rasterio.env - DEBUG - Entered env context: <rasterio.env.Env object at 0x1af556400>
+2023-11-16 12:06:09,572 - rasterio.env - DEBUG - Exiting env context: <rasterio.env.Env object at 0x1af556400>
+2023-11-16 12:06:09,574 - rasterio.env - DEBUG - Cleared existing <rasterio._env.GDALEnv object at 0x1ae7dfe80> options
+2023-11-16 12:06:09,575 - rasterio._env - DEBUG - Stopped GDALEnv <rasterio._env.GDALEnv object at 0x1ae7dfe80>.
+2023-11-16 12:06:09,576 - rasterio.env - DEBUG - Exiting outermost env
+2023-11-16 12:06:09,577 - rasterio.env - DEBUG - Exited env context: <rasterio.env.Env object at 0x1af556400>
+2023-11-16 12:06:09,578 - rasterio.env - DEBUG - Entering env context: <rasterio.env.Env object at 0x1af200610>
+2023-11-16 12:06:09,579 - rasterio.env - DEBUG - Starting outermost env
+2023-11-16 12:06:09,580 - rasterio.env - DEBUG - No GDAL environment exists
+2023-11-16 12:06:09,581 - rasterio.env - DEBUG - New GDAL environment <rasterio._env.GDALEnv object at 0x1ae7df7f0> created
+2023-11-16 12:06:09,583 - rasterio._env - DEBUG - GDAL_DATA found in environment.
+2023-11-16 12:06:09,584 - rasterio._env - DEBUG - PROJ_DATA found in environment.
+2023-11-16 12:06:09,585 - rasterio._env - DEBUG - Started GDALEnv: self=<rasterio._env.GDALEnv object at 0x1ae7df7f0>.
+2023-11-16 12:06:09,586 - rasterio.env - DEBUG - Entered env context: <rasterio.env.Env object at 0x1af200610>
+2023-11-16 12:06:09,587 - rasterio._io - DEBUG - Path: _UnparsedPath(path='/Users/jtarrico/sierra_isce_multi/geocode_test/tmp/llh.long.tif'), mode: w, driver: GTiff
+2023-11-16 12:06:09,588 - rasterio._io - DEBUG - Skipped delete for overwrite, dataset does not exist: '/Users/jtarrico/sierra_isce_multi/geocode_test/tmp/llh.long.tif'
+2023-11-16 12:06:09,590 - rasterio._base - DEBUG - Nodata success: 1, Nodata value: 0.000000
+2023-11-16 12:06:09,591 - rasterio.env - DEBUG - Exiting env context: <rasterio.env.Env object at 0x1af200610>
+2023-11-16 12:06:09,593 - rasterio.env - DEBUG - Cleared existing <rasterio._env.GDALEnv object at 0x1ae7df7f0> options
+2023-11-16 12:06:09,593 - rasterio._env - DEBUG - Stopped GDALEnv <rasterio._env.GDALEnv object at 0x1ae7df7f0>.
+2023-11-16 12:06:09,595 - rasterio.env - DEBUG - Exiting outermost env
+2023-11-16 12:06:09,596 - rasterio.env - DEBUG - Exited env context: <rasterio.env.Env object at 0x1af200610>
+2023-11-16 12:06:09,597 - rasterio.env - DEBUG - Entering env context: <rasterio.env.Env object at 0x1ada4dd00>
+2023-11-16 12:06:09,598 - rasterio.env - DEBUG - Starting outermost env
+2023-11-16 12:06:09,599 - rasterio.env - DEBUG - No GDAL environment exists
+2023-11-16 12:06:09,600 - rasterio.env - DEBUG - New GDAL environment <rasterio._env.GDALEnv object at 0x1ae7df7f0> created
+2023-11-16 12:06:09,602 - rasterio._env - DEBUG - GDAL_DATA found in environment.
+2023-11-16 12:06:09,603 - rasterio._env - DEBUG - PROJ_DATA found in environment.
+2023-11-16 12:06:09,604 - rasterio._env - DEBUG - Started GDALEnv: self=<rasterio._env.GDALEnv object at 0x1ae7df7f0>.
+2023-11-16 12:06:09,605 - rasterio.env - DEBUG - Entered env context: <rasterio.env.Env object at 0x1ada4dd00>
+2023-11-16 12:06:09,847 - rasterio.env - DEBUG - Exiting env context: <rasterio.env.Env object at 0x1ada4dd00>
+2023-11-16 12:06:09,848 - rasterio.env - DEBUG - Cleared existing <rasterio._env.GDALEnv object at 0x1ae7df7f0> options
+2023-11-16 12:06:09,849 - rasterio._env - DEBUG - Stopped GDALEnv <rasterio._env.GDALEnv object at 0x1ae7df7f0>.
+2023-11-16 12:06:09,850 - rasterio.env - DEBUG - Exiting outermost env
+2023-11-16 12:06:09,851 - rasterio.env - DEBUG - Exited env context: <rasterio.env.Env object at 0x1ada4dd00>
+2023-11-16 12:06:09,852 - rasterio.env - DEBUG - Entering env context: <rasterio.env.Env object at 0x1af200610>
+2023-11-16 12:06:09,853 - rasterio.env - DEBUG - Starting outermost env
+2023-11-16 12:06:09,854 - rasterio.env - DEBUG - No GDAL environment exists
+2023-11-16 12:06:09,856 - rasterio.env - DEBUG - New GDAL environment <rasterio._env.GDALEnv object at 0x1ae7dfee0> created
+2023-11-16 12:06:09,858 - rasterio._env - DEBUG - GDAL_DATA found in environment.
+2023-11-16 12:06:09,859 - rasterio._env - DEBUG - PROJ_DATA found in environment.
+2023-11-16 12:06:09,860 - rasterio._env - DEBUG - Started GDALEnv: self=<rasterio._env.GDALEnv object at 0x1ae7dfee0>.
+2023-11-16 12:06:09,861 - rasterio.env - DEBUG - Entered env context: <rasterio.env.Env object at 0x1af200610>
+2023-11-16 12:06:09,862 - rasterio._io - DEBUG - Path: _UnparsedPath(path='/Users/jtarrico/sierra_isce_multi/geocode_test/tmp/llh.dem.tif'), mode: w, driver: GTiff
+2023-11-16 12:06:09,863 - rasterio._io - DEBUG - Skipped delete for overwrite, dataset does not exist: '/Users/jtarrico/sierra_isce_multi/geocode_test/tmp/llh.dem.tif'
+2023-11-16 12:06:09,865 - rasterio._base - DEBUG - Nodata success: 1, Nodata value: 0.000000
+2023-11-16 12:06:09,866 - rasterio.env - DEBUG - Exiting env context: <rasterio.env.Env object at 0x1af200610>
+2023-11-16 12:06:09,867 - rasterio.env - DEBUG - Cleared existing <rasterio._env.GDALEnv object at 0x1ae7dfee0> options
+2023-11-16 12:06:09,868 - rasterio._env - DEBUG - Stopped GDALEnv <rasterio._env.GDALEnv object at 0x1ae7dfee0>.
+2023-11-16 12:06:09,869 - rasterio.env - DEBUG - Exiting outermost env
+2023-11-16 12:06:09,870 - rasterio.env - DEBUG - Exited env context: <rasterio.env.Env object at 0x1af200610>
+2023-11-16 12:06:09,871 - rasterio.env - DEBUG - Entering env context: <rasterio.env.Env object at 0x1af556400>
+2023-11-16 12:06:09,872 - rasterio.env - DEBUG - Starting outermost env
+2023-11-16 12:06:09,873 - rasterio.env - DEBUG - No GDAL environment exists
+2023-11-16 12:06:09,875 - rasterio.env - DEBUG - New GDAL environment <rasterio._env.GDALEnv object at 0x1ae7dfee0> created
+2023-11-16 12:06:09,876 - rasterio._env - DEBUG - GDAL_DATA found in environment.
+2023-11-16 12:06:09,877 - rasterio._env - DEBUG - PROJ_DATA found in environment.
+2023-11-16 12:06:09,879 - rasterio._env - DEBUG - Started GDALEnv: self=<rasterio._env.GDALEnv object at 0x1ae7dfee0>.
+2023-11-16 12:06:09,880 - rasterio.env - DEBUG - Entered env context: <rasterio.env.Env object at 0x1af556400>
+2023-11-16 12:06:10,114 - rasterio.env - DEBUG - Exiting env context: <rasterio.env.Env object at 0x1af556400>
+2023-11-16 12:06:10,115 - rasterio.env - DEBUG - Cleared existing <rasterio._env.GDALEnv object at 0x1ae7dfee0> options
+2023-11-16 12:06:10,116 - rasterio._env - DEBUG - Stopped GDALEnv <rasterio._env.GDALEnv object at 0x1ae7dfee0>.
+2023-11-16 12:06:10,118 - rasterio.env - DEBUG - Exiting outermost env
+2023-11-16 12:06:10,119 - rasterio.env - DEBUG - Exited env context: <rasterio.env.Env object at 0x1af556400>
+2023-11-16 12:06:10,133 - rasterio.env - DEBUG - Entering env context: <rasterio.env.Env object at 0x1af556400>
+2023-11-16 12:06:10,134 - rasterio.env - DEBUG - Starting outermost env
+2023-11-16 12:06:10,136 - rasterio.env - DEBUG - No GDAL environment exists
+2023-11-16 12:06:10,138 - rasterio.env - DEBUG - New GDAL environment <rasterio._env.GDALEnv object at 0x1ae7dfbb0> created
+2023-11-16 12:06:10,141 - rasterio._env - DEBUG - GDAL_DATA found in environment.
+2023-11-16 12:06:10,143 - rasterio._env - DEBUG - PROJ_DATA found in environment.
+2023-11-16 12:06:10,144 - rasterio._env - DEBUG - Started GDALEnv: self=<rasterio._env.GDALEnv object at 0x1ae7dfbb0>.
+2023-11-16 12:06:10,145 - rasterio.env - DEBUG - Entered env context: <rasterio.env.Env object at 0x1af556400>
+2023-11-16 12:06:10,147 - rasterio._base - DEBUG - Sharing flag: 0
+2023-11-16 12:06:10,148 - rasterio._env - INFO - GDAL signalled an error: err_no=4, msg='igrams/20200226T2253_20200311T1852/20200226T2253_20200311T1852.unw_snaphu.unw.vrt: No such file or directory'
+2023-11-16 12:06:10,149 - rasterio.env - DEBUG - Exiting env context: <rasterio.env.Env object at 0x1af556400>
+2023-11-16 12:06:10,151 - rasterio.env - DEBUG - Cleared existing <rasterio._env.GDALEnv object at 0x1ae7dfbb0> options
+2023-11-16 12:06:10,152 - rasterio._env - DEBUG - Stopped GDALEnv <rasterio._env.GDALEnv object at 0x1ae7dfbb0>.
+2023-11-16 12:06:10,153 - rasterio.env - DEBUG - Exiting outermost env
+2023-11-16 12:06:10,154 - rasterio.env - DEBUG - Exited env context: <rasterio.env.Env object at 0x1af556400>
+2023-11-16 12:06:33,614 - rasterio.env - DEBUG - Entering env context: <rasterio.env.Env object at 0x1af643ee0>
+2023-11-16 12:06:33,622 - rasterio.env - DEBUG - Starting outermost env
+2023-11-16 12:06:33,628 - rasterio.env - DEBUG - No GDAL environment exists
+2023-11-16 12:06:33,630 - rasterio.env - DEBUG - New GDAL environment <rasterio._env.GDALEnv object at 0x1af643fd0> created
+2023-11-16 12:06:33,632 - rasterio._env - DEBUG - GDAL_DATA found in environment.
+2023-11-16 12:06:33,633 - rasterio._env - DEBUG - PROJ_DATA found in environment.
+2023-11-16 12:06:33,634 - rasterio._env - DEBUG - Started GDALEnv: self=<rasterio._env.GDALEnv object at 0x1af643fd0>.
+2023-11-16 12:06:33,635 - rasterio.env - DEBUG - Entered env context: <rasterio.env.Env object at 0x1af643ee0>
+2023-11-16 12:06:33,637 - rasterio._io - DEBUG - Path: _UnparsedPath(path='/Users/jtarrico/sierra_isce_multi/geocode_test/tmp/llh.lat.tif'), mode: w, driver: GTiff
+2023-11-16 12:06:33,646 - rasterio._base - DEBUG - Nodata success: 1, Nodata value: 0.000000
+2023-11-16 12:06:33,647 - rasterio.env - DEBUG - Exiting env context: <rasterio.env.Env object at 0x1af643ee0>
+2023-11-16 12:06:33,648 - rasterio.env - DEBUG - Cleared existing <rasterio._env.GDALEnv object at 0x1af643fd0> options
+2023-11-16 12:06:33,650 - rasterio._env - DEBUG - Stopped GDALEnv <rasterio._env.GDALEnv object at 0x1af643fd0>.
+2023-11-16 12:06:33,651 - rasterio.env - DEBUG - Exiting outermost env
+2023-11-16 12:06:33,652 - rasterio.env - DEBUG - Exited env context: <rasterio.env.Env object at 0x1af643ee0>
+2023-11-16 12:06:33,653 - rasterio.env - DEBUG - Entering env context: <rasterio.env.Env object at 0x1af643d00>
+2023-11-16 12:06:33,654 - rasterio.env - DEBUG - Starting outermost env
+2023-11-16 12:06:33,655 - rasterio.env - DEBUG - No GDAL environment exists
+2023-11-16 12:06:33,657 - rasterio.env - DEBUG - New GDAL environment <rasterio._env.GDALEnv object at 0x1af643fd0> created
+2023-11-16 12:06:33,658 - rasterio._env - DEBUG - GDAL_DATA found in environment.
+2023-11-16 12:06:33,660 - rasterio._env - DEBUG - PROJ_DATA found in environment.
+2023-11-16 12:06:33,661 - rasterio._env - DEBUG - Started GDALEnv: self=<rasterio._env.GDALEnv object at 0x1af643fd0>.
+2023-11-16 12:06:33,662 - rasterio.env - DEBUG - Entered env context: <rasterio.env.Env object at 0x1af643d00>
+2023-11-16 12:06:33,903 - rasterio.env - DEBUG - Exiting env context: <rasterio.env.Env object at 0x1af643d00>
+2023-11-16 12:06:33,905 - rasterio.env - DEBUG - Cleared existing <rasterio._env.GDALEnv object at 0x1af643fd0> options
+2023-11-16 12:06:33,906 - rasterio._env - DEBUG - Stopped GDALEnv <rasterio._env.GDALEnv object at 0x1af643fd0>.
+2023-11-16 12:06:33,908 - rasterio.env - DEBUG - Exiting outermost env
+2023-11-16 12:06:33,909 - rasterio.env - DEBUG - Exited env context: <rasterio.env.Env object at 0x1af643d00>
+2023-11-16 12:06:33,910 - rasterio.env - DEBUG - Entering env context: <rasterio.env.Env object at 0x1af643d60>
+2023-11-16 12:06:33,911 - rasterio.env - DEBUG - Starting outermost env
+2023-11-16 12:06:33,912 - rasterio.env - DEBUG - No GDAL environment exists
+2023-11-16 12:06:33,913 - rasterio.env - DEBUG - New GDAL environment <rasterio._env.GDALEnv object at 0x1af643ee0> created
+2023-11-16 12:06:33,915 - rasterio._env - DEBUG - GDAL_DATA found in environment.
+2023-11-16 12:06:33,917 - rasterio._env - DEBUG - PROJ_DATA found in environment.
+2023-11-16 12:06:33,918 - rasterio._env - DEBUG - Started GDALEnv: self=<rasterio._env.GDALEnv object at 0x1af643ee0>.
+2023-11-16 12:06:33,919 - rasterio.env - DEBUG - Entered env context: <rasterio.env.Env object at 0x1af643d60>
+2023-11-16 12:06:33,920 - rasterio._io - DEBUG - Path: _UnparsedPath(path='/Users/jtarrico/sierra_isce_multi/geocode_test/tmp/llh.long.tif'), mode: w, driver: GTiff
+2023-11-16 12:06:33,923 - rasterio._base - DEBUG - Nodata success: 1, Nodata value: 0.000000
+2023-11-16 12:06:33,925 - rasterio.env - DEBUG - Exiting env context: <rasterio.env.Env object at 0x1af643d60>
+2023-11-16 12:06:33,926 - rasterio.env - DEBUG - Cleared existing <rasterio._env.GDALEnv object at 0x1af643ee0> options
+2023-11-16 12:06:33,927 - rasterio._env - DEBUG - Stopped GDALEnv <rasterio._env.GDALEnv object at 0x1af643ee0>.
+2023-11-16 12:06:33,928 - rasterio.env - DEBUG - Exiting outermost env
+2023-11-16 12:06:33,929 - rasterio.env - DEBUG - Exited env context: <rasterio.env.Env object at 0x1af643d60>
+2023-11-16 12:06:33,930 - rasterio.env - DEBUG - Entering env context: <rasterio.env.Env object at 0x1af643e20>
+2023-11-16 12:06:33,931 - rasterio.env - DEBUG - Starting outermost env
+2023-11-16 12:06:33,932 - rasterio.env - DEBUG - No GDAL environment exists
+2023-11-16 12:06:33,934 - rasterio.env - DEBUG - New GDAL environment <rasterio._env.GDALEnv object at 0x1af643ee0> created
+2023-11-16 12:06:33,935 - rasterio._env - DEBUG - GDAL_DATA found in environment.
+2023-11-16 12:06:33,936 - rasterio._env - DEBUG - PROJ_DATA found in environment.
+2023-11-16 12:06:33,938 - rasterio._env - DEBUG - Started GDALEnv: self=<rasterio._env.GDALEnv object at 0x1af643ee0>.
+2023-11-16 12:06:33,939 - rasterio.env - DEBUG - Entered env context: <rasterio.env.Env object at 0x1af643e20>
+2023-11-16 12:06:34,172 - rasterio.env - DEBUG - Exiting env context: <rasterio.env.Env object at 0x1af643e20>
+2023-11-16 12:06:34,174 - rasterio.env - DEBUG - Cleared existing <rasterio._env.GDALEnv object at 0x1af643ee0> options
+2023-11-16 12:06:34,175 - rasterio._env - DEBUG - Stopped GDALEnv <rasterio._env.GDALEnv object at 0x1af643ee0>.
+2023-11-16 12:06:34,176 - rasterio.env - DEBUG - Exiting outermost env
+2023-11-16 12:06:34,177 - rasterio.env - DEBUG - Exited env context: <rasterio.env.Env object at 0x1af643e20>
+2023-11-16 12:06:34,178 - rasterio.env - DEBUG - Entering env context: <rasterio.env.Env object at 0x1af643fd0>
+2023-11-16 12:06:34,179 - rasterio.env - DEBUG - Starting outermost env
+2023-11-16 12:06:34,179 - rasterio.env - DEBUG - No GDAL environment exists
+2023-11-16 12:06:34,180 - rasterio.env - DEBUG - New GDAL environment <rasterio._env.GDALEnv object at 0x1af643d00> created
+2023-11-16 12:06:34,182 - rasterio._env - DEBUG - GDAL_DATA found in environment.
+2023-11-16 12:06:34,183 - rasterio._env - DEBUG - PROJ_DATA found in environment.
+2023-11-16 12:06:34,184 - rasterio._env - DEBUG - Started GDALEnv: self=<rasterio._env.GDALEnv object at 0x1af643d00>.
+2023-11-16 12:06:34,186 - rasterio.env - DEBUG - Entered env context: <rasterio.env.Env object at 0x1af643fd0>
+2023-11-16 12:06:34,187 - rasterio._io - DEBUG - Path: _UnparsedPath(path='/Users/jtarrico/sierra_isce_multi/geocode_test/tmp/llh.dem.tif'), mode: w, driver: GTiff
+2023-11-16 12:06:34,194 - rasterio._base - DEBUG - Nodata success: 1, Nodata value: 0.000000
+2023-11-16 12:06:34,195 - rasterio.env - DEBUG - Exiting env context: <rasterio.env.Env object at 0x1af643fd0>
+2023-11-16 12:06:34,197 - rasterio.env - DEBUG - Cleared existing <rasterio._env.GDALEnv object at 0x1af643d00> options
+2023-11-16 12:06:34,197 - rasterio._env - DEBUG - Stopped GDALEnv <rasterio._env.GDALEnv object at 0x1af643d00>.
+2023-11-16 12:06:34,198 - rasterio.env - DEBUG - Exiting outermost env
+2023-11-16 12:06:34,199 - rasterio.env - DEBUG - Exited env context: <rasterio.env.Env object at 0x1af643fd0>
+2023-11-16 12:06:34,200 - rasterio.env - DEBUG - Entering env context: <rasterio.env.Env object at 0x1af51aa00>
+2023-11-16 12:06:34,201 - rasterio.env - DEBUG - Starting outermost env
+2023-11-16 12:06:34,202 - rasterio.env - DEBUG - No GDAL environment exists
+2023-11-16 12:06:34,203 - rasterio.env - DEBUG - New GDAL environment <rasterio._env.GDALEnv object at 0x1af643d00> created
+2023-11-16 12:06:34,205 - rasterio._env - DEBUG - GDAL_DATA found in environment.
+2023-11-16 12:06:34,212 - rasterio._env - DEBUG - PROJ_DATA found in environment.
+2023-11-16 12:06:34,217 - rasterio._env - DEBUG - Started GDALEnv: self=<rasterio._env.GDALEnv object at 0x1af643d00>.
+2023-11-16 12:06:34,222 - rasterio.env - DEBUG - Entered env context: <rasterio.env.Env object at 0x1af51aa00>
+2023-11-16 12:06:34,467 - rasterio.env - DEBUG - Exiting env context: <rasterio.env.Env object at 0x1af51aa00>
+2023-11-16 12:06:34,468 - rasterio.env - DEBUG - Cleared existing <rasterio._env.GDALEnv object at 0x1af643d00> options
+2023-11-16 12:06:34,470 - rasterio._env - DEBUG - Stopped GDALEnv <rasterio._env.GDALEnv object at 0x1af643d00>.
+2023-11-16 12:06:34,471 - rasterio.env - DEBUG - Exiting outermost env
+2023-11-16 12:06:34,473 - rasterio.env - DEBUG - Exited env context: <rasterio.env.Env object at 0x1af51aa00>
+2023-11-16 12:06:34,484 - rasterio.env - DEBUG - Entering env context: <rasterio.env.Env object at 0x1af643d00>
+2023-11-16 12:06:34,486 - rasterio.env - DEBUG - Starting outermost env
+2023-11-16 12:06:34,488 - rasterio.env - DEBUG - No GDAL environment exists
+2023-11-16 12:06:34,489 - rasterio.env - DEBUG - New GDAL environment <rasterio._env.GDALEnv object at 0x1af643ee0> created
+2023-11-16 12:06:34,491 - rasterio._env - DEBUG - GDAL_DATA found in environment.
+2023-11-16 12:06:34,493 - rasterio._env - DEBUG - PROJ_DATA found in environment.
+2023-11-16 12:06:34,494 - rasterio._env - DEBUG - Started GDALEnv: self=<rasterio._env.GDALEnv object at 0x1af643ee0>.
+2023-11-16 12:06:34,496 - rasterio.env - DEBUG - Entered env context: <rasterio.env.Env object at 0x1af643d00>
+2023-11-16 12:06:34,498 - rasterio._base - DEBUG - Sharing flag: 0
+2023-11-16 12:06:34,500 - rasterio._env - INFO - GDAL signalled an error: err_no=4, msg='int/20200226T2253_20200311T1852/20200226T2253_20200311T1852.unw_snaphu.unw.vrt: No such file or directory'
+2023-11-16 12:06:34,501 - rasterio.env - DEBUG - Exiting env context: <rasterio.env.Env object at 0x1af643d00>
+2023-11-16 12:06:34,503 - rasterio.env - DEBUG - Cleared existing <rasterio._env.GDALEnv object at 0x1af643ee0> options
+2023-11-16 12:06:34,504 - rasterio._env - DEBUG - Stopped GDALEnv <rasterio._env.GDALEnv object at 0x1af643ee0>.
+2023-11-16 12:06:34,505 - rasterio.env - DEBUG - Exiting outermost env
+2023-11-16 12:06:34,506 - rasterio.env - DEBUG - Exited env context: <rasterio.env.Env object at 0x1af643d00>
+2023-11-16 12:08:08,145 - rasterio.env - DEBUG - Entering env context: <rasterio.env.Env object at 0x1adb4c1f0>
+2023-11-16 12:08:08,146 - rasterio.env - DEBUG - Starting outermost env
+2023-11-16 12:08:08,147 - rasterio.env - DEBUG - No GDAL environment exists
+2023-11-16 12:08:08,148 - rasterio.env - DEBUG - New GDAL environment <rasterio._env.GDALEnv object at 0x1adb701c0> created
+2023-11-16 12:08:08,150 - rasterio._env - DEBUG - GDAL_DATA found in environment.
+2023-11-16 12:08:08,151 - rasterio._env - DEBUG - PROJ_DATA found in environment.
+2023-11-16 12:08:08,152 - rasterio._env - DEBUG - Started GDALEnv: self=<rasterio._env.GDALEnv object at 0x1adb701c0>.
+2023-11-16 12:08:08,154 - rasterio.env - DEBUG - Entered env context: <rasterio.env.Env object at 0x1adb4c1f0>
+2023-11-16 12:08:08,155 - rasterio._io - DEBUG - Path: _UnparsedPath(path='/Users/jtarrico/sierra_isce_multi/geocode_test/tmp/llh.lat.tif'), mode: w, driver: GTiff
+2023-11-16 12:08:08,163 - rasterio._base - DEBUG - Nodata success: 1, Nodata value: 0.000000
+2023-11-16 12:08:08,164 - rasterio.env - DEBUG - Exiting env context: <rasterio.env.Env object at 0x1adb4c1f0>
+2023-11-16 12:08:08,166 - rasterio.env - DEBUG - Cleared existing <rasterio._env.GDALEnv object at 0x1adb701c0> options
+2023-11-16 12:08:08,167 - rasterio._env - DEBUG - Stopped GDALEnv <rasterio._env.GDALEnv object at 0x1adb701c0>.
+2023-11-16 12:08:08,168 - rasterio.env - DEBUG - Exiting outermost env
+2023-11-16 12:08:08,169 - rasterio.env - DEBUG - Exited env context: <rasterio.env.Env object at 0x1adb4c1f0>
+2023-11-16 12:08:08,170 - rasterio.env - DEBUG - Entering env context: <rasterio.env.Env object at 0x1af343580>
+2023-11-16 12:08:08,172 - rasterio.env - DEBUG - Starting outermost env
+2023-11-16 12:08:08,173 - rasterio.env - DEBUG - No GDAL environment exists
+2023-11-16 12:08:08,174 - rasterio.env - DEBUG - New GDAL environment <rasterio._env.GDALEnv object at 0x1adb701c0> created
+2023-11-16 12:08:08,176 - rasterio._env - DEBUG - GDAL_DATA found in environment.
+2023-11-16 12:08:08,177 - rasterio._env - DEBUG - PROJ_DATA found in environment.
+2023-11-16 12:08:08,179 - rasterio._env - DEBUG - Started GDALEnv: self=<rasterio._env.GDALEnv object at 0x1adb701c0>.
+2023-11-16 12:08:08,180 - rasterio.env - DEBUG - Entered env context: <rasterio.env.Env object at 0x1af343580>
+2023-11-16 12:08:08,409 - rasterio.env - DEBUG - Exiting env context: <rasterio.env.Env object at 0x1af343580>
+2023-11-16 12:08:08,411 - rasterio.env - DEBUG - Cleared existing <rasterio._env.GDALEnv object at 0x1adb701c0> options
+2023-11-16 12:08:08,412 - rasterio._env - DEBUG - Stopped GDALEnv <rasterio._env.GDALEnv object at 0x1adb701c0>.
+2023-11-16 12:08:08,413 - rasterio.env - DEBUG - Exiting outermost env
+2023-11-16 12:08:08,414 - rasterio.env - DEBUG - Exited env context: <rasterio.env.Env object at 0x1af343580>
+2023-11-16 12:08:08,415 - rasterio.env - DEBUG - Entering env context: <rasterio.env.Env object at 0x1adb4c1f0>
+2023-11-16 12:08:08,416 - rasterio.env - DEBUG - Starting outermost env
+2023-11-16 12:08:08,417 - rasterio.env - DEBUG - No GDAL environment exists
+2023-11-16 12:08:08,418 - rasterio.env - DEBUG - New GDAL environment <rasterio._env.GDALEnv object at 0x1adb70130> created
+2023-11-16 12:08:08,420 - rasterio._env - DEBUG - GDAL_DATA found in environment.
+2023-11-16 12:08:08,421 - rasterio._env - DEBUG - PROJ_DATA found in environment.
+2023-11-16 12:08:08,423 - rasterio._env - DEBUG - Started GDALEnv: self=<rasterio._env.GDALEnv object at 0x1adb70130>.
+2023-11-16 12:08:08,424 - rasterio.env - DEBUG - Entered env context: <rasterio.env.Env object at 0x1adb4c1f0>
+2023-11-16 12:08:08,425 - rasterio._io - DEBUG - Path: _UnparsedPath(path='/Users/jtarrico/sierra_isce_multi/geocode_test/tmp/llh.long.tif'), mode: w, driver: GTiff
+2023-11-16 12:08:08,428 - rasterio._base - DEBUG - Nodata success: 1, Nodata value: 0.000000
+2023-11-16 12:08:08,429 - rasterio.env - DEBUG - Exiting env context: <rasterio.env.Env object at 0x1adb4c1f0>
+2023-11-16 12:08:08,430 - rasterio.env - DEBUG - Cleared existing <rasterio._env.GDALEnv object at 0x1adb70130> options
+2023-11-16 12:08:08,431 - rasterio._env - DEBUG - Stopped GDALEnv <rasterio._env.GDALEnv object at 0x1adb70130>.
+2023-11-16 12:08:08,432 - rasterio.env - DEBUG - Exiting outermost env
+2023-11-16 12:08:08,433 - rasterio.env - DEBUG - Exited env context: <rasterio.env.Env object at 0x1adb4c1f0>
+2023-11-16 12:08:08,434 - rasterio.env - DEBUG - Entering env context: <rasterio.env.Env object at 0x1af343580>
+2023-11-16 12:08:08,435 - rasterio.env - DEBUG - Starting outermost env
+2023-11-16 12:08:08,436 - rasterio.env - DEBUG - No GDAL environment exists
+2023-11-16 12:08:08,437 - rasterio.env - DEBUG - New GDAL environment <rasterio._env.GDALEnv object at 0x1adb70130> created
+2023-11-16 12:08:08,439 - rasterio._env - DEBUG - GDAL_DATA found in environment.
+2023-11-16 12:08:08,440 - rasterio._env - DEBUG - PROJ_DATA found in environment.
+2023-11-16 12:08:08,441 - rasterio._env - DEBUG - Started GDALEnv: self=<rasterio._env.GDALEnv object at 0x1adb70130>.
+2023-11-16 12:08:08,442 - rasterio.env - DEBUG - Entered env context: <rasterio.env.Env object at 0x1af343580>
+2023-11-16 12:08:08,683 - rasterio.env - DEBUG - Exiting env context: <rasterio.env.Env object at 0x1af343580>
+2023-11-16 12:08:08,685 - rasterio.env - DEBUG - Cleared existing <rasterio._env.GDALEnv object at 0x1adb70130> options
+2023-11-16 12:08:08,686 - rasterio._env - DEBUG - Stopped GDALEnv <rasterio._env.GDALEnv object at 0x1adb70130>.
+2023-11-16 12:08:08,687 - rasterio.env - DEBUG - Exiting outermost env
+2023-11-16 12:08:08,688 - rasterio.env - DEBUG - Exited env context: <rasterio.env.Env object at 0x1af343580>
+2023-11-16 12:08:08,689 - rasterio.env - DEBUG - Entering env context: <rasterio.env.Env object at 0x1adb4c1f0>
+2023-11-16 12:08:08,690 - rasterio.env - DEBUG - Starting outermost env
+2023-11-16 12:08:08,691 - rasterio.env - DEBUG - No GDAL environment exists
+2023-11-16 12:08:08,692 - rasterio.env - DEBUG - New GDAL environment <rasterio._env.GDALEnv object at 0x1adb701c0> created
+2023-11-16 12:08:08,694 - rasterio._env - DEBUG - GDAL_DATA found in environment.
+2023-11-16 12:08:08,695 - rasterio._env - DEBUG - PROJ_DATA found in environment.
+2023-11-16 12:08:08,696 - rasterio._env - DEBUG - Started GDALEnv: self=<rasterio._env.GDALEnv object at 0x1adb701c0>.
+2023-11-16 12:08:08,697 - rasterio.env - DEBUG - Entered env context: <rasterio.env.Env object at 0x1adb4c1f0>
+2023-11-16 12:08:08,699 - rasterio._io - DEBUG - Path: _UnparsedPath(path='/Users/jtarrico/sierra_isce_multi/geocode_test/tmp/llh.dem.tif'), mode: w, driver: GTiff
+2023-11-16 12:08:08,706 - rasterio._base - DEBUG - Nodata success: 1, Nodata value: 0.000000
+2023-11-16 12:08:08,707 - rasterio.env - DEBUG - Exiting env context: <rasterio.env.Env object at 0x1adb4c1f0>
+2023-11-16 12:08:08,708 - rasterio.env - DEBUG - Cleared existing <rasterio._env.GDALEnv object at 0x1adb701c0> options
+2023-11-16 12:08:08,709 - rasterio._env - DEBUG - Stopped GDALEnv <rasterio._env.GDALEnv object at 0x1adb701c0>.
+2023-11-16 12:08:08,710 - rasterio.env - DEBUG - Exiting outermost env
+2023-11-16 12:08:08,711 - rasterio.env - DEBUG - Exited env context: <rasterio.env.Env object at 0x1adb4c1f0>
+2023-11-16 12:08:08,713 - rasterio.env - DEBUG - Entering env context: <rasterio.env.Env object at 0x1af343580>
+2023-11-16 12:08:08,714 - rasterio.env - DEBUG - Starting outermost env
+2023-11-16 12:08:08,715 - rasterio.env - DEBUG - No GDAL environment exists
+2023-11-16 12:08:08,716 - rasterio.env - DEBUG - New GDAL environment <rasterio._env.GDALEnv object at 0x1adb701c0> created
+2023-11-16 12:08:08,718 - rasterio._env - DEBUG - GDAL_DATA found in environment.
+2023-11-16 12:08:08,719 - rasterio._env - DEBUG - PROJ_DATA found in environment.
+2023-11-16 12:08:08,720 - rasterio._env - DEBUG - Started GDALEnv: self=<rasterio._env.GDALEnv object at 0x1adb701c0>.
+2023-11-16 12:08:08,721 - rasterio.env - DEBUG - Entered env context: <rasterio.env.Env object at 0x1af343580>
+2023-11-16 12:08:08,951 - rasterio.env - DEBUG - Exiting env context: <rasterio.env.Env object at 0x1af343580>
+2023-11-16 12:08:08,952 - rasterio.env - DEBUG - Cleared existing <rasterio._env.GDALEnv object at 0x1adb701c0> options
+2023-11-16 12:08:08,954 - rasterio._env - DEBUG - Stopped GDALEnv <rasterio._env.GDALEnv object at 0x1adb701c0>.
+2023-11-16 12:08:08,955 - rasterio.env - DEBUG - Exiting outermost env
+2023-11-16 12:08:08,955 - rasterio.env - DEBUG - Exited env context: <rasterio.env.Env object at 0x1af343580>
+2023-11-16 12:08:08,962 - rasterio.env - DEBUG - Entering env context: <rasterio.env.Env object at 0x1ada4dd60>
+2023-11-16 12:08:08,964 - rasterio.env - DEBUG - Starting outermost env
+2023-11-16 12:08:08,965 - rasterio.env - DEBUG - No GDAL environment exists
+2023-11-16 12:08:08,967 - rasterio.env - DEBUG - New GDAL environment <rasterio._env.GDALEnv object at 0x1adb24e80> created
+2023-11-16 12:08:08,969 - rasterio._env - DEBUG - GDAL_DATA found in environment.
+2023-11-16 12:08:08,970 - rasterio._env - DEBUG - PROJ_DATA found in environment.
+2023-11-16 12:08:08,972 - rasterio._env - DEBUG - Started GDALEnv: self=<rasterio._env.GDALEnv object at 0x1adb24e80>.
+2023-11-16 12:08:08,973 - rasterio.env - DEBUG - Entered env context: <rasterio.env.Env object at 0x1ada4dd60>
+2023-11-16 12:08:08,974 - rasterio._base - DEBUG - Sharing flag: 0
+2023-11-16 12:08:08,976 - rasterio._base - DEBUG - Nodata success: 0, Nodata value: -10000.000000
+2023-11-16 12:08:08,977 - rasterio._base - DEBUG - Nodata success: 0, Nodata value: -10000.000000
+2023-11-16 12:08:08,978 - rasterio._base - DEBUG - Dataset <open DatasetReader name='/Users/jtarrico/sierra_isce_multi/int/20200131T1903_20200212T2211/20200131T1903_20200212T2211.unw_snaphu.unw.vrt' mode='r'> is started.
+2023-11-16 12:08:08,980 - rasterio.env - DEBUG - Exiting env context: <rasterio.env.Env object at 0x1ada4dd60>
+2023-11-16 12:08:08,981 - rasterio.env - DEBUG - Cleared existing <rasterio._env.GDALEnv object at 0x1adb24e80> options
+2023-11-16 12:08:08,982 - rasterio._env - DEBUG - Stopped GDALEnv <rasterio._env.GDALEnv object at 0x1adb24e80>.
+2023-11-16 12:08:08,984 - rasterio.env - DEBUG - Exiting outermost env
+2023-11-16 12:08:08,985 - rasterio.env - DEBUG - Exited env context: <rasterio.env.Env object at 0x1ada4dd60>
+2023-11-16 12:08:08,986 - rasterio.env - DEBUG - Entering env context: <rasterio.env.Env object at 0x1adb701c0>
+2023-11-16 12:08:08,987 - rasterio.env - DEBUG - Starting outermost env
+2023-11-16 12:08:08,988 - rasterio.env - DEBUG - No GDAL environment exists
+2023-11-16 12:08:08,989 - rasterio.env - DEBUG - New GDAL environment <rasterio._env.GDALEnv object at 0x1adb24e80> created
+2023-11-16 12:08:08,991 - rasterio._env - DEBUG - GDAL_DATA found in environment.
+2023-11-16 12:08:08,992 - rasterio._env - DEBUG - PROJ_DATA found in environment.
+2023-11-16 12:08:08,993 - rasterio._env - DEBUG - Started GDALEnv: self=<rasterio._env.GDALEnv object at 0x1adb24e80>.
+2023-11-16 12:08:08,994 - rasterio.env - DEBUG - Entered env context: <rasterio.env.Env object at 0x1adb701c0>
+2023-11-16 12:08:08,995 - rasterio._io - DEBUG - Output nodata value read from file: None
+2023-11-16 12:08:08,996 - rasterio._io - DEBUG - Output nodata values: [None]
+2023-11-16 12:08:08,998 - rasterio._io - DEBUG - all_valid: True
+2023-11-16 12:08:08,999 - rasterio._io - DEBUG - mask_flags: ([<MaskFlags.all_valid: 1>], [<MaskFlags.all_valid: 1>])
+2023-11-16 12:08:09,000 - rasterio._io - DEBUG - Jump straight to _read()
+2023-11-16 12:08:09,001 - rasterio._io - DEBUG - Window: None
+2023-11-16 12:08:09,003 - rasterio._io - DEBUG - IO window xoff=0.0 yoff=0.0 width=4437.0 height=16212.0
+2023-11-16 12:08:09,262 - rasterio.env - DEBUG - Exiting env context: <rasterio.env.Env object at 0x1adb701c0>
+2023-11-16 12:08:09,264 - rasterio.env - DEBUG - Cleared existing <rasterio._env.GDALEnv object at 0x1adb24e80> options
+2023-11-16 12:08:09,265 - rasterio._env - DEBUG - Stopped GDALEnv <rasterio._env.GDALEnv object at 0x1adb24e80>.
+2023-11-16 12:08:09,266 - rasterio.env - DEBUG - Exiting outermost env
+2023-11-16 12:08:09,267 - rasterio.env - DEBUG - Exited env context: <rasterio.env.Env object at 0x1adb701c0>
+2023-11-16 12:08:09,268 - rasterio.env - DEBUG - Entering env context: <rasterio.env.Env object at 0x1af343580>
+2023-11-16 12:08:09,269 - rasterio.env - DEBUG - Starting outermost env
+2023-11-16 12:08:09,270 - rasterio.env - DEBUG - No GDAL environment exists
+2023-11-16 12:08:09,271 - rasterio.env - DEBUG - New GDAL environment <rasterio._env.GDALEnv object at 0x1ada4dd60> created
+2023-11-16 12:08:09,272 - rasterio._env - DEBUG - GDAL_DATA found in environment.
+2023-11-16 12:08:09,274 - rasterio._env - DEBUG - PROJ_DATA found in environment.
+2023-11-16 12:08:09,275 - rasterio._env - DEBUG - Started GDALEnv: self=<rasterio._env.GDALEnv object at 0x1ada4dd60>.
+2023-11-16 12:08:09,276 - rasterio.env - DEBUG - Entered env context: <rasterio.env.Env object at 0x1af343580>
+2023-11-16 12:08:09,277 - rasterio._io - DEBUG - Path: _UnparsedPath(path='/Users/jtarrico/sierra_isce_multi/geocode_test/tmp/20200131T1903_20200212T2211.unw_snaphu.unw.vrt.unw.tif'), mode: w, driver: GTiff
+2023-11-16 12:08:09,278 - rasterio._io - DEBUG - Skipped delete for overwrite, dataset does not exist: '/Users/jtarrico/sierra_isce_multi/geocode_test/tmp/20200131T1903_20200212T2211.unw_snaphu.unw.vrt.unw.tif'
+2023-11-16 12:08:09,280 - rasterio._base - DEBUG - Nodata success: 1, Nodata value: 0.000000
+2023-11-16 12:08:09,282 - rasterio.env - DEBUG - Exiting env context: <rasterio.env.Env object at 0x1af343580>
+2023-11-16 12:08:09,283 - rasterio.env - DEBUG - Cleared existing <rasterio._env.GDALEnv object at 0x1ada4dd60> options
+2023-11-16 12:08:09,284 - rasterio._env - DEBUG - Stopped GDALEnv <rasterio._env.GDALEnv object at 0x1ada4dd60>.
+2023-11-16 12:08:09,285 - rasterio.env - DEBUG - Exiting outermost env
+2023-11-16 12:08:09,287 - rasterio.env - DEBUG - Exited env context: <rasterio.env.Env object at 0x1af343580>
+2023-11-16 12:08:09,288 - rasterio.env - DEBUG - Entering env context: <rasterio.env.Env object at 0x1adb701c0>
+2023-11-16 12:08:09,289 - rasterio.env - DEBUG - Starting outermost env
+2023-11-16 12:08:09,290 - rasterio.env - DEBUG - No GDAL environment exists
+2023-11-16 12:08:09,291 - rasterio.env - DEBUG - New GDAL environment <rasterio._env.GDALEnv object at 0x1adb24460> created
+2023-11-16 12:08:09,293 - rasterio._env - DEBUG - GDAL_DATA found in environment.
+2023-11-16 12:08:09,294 - rasterio._env - DEBUG - PROJ_DATA found in environment.
+2023-11-16 12:08:09,296 - rasterio._env - DEBUG - Started GDALEnv: self=<rasterio._env.GDALEnv object at 0x1adb24460>.
+2023-11-16 12:08:09,297 - rasterio.env - DEBUG - Entered env context: <rasterio.env.Env object at 0x1adb701c0>
+2023-11-16 12:08:10,252 - rasterio.env - DEBUG - Exiting env context: <rasterio.env.Env object at 0x1adb701c0>
+2023-11-16 12:08:10,253 - rasterio.env - DEBUG - Cleared existing <rasterio._env.GDALEnv object at 0x1adb24460> options
+2023-11-16 12:08:10,254 - rasterio._env - DEBUG - Stopped GDALEnv <rasterio._env.GDALEnv object at 0x1adb24460>.
+2023-11-16 12:08:10,255 - rasterio.env - DEBUG - Exiting outermost env
+2023-11-16 12:08:10,256 - rasterio.env - DEBUG - Exited env context: <rasterio.env.Env object at 0x1adb701c0>
+2023-11-16 12:31:39,201 - rasterio.session - DEBUG - Could not import boto3, continuing with reduced functionality.
+2023-11-16 15:07:14,283 - rasterio.env - DEBUG - Entering env context: <rasterio.env.Env object at 0x1ae72ebb0>
+2023-11-16 15:07:14,286 - rasterio.env - DEBUG - Starting outermost env
+2023-11-16 15:07:14,287 - rasterio.env - DEBUG - No GDAL environment exists
+2023-11-16 15:07:14,288 - rasterio.env - DEBUG - New GDAL environment <rasterio._env.GDALEnv object at 0x1a625e160> created
+2023-11-16 15:07:14,289 - rasterio._filepath - DEBUG - Installing FilePath filesystem handler plugin...
+2023-11-16 15:07:14,291 - rasterio._env - DEBUG - GDAL_DATA found in environment.
+2023-11-16 15:07:14,293 - rasterio._env - DEBUG - PROJ_DATA found in environment.
+2023-11-16 15:07:14,294 - rasterio._env - DEBUG - Started GDALEnv: self=<rasterio._env.GDALEnv object at 0x1a625e160>.
+2023-11-16 15:07:14,295 - rasterio.env - DEBUG - Entered env context: <rasterio.env.Env object at 0x1ae72ebb0>
+2023-11-16 15:07:14,297 - rasterio._io - DEBUG - Path: _UnparsedPath(path='/Users/jtarrico/sierra_isce_multi/tmp/llh.lat.tif'), mode: w, driver: GTiff
+2023-11-16 15:07:14,299 - rasterio._io - DEBUG - Skipped delete for overwrite, dataset does not exist: '/Users/jtarrico/sierra_isce_multi/tmp/llh.lat.tif'
+2023-11-16 15:07:14,303 - rasterio._base - DEBUG - Nodata success: 1, Nodata value: 0.000000
+2023-11-16 15:07:14,304 - rasterio.env - DEBUG - Exiting env context: <rasterio.env.Env object at 0x1ae72ebb0>
+2023-11-16 15:07:14,305 - rasterio.env - DEBUG - Cleared existing <rasterio._env.GDALEnv object at 0x1a625e160> options
+2023-11-16 15:07:14,306 - rasterio._env - DEBUG - Stopped GDALEnv <rasterio._env.GDALEnv object at 0x1a625e160>.
+2023-11-16 15:07:14,307 - rasterio.env - DEBUG - Exiting outermost env
+2023-11-16 15:07:14,308 - rasterio.env - DEBUG - Exited env context: <rasterio.env.Env object at 0x1ae72ebb0>
+2023-11-16 15:07:14,309 - rasterio.env - DEBUG - Entering env context: <rasterio.env.Env object at 0x1ae0af0d0>
+2023-11-16 15:07:14,310 - rasterio.env - DEBUG - Starting outermost env
+2023-11-16 15:07:14,312 - rasterio.env - DEBUG - No GDAL environment exists
+2023-11-16 15:07:14,312 - rasterio.env - DEBUG - New GDAL environment <rasterio._env.GDALEnv object at 0x1a92b2040> created
+2023-11-16 15:07:14,314 - rasterio._env - DEBUG - GDAL_DATA found in environment.
+2023-11-16 15:07:14,315 - rasterio._env - DEBUG - PROJ_DATA found in environment.
+2023-11-16 15:07:14,317 - rasterio._env - DEBUG - Started GDALEnv: self=<rasterio._env.GDALEnv object at 0x1a92b2040>.
+2023-11-16 15:07:14,318 - rasterio.env - DEBUG - Entered env context: <rasterio.env.Env object at 0x1ae0af0d0>
+2023-11-16 15:07:14,749 - rasterio.env - DEBUG - Exiting env context: <rasterio.env.Env object at 0x1ae0af0d0>
+2023-11-16 15:07:14,751 - rasterio.env - DEBUG - Cleared existing <rasterio._env.GDALEnv object at 0x1a92b2040> options
+2023-11-16 15:07:14,752 - rasterio._env - DEBUG - Stopped GDALEnv <rasterio._env.GDALEnv object at 0x1a92b2040>.
+2023-11-16 15:07:14,753 - rasterio.env - DEBUG - Exiting outermost env
+2023-11-16 15:07:14,754 - rasterio.env - DEBUG - Exited env context: <rasterio.env.Env object at 0x1ae0af0d0>
+2023-11-16 15:07:14,755 - rasterio.env - DEBUG - Entering env context: <rasterio.env.Env object at 0x1a91e9910>
+2023-11-16 15:07:14,756 - rasterio.env - DEBUG - Starting outermost env
+2023-11-16 15:07:14,757 - rasterio.env - DEBUG - No GDAL environment exists
+2023-11-16 15:07:14,758 - rasterio.env - DEBUG - New GDAL environment <rasterio._env.GDALEnv object at 0x1a91e9d60> created
+2023-11-16 15:07:14,760 - rasterio._env - DEBUG - GDAL_DATA found in environment.
+2023-11-16 15:07:14,761 - rasterio._env - DEBUG - PROJ_DATA found in environment.
+2023-11-16 15:07:14,762 - rasterio._env - DEBUG - Started GDALEnv: self=<rasterio._env.GDALEnv object at 0x1a91e9d60>.
+2023-11-16 15:07:14,764 - rasterio.env - DEBUG - Entered env context: <rasterio.env.Env object at 0x1a91e9910>
+2023-11-16 15:07:14,765 - rasterio._io - DEBUG - Path: _UnparsedPath(path='/Users/jtarrico/sierra_isce_multi/tmp/llh.long.tif'), mode: w, driver: GTiff
+2023-11-16 15:07:14,767 - rasterio._io - DEBUG - Skipped delete for overwrite, dataset does not exist: '/Users/jtarrico/sierra_isce_multi/tmp/llh.long.tif'
+2023-11-16 15:07:14,768 - rasterio._base - DEBUG - Nodata success: 1, Nodata value: 0.000000
+2023-11-16 15:07:14,769 - rasterio.env - DEBUG - Exiting env context: <rasterio.env.Env object at 0x1a91e9910>
+2023-11-16 15:07:14,770 - rasterio.env - DEBUG - Cleared existing <rasterio._env.GDALEnv object at 0x1a91e9d60> options
+2023-11-16 15:07:14,772 - rasterio._env - DEBUG - Stopped GDALEnv <rasterio._env.GDALEnv object at 0x1a91e9d60>.
+2023-11-16 15:07:14,773 - rasterio.env - DEBUG - Exiting outermost env
+2023-11-16 15:07:14,774 - rasterio.env - DEBUG - Exited env context: <rasterio.env.Env object at 0x1a91e9910>
+2023-11-16 15:07:14,776 - rasterio.env - DEBUG - Entering env context: <rasterio.env.Env object at 0x1a625e160>
+2023-11-16 15:07:14,786 - rasterio.env - DEBUG - Starting outermost env
+2023-11-16 15:07:14,793 - rasterio.env - DEBUG - No GDAL environment exists
+2023-11-16 15:07:14,803 - rasterio.env - DEBUG - New GDAL environment <rasterio._env.GDALEnv object at 0x1a92b2970> created
+2023-11-16 15:07:14,806 - rasterio._env - DEBUG - GDAL_DATA found in environment.
+2023-11-16 15:07:14,807 - rasterio._env - DEBUG - PROJ_DATA found in environment.
+2023-11-16 15:07:14,809 - rasterio._env - DEBUG - Started GDALEnv: self=<rasterio._env.GDALEnv object at 0x1a92b2970>.
+2023-11-16 15:07:14,813 - rasterio.env - DEBUG - Entered env context: <rasterio.env.Env object at 0x1a625e160>
+2023-11-16 15:07:15,076 - rasterio.env - DEBUG - Exiting env context: <rasterio.env.Env object at 0x1a625e160>
+2023-11-16 15:07:15,077 - rasterio.env - DEBUG - Cleared existing <rasterio._env.GDALEnv object at 0x1a92b2970> options
+2023-11-16 15:07:15,078 - rasterio._env - DEBUG - Stopped GDALEnv <rasterio._env.GDALEnv object at 0x1a92b2970>.
+2023-11-16 15:07:15,079 - rasterio.env - DEBUG - Exiting outermost env
+2023-11-16 15:07:15,080 - rasterio.env - DEBUG - Exited env context: <rasterio.env.Env object at 0x1a625e160>
+2023-11-16 15:07:15,081 - rasterio.env - DEBUG - Entering env context: <rasterio.env.Env object at 0x1a91e9d60>
+2023-11-16 15:07:15,083 - rasterio.env - DEBUG - Starting outermost env
+2023-11-16 15:07:15,084 - rasterio.env - DEBUG - No GDAL environment exists
+2023-11-16 15:07:15,085 - rasterio.env - DEBUG - New GDAL environment <rasterio._env.GDALEnv object at 0x1a91e9910> created
+2023-11-16 15:07:15,086 - rasterio._env - DEBUG - GDAL_DATA found in environment.
+2023-11-16 15:07:15,088 - rasterio._env - DEBUG - PROJ_DATA found in environment.
+2023-11-16 15:07:15,089 - rasterio._env - DEBUG - Started GDALEnv: self=<rasterio._env.GDALEnv object at 0x1a91e9910>.
+2023-11-16 15:07:15,090 - rasterio.env - DEBUG - Entered env context: <rasterio.env.Env object at 0x1a91e9d60>
+2023-11-16 15:07:15,091 - rasterio._io - DEBUG - Path: _UnparsedPath(path='/Users/jtarrico/sierra_isce_multi/tmp/llh.dem.tif'), mode: w, driver: GTiff
+2023-11-16 15:07:15,093 - rasterio._io - DEBUG - Skipped delete for overwrite, dataset does not exist: '/Users/jtarrico/sierra_isce_multi/tmp/llh.dem.tif'
+2023-11-16 15:07:15,095 - rasterio._base - DEBUG - Nodata success: 1, Nodata value: 0.000000
+2023-11-16 15:07:15,096 - rasterio.env - DEBUG - Exiting env context: <rasterio.env.Env object at 0x1a91e9d60>
+2023-11-16 15:07:15,097 - rasterio.env - DEBUG - Cleared existing <rasterio._env.GDALEnv object at 0x1a91e9910> options
+2023-11-16 15:07:15,098 - rasterio._env - DEBUG - Stopped GDALEnv <rasterio._env.GDALEnv object at 0x1a91e9910>.
+2023-11-16 15:07:15,100 - rasterio.env - DEBUG - Exiting outermost env
+2023-11-16 15:07:15,101 - rasterio.env - DEBUG - Exited env context: <rasterio.env.Env object at 0x1a91e9d60>
+2023-11-16 15:07:15,102 - rasterio.env - DEBUG - Entering env context: <rasterio.env.Env object at 0x1ae0af0d0>
+2023-11-16 15:07:15,103 - rasterio.env - DEBUG - Starting outermost env
+2023-11-16 15:07:15,104 - rasterio.env - DEBUG - No GDAL environment exists
+2023-11-16 15:07:15,105 - rasterio.env - DEBUG - New GDAL environment <rasterio._env.GDALEnv object at 0x1a92b2d60> created
+2023-11-16 15:07:15,107 - rasterio._env - DEBUG - GDAL_DATA found in environment.
+2023-11-16 15:07:15,108 - rasterio._env - DEBUG - PROJ_DATA found in environment.
+2023-11-16 15:07:15,109 - rasterio._env - DEBUG - Started GDALEnv: self=<rasterio._env.GDALEnv object at 0x1a92b2d60>.
+2023-11-16 15:07:15,110 - rasterio.env - DEBUG - Entered env context: <rasterio.env.Env object at 0x1ae0af0d0>
+2023-11-16 15:07:15,355 - rasterio.env - DEBUG - Exiting env context: <rasterio.env.Env object at 0x1ae0af0d0>
+2023-11-16 15:07:15,357 - rasterio.env - DEBUG - Cleared existing <rasterio._env.GDALEnv object at 0x1a92b2d60> options
+2023-11-16 15:07:15,358 - rasterio._env - DEBUG - Stopped GDALEnv <rasterio._env.GDALEnv object at 0x1a92b2d60>.
+2023-11-16 15:07:15,359 - rasterio.env - DEBUG - Exiting outermost env
+2023-11-16 15:07:15,360 - rasterio.env - DEBUG - Exited env context: <rasterio.env.Env object at 0x1ae0af0d0>
