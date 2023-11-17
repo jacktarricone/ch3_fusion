@@ -4,7 +4,7 @@
 
 library(terra)
 
-setwd("/Users/jacktarricone/ch3_fusion/")
+setwd("~/ch3_fusion/")
 
 # bring in sierra shape
 sierra <-vect("./uavsar_shape_files/sierra_17305_20014-000_20016-005_0014d_s01_L090HH_01.cor.grd .shp")
