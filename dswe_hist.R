@@ -225,27 +225,26 @@ ecdf_41 <-ggplot()+
                       labels = c("IMS","MODSCAG","MODIS fSCA", "VIIRS fSCA","FLM","Landsat"),
                       values = c("#d95f02","#1b9e77",'#7570b3','#e7298a','#e6ab02','#66a61e'),
                       breaks = c("IMS","MODSCAG","MODIS fSCA", "VIIRS fSCA","FLM","Landsat"))+
-  scale_x_continuous(limits = c(-75,50), 
-                     breaks = seq(-75,50,25), 
+  scale_x_continuous(limits = c(-50,25), 
+                     breaks = seq(-50,25,25), 
                      expand = c(0,2)) + 
-  ylab("Count") +
+  ylab("CDF") +
   xlab(expression(Delta~SWE~(m^3)))+
-  scale_y_continuous(expand = c(0,0), limits = c(0,1)) +
+  scale_y_continuous(expand = c(0,.03), limits = c(0,1)) +
   theme(legend.position = c(.25,.72)) +
   theme(panel.border = element_rect(colour = "black", fill=NA, linewidth = 1))
 
 
 ecdf_41
 
-ggsave2("./plots/ecdf_41x41_v1.pdf",
-        ecdf_41,s
-        
+ggsave2("./plots/ecdf_41x41_v2.pdf",
+        ecdf_41,
         width = 7,
         height = 5,
         units = "in",
         dpi = 500)
 
-system("open ./plots/ecdf_41x41_v1.pdf")
+system("open ./plots/ecdf_41x41_v2.pdf")
 
 
 dswe_hist_41 <-ggplot()+
