@@ -211,16 +211,16 @@ head(dswe_41x41_df)
 dswe_41x41_df <-as.data.frame(dswe_41x41)
 head(dswe_41x41_df)
 
-writeRaster(dswe_41x41[[6]], "./rasters/dswe_variabilty_analysis/testing/landsat_test.tif")
-writeRaster(dswe_41x41[[3]], "./rasters/dswe_variabilty_analysis/testing/modscag_test.tif")
+# writeRaster(dswe_41x41[[6]], "./rasters/dswe_variabilty_analysis/testing/landsat_test.tif")
+# writeRaster(dswe_41x41[[3]], "./rasters/dswe_variabilty_analysis/testing/modscag_test.tif")
 
-dswe_hist_41 <-ggplot()+
-  geom_density(dswe_41x41_df, mapping = aes(x=ims, y=stat(count),color = "IMS"), linewidth=1) +
-  geom_density(dswe_41x41_df, mapping = aes(x=modscag, y=stat(count),color = "MODSCAG"), linewidth=1) +
-  geom_density(dswe_41x41_df, mapping = aes(x=modis, y=stat(count), color = "MODIS fSCA"), linewidth=1) +
-  geom_density(dswe_41x41_df, mapping = aes(x=viirs, y=stat(count), color = "VIIRS fSCA"), linewidth=1) +
-  geom_density(dswe_41x41_df, mapping = aes(x=flm, y=stat(count), color = "FLM"), linewidth=1) +
-  geom_density(dswe_41x41_df, mapping = aes(x=landsat, y=stat(count),color = "Landsat"), linewidth=1) +
+ecdf_41 <-ggplot()+
+  stat_ecdf(dswe_41x41_df, mapping = aes(x=ims, color = "IMS"), linewidth=1) +
+  stat_ecdf(dswe_41x41_df, mapping = aes(x=modscag, color = "MODSCAG"), linewidth=1) +
+  stat_ecdf(dswe_41x41_df, mapping = aes(x=modis, color = "MODIS fSCA"), linewidth=1) +
+  stat_ecdf(dswe_41x41_df, mapping = aes(x=viirs, color = "VIIRS fSCA"), linewidth=1) +
+  stat_ecdf(dswe_41x41_df, mapping = aes(x=flm, color = "FLM"), linewidth=1) +
+  stat_ecdf(dswe_41x41_df, mapping = aes(x=landsat,color = "Landsat"), linewidth=1) +
   scale_colour_manual(name = "Snow cover data",
                       labels = c("IMS","MODSCAG","MODIS fSCA", "VIIRS fSCA","FLM","Landsat"),
                       values = c("#d95f02","#1b9e77",'#7570b3','#e7298a','#e6ab02','#66a61e'),
@@ -230,7 +230,41 @@ dswe_hist_41 <-ggplot()+
                      expand = c(0,2)) + 
   ylab("Count") +
   xlab(expression(Delta~SWE~(m^3)))+
-  scale_y_continuous(expand = c(0,0), limits = c(0,18000)) +
+  scale_y_continuous(expand = c(0,0), limits = c(0,1)) +
+  theme(legend.position = c(.25,.72)) +
+  theme(panel.border = element_rect(colour = "black", fill=NA, linewidth = 1))
+
+
+ecdf_41
+
+ggsave2("./plots/ecdf_41x41_v1.pdf",
+        ecdf_41,s
+        
+        width = 7,
+        height = 5,
+        units = "in",
+        dpi = 500)
+
+system("open ./plots/ecdf_41x41_v1.pdf")
+
+
+dswe_hist_41 <-ggplot()+
+  geom_density(dswe_41x41_df, mapping = aes(x=ims, y=stat(density),color = "IMS"), linewidth=1) +
+  geom_density(dswe_41x41_df, mapping = aes(x=modscag, y=stat(density),color = "MODSCAG"), linewidth=1) +
+  geom_density(dswe_41x41_df, mapping = aes(x=modis, y=stat(density), color = "MODIS fSCA"), linewidth=1) +
+  geom_density(dswe_41x41_df, mapping = aes(x=viirs, y=stat(density), color = "VIIRS fSCA"), linewidth=1) +
+  geom_density(dswe_41x41_df, mapping = aes(x=flm, y=stat(density), color = "FLM"), linewidth=1) +
+  geom_density(dswe_41x41_df, mapping = aes(x=landsat, y=stat(density),color = "Landsat"), linewidth=1) +
+  scale_colour_manual(name = "Snow cover data",
+                      labels = c("IMS","MODSCAG","MODIS fSCA", "VIIRS fSCA","FLM","Landsat"),
+                      values = c("#d95f02","#1b9e77",'#7570b3','#e7298a','#e6ab02','#66a61e'),
+                      breaks = c("IMS","MODSCAG","MODIS fSCA", "VIIRS fSCA","FLM","Landsat"))+
+  scale_x_continuous(limits = c(-75,50), 
+                     breaks = seq(-75,50,25), 
+                     expand = c(0,2)) + 
+  ylab("Count") +
+  xlab(expression(Delta~SWE~(m^3)))+
+  scale_y_continuous(expand = c(0,0), limits = c(0,.08)) +
   theme(legend.position = c(.25,.72)) +
   theme(panel.border = element_rect(colour = "black", fill=NA, linewidth = 1))
 
@@ -269,6 +303,8 @@ ks.test(samp$modscag, samp$landsat)
 
 samp <-sample_n(loss_41x41_df, 150, na.rm = TRUE)
 ks.test(samp$modscag, samp$ims)
+
+
 
 
 # test plot
