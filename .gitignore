@@ -44,4 +44,4 @@ vignettes/*.pdf
 
 .DS_Store
 
-isce.log
+*.log
