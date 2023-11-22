@@ -2341,3 +2341,4 @@
 2023-11-22 10:45:58,999 - rasterio._env - DEBUG - Stopped GDALEnv <rasterio._env.GDALEnv object at 0x345466130>.
 2023-11-22 10:45:59,000 - rasterio.env - DEBUG - Exiting outermost env
 2023-11-22 10:45:59,001 - rasterio.env - DEBUG - Exited env context: <rasterio.env.Env object at 0x345579850>
+2023-11-22 13:14:50,827 - rasterio.session - DEBUG - Could not import boto3, continuing with reduced functionality.
