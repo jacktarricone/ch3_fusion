@@ -2345,3 +2345,4 @@
 2023-11-28 15:32:41,666 - rasterio.session - DEBUG - Could not import boto3, continuing with reduced functionality.
 2023-11-28 15:34:41,053 - rasterio.session - DEBUG - Could not import boto3, continuing with reduced functionality.
 2023-11-29 09:42:39,861 - rasterio.session - DEBUG - Could not import boto3, continuing with reduced functionality.
+2023-11-29 09:53:54,142 - rasterio.session - DEBUG - Could not import boto3, continuing with reduced functionality.
