@@ -65,3 +65,47 @@ writeRaster(p1_conncomp, "./p1/p1_14d_VV_conncomp_v2.tif")
 writeRaster(p2_conncomp, "./p2/p2_7d_VV_conncomp_v2.tif")
 writeRaster(p3_conncomp, "./p3/p3_7d_VV_conncomp_v2.tif")
 writeRaster(p4_conncomp, "./p4/p4_7d_VV_conncomp_v2.tif")
+
+# bring in nisar sim for resamp
+
+
+### bring nisar sim data from feb 22 - march 5th
+# coherence
+setwd("~/ch3_fusion/")
+nisar_cor_raw <-rast("./rasters/sen1_nisar_sim/wy2020/S1-GUNW-D-R-144-tops-20200305_20200222-135950-38726N_36751N-PP-0915-v2_0_2-coherence.tif")
+nisar_cor <-project(nisar_cor_raw, crs(p1_coh_unw))
+nisar_cor
+plot(nisar_cor)
+plot(p1_conncomp, add = TRUE)
+
+
+# stack all data
+unw_stack <-c(p1_unw_mask, p2_unw_mask, p3_unw_mask, p4_unw_mask)
+coh_stack <-c(p1_lp[[1]], p2_lp[[1]], p3_lp[[1]], p4_lp[[1]])
+conncomp_stack <-c(p1_conncomp, p2_conncomp, p3_conncomp, p4_conncomp)
+
+# resample and crop stacks
+unw_resamp <-crop(resample(unw_stack, nisar_cor, method = 'bilinear'), ext(unw_stack))
+coh_resamp <-crop(resample(coh_stack, nisar_cor, method = 'bilinear'), ext(coh_stack))
+conncomp_resamp <-crop(resample(conncomp_stack, nisar_cor, method = 'near'), ext(conncomp_stack))
+
+
+setwd("./rasters/new_uavsar/")
+
+# save
+writeRaster(unw_resamp[[1]], "./p1_80m/p1_14d_VV_unw_80m.tif")
+writeRaster(unw_resamp[[2]], "./p2_80m/p2_7d_VV_unw_80m.tif")
+writeRaster(unw_resamp[[3]], "./p3_80m/p3_7d_VV_unw_80m.tif")
+writeRaster(unw_resamp[[4]], "./p4_80m//p4_7d_VV_unw_80m.tif")
+
+# coh
+writeRaster(coh_resamp[[1]], "./p1_80m/p1_14d_VV_coh_v2.tif")
+writeRaster(coh_resamp[[2]], "./p2_80m/p2_7d_VV_coh_v2.tif")
+writeRaster(coh_resamp[[3]], "./p3_80m/p3_7d_VV_coh_v2.tif")
+writeRaster(coh_resamp[[4]], "./p4_80m/p4_7d_VV_coh_v2.tif")
+
+# conncomp
+writeRaster(p1_conncomp, "./p1/p1_14d_VV_conncomp_v2.tif")
+writeRaster(p2_conncomp, "./p2/p2_7d_VV_conncomp_v2.tif")
+writeRaster(p3_conncomp, "./p3/p3_7d_VV_conncomp_v2.tif")
+writeRaster(p4_conncomp, "./p4/p4_7d_VV_conncomp_v2.tif")
