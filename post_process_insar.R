@@ -99,13 +99,13 @@ writeRaster(unw_resamp[[3]], "./p3_80m/p3_7d_VV_unw_80m.tif")
 writeRaster(unw_resamp[[4]], "./p4_80m//p4_7d_VV_unw_80m.tif")
 
 # coh
-writeRaster(coh_resamp[[1]], "./p1_80m/p1_14d_VV_coh_v2.tif")
-writeRaster(coh_resamp[[2]], "./p2_80m/p2_7d_VV_coh_v2.tif")
-writeRaster(coh_resamp[[3]], "./p3_80m/p3_7d_VV_coh_v2.tif")
-writeRaster(coh_resamp[[4]], "./p4_80m/p4_7d_VV_coh_v2.tif")
+writeRaster(coh_resamp[[1]], "./p1_80m/p1_14d_VV_coh_80m.tif")
+writeRaster(coh_resamp[[2]], "./p2_80m/p2_7d_VV_coh_80m.tif")
+writeRaster(coh_resamp[[3]], "./p3_80m/p3_7d_VV_coh_80m.tif")
+writeRaster(coh_resamp[[4]], "./p4_80m/p4_7d_VV_coh_80m.tif")
 
 # conncomp
-writeRaster(p1_conncomp, "./p1/p1_14d_VV_conncomp_v2.tif")
-writeRaster(p2_conncomp, "./p2/p2_7d_VV_conncomp_v2.tif")
-writeRaster(p3_conncomp, "./p3/p3_7d_VV_conncomp_v2.tif")
-writeRaster(p4_conncomp, "./p4/p4_7d_VV_conncomp_v2.tif")
+writeRaster(conncomp_resamp[[1]], "./p1_80m/p1_14d_VV_conncomp_80m.tif", overwrite = T)
+writeRaster(conncomp_resamp[[2]], "./p2_80m/p2_7d_VV_conncomp_80m.tif", overwrite = T)
+writeRaster(conncomp_resamp[[3]], "./p3_80m/p3_7d_VV_conncomp_80m.tif", overwrite = T)
+writeRaster(conncomp_resamp[[4]], "./p4_80m/p4_7d_VV_conncomp_80m.tif", overwrite = T)

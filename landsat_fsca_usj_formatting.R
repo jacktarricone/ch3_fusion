@@ -5,7 +5,7 @@
 library(terra)
 library(stringr)
 
-setwd("/Users/jacktarricone/ch3_fusion/rasters/")
+setwd("~/ch3_fusion/rasters/")
 
 # create dates list
 file_name <-list.files("./landsat_fsca/h3_v10_2020")
@@ -36,8 +36,8 @@ stack_rep <-seq(1,670,5)
 
 # landsat
 # bring in other tile so it covers full basin
-landsat_10 <-rast("./landsat_fsca/h3_v10_2020/LC08_CU_003010_20200304_20210504_02_SNOW/LC08_CU_003010_20200304_20210504_02_GROUND_SNOW.TIF")
-landsat_9 <-rast("./landsat_fsca/h3_v9_2020/LC08_CU_003009_20200304_20210504_02_SNOW/LC08_CU_003009_20200304_20210504_02_GROUND_SNOW.TIF")
+landsat_10 <-rast("./landsat_fsca/h3_v10_2020/LC08_CU_003010_20200217_20210504_02_SNOW/LC08_CU_003010_20200217_20210504_02_GROUND_SNOW.TIF")
+landsat_9 <-rast("./landsat_fsca/h3_v09_2020/LC08_CU_003009_20200217_20210504_02_SNOW/LC08_CU_003009_20200217_20210504_02_GROUND_SNOW.TIF")
 
 # merge and reproject
 landsat_r <-merge(landsat_10, landsat_9)
