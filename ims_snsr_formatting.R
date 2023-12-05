@@ -47,7 +47,7 @@ nc_list <-list.files('./rasters/ims/raw/', full.names = TRUE)
   # save
   writeRaster(final, paste0("./rasters/ims/snsr_tifs/",name3))
   print(paste0(name3," is done!"))
-}
+#}
 
 format_ims_data_v2 <-function(x){
   
