@@ -113,10 +113,10 @@ test_cells <-adjacent(dswe_raw, pillow_cell_dswe$cell, direction = 8)
 
 # for five stations
 vlc_cells <-c(pillow_cell_dswe$cell[1],test_cells[1,])
-# dpo_cells <-c(pillow_cell_dswe$cell[2],test_cells[2,])
+dpo_cells <-c(pillow_cell_dswe$cell[2],test_cells[2,])
 mhp_cells <-c(pillow_cell_dswe$cell[3],test_cells[3,])
 ubc_cells <-c(pillow_cell_dswe$cell[4],test_cells[4,])
-# wwc_cells <-c(pillow_cell_dswe$cell[5],test_cells[5,])
+wwc_cells <-c(pillow_cell_dswe$cell[5],test_cells[5,])
 
 # extract
 vlc_vals <-terra::extract(dswe_raw, vlc_cells)
@@ -127,15 +127,14 @@ mhp_vals <-terra::extract(dswe_raw, mhp_cells)
 colnames(mhp_vals) <-"mhp"
 ubc_vals <-terra::extract(dswe_raw, ubc_cells)
 colnames(ubc_vals) <-"ubc"
-# wwc_vals <-terra::extract(modscag_dswe_raw, wwc_cells)
+# wwc_vals <-terra::extract(dswe_raw, wwc_cells)
 # colnames(wwc_vals) <-"wwc"
 
 # make df
 vals_df <-cbind(vlc_vals, mhp_vals, ubc_vals)
 
 # bind and find average swe change
-bind <-left_join(pillow_cell_dswe, station_dswe)
-bind_v2 <-dplyr::filter(bind, id != "DPO")
+bind_v2 <-left_join(pillow_cell_dswe, station_dswe)
 bind_v2
 
 # mean them all, pretty much the same
@@ -155,10 +154,10 @@ plot(dswe)
 hist(dswe, breaks = 100)
 
 # save
-writeRaster(dswe[[1]], "./new_dswe/p1/p1_ims_dswe_cm.tif")
-writeRaster(dswe[[2]], "./new_dswe/p1/p1_modscag_dswe_cm.tif")
-writeRaster(dswe[[3]], "./new_dswe/p1/p1_modis_dswe_cm.tif")
-writeRaster(dswe[[4]], "./new_dswe/p1/p1_viirs_dswe_cm.tif")
-writeRaster(dswe[[5]], "./new_dswe/p1/p1_flm_dswe_cm.tif")
-writeRaster(dswe[[6]], "./new_dswe/p1/p1_landsat_dswe_cm.tif")
+writeRaster(dswe[[1]], "./new_dswe/p1/p1_ims_dswe_cm_v2.tif")
+writeRaster(dswe[[2]], "./new_dswe/p1/p1_modscag_dswe_cm_v2.tif")
+writeRaster(dswe[[3]], "./new_dswe/p1/p1_modis_dswe_cm_v2.tif")
+writeRaster(dswe[[4]], "./new_dswe/p1/p1_viirs_dswe_cm_v2.tif")
+writeRaster(dswe[[5]], "./new_dswe/p1/p1_flm_dswe_cm_v2.tif")
+writeRaster(dswe[[6]], "./new_dswe/p1/p1_landsat_dswe_cm_v2.tif")
 
