@@ -1,6 +1,5 @@
 # sierra swe calc with different fsca masks: pair 2, feb 12 -- feb 19
 # jack tarricone
-# decemeber 5, 2022
 
 library(terra)
 library(dplyr)
@@ -52,8 +51,8 @@ devtools::source_url("https://raw.githubusercontent.com/jacktarricone/snowex_uav
 #   
 # }
 
-# approx density from mammoth pits
-density <-390 # check this
+# take mean pit values from cues and panorama
+density <-(356+370+404+417)/4
 
 # calc perm using guni equation
 sierra_perm <- 1 + 1.6 * (density/1000) + 1.8 * (density/1000)^3
@@ -134,11 +133,13 @@ colnames(ubc_vals) <-"ubc"
 vals_df <-cbind(vlc_vals, mhp_vals, ubc_vals)
 
 # bind and find average swe change
-bind_v2 <-left_join(pillow_cell_dswe, station_dswe)
+bind_v1 <-left_join(pillow_cell_dswe, station_dswe)
+bind_v2 <-bind_v1 [-c(2,5),]
 bind_v2
 
 # mean them all, pretty much the same
-mean_insar_dswe <-mean(c(vals_df$vlc, vals_df$mhp, vals_df$ubc, vals_df$wwc), na.rm = TRUE)
+mean_insar_dswe <-mean(c(vals_df$vlc, vals_df$mhp, vals_df$ubc), na.rm = TRUE)
+
 
 # calc mean
 mean_pillow_dswe <-mean(bind_v2$dswe_cm)
@@ -152,6 +153,15 @@ tether_value <- mean_pillow_dswe - mean_insar_dswe
 dswe <-dswe_raw + tether_value
 plot(dswe)
 hist(dswe, breaks = 100)
+
+names <-c("ims","modscag","modis","viirs","flm","landsat")
+
+for (i in 1:length(names)) {
+  
+  dataset <-names[i]
+  writeRaster(dswe[[i]], paste0("~/ch3_fusion/rasters/new_dswe/p2/p2_",dataset,"_dswe_cm_v3.tif"))
+  
+}
 
 # save
 writeRaster(dswe[[1]], "./new_dswe/p2/p2_ims_dswe_cm_v2.tif")

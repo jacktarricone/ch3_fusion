@@ -53,7 +53,7 @@ devtools::source_url("https://raw.githubusercontent.com/jacktarricone/snowex_uav
 # }
 
 # approx density from mammoth pits
-density <-390 # check this
+density <-360 # check this
 
 # calc perm using guni equation
 sierra_perm <- 1 + 1.6 * (density/1000) + 1.8 * (density/1000)^3
@@ -83,11 +83,14 @@ points(pillow_point, cex = 1)
 text(pillow_point, labels = c("VLC", "DPO", "MHP","UBC","WWC"), pos = 3)
 
 # calculate SWE change at pillow
-cadwr_swe <-read.csv("~/ch3_fusion/csvs/cadwr_swe_depth_qaqc_v1.csvs")
+cadwr_swe <-read.csv("~/ch3_fusion/csvs/cadwr_swe_depth_qaqc_v1.csv")
 cadwr_swe$date <-as.Date(cadwr_swe$date)
 
 # test plot from vlc cadwr pillow
 ggplot(cadwr_swe, aes(x = date, y = swe_cm, color = id)) +
+  geom_line()
+
+ggplot(cadwr_swe, aes(x = date, y = bulk_density, color = id)) +
   geom_line()
 
 # study period filter
@@ -96,10 +99,13 @@ sp <-dplyr::filter(cadwr_swe, date > "2020-02-25" & date < "2020-03-12")
 ggplot(sp, aes(x = date, y = swe_cm, color = id)) +
   geom_line()
 
+ggplot(sp, aes(x = date, y = bulk_density, color = id)) +
+  geom_line()
+
 # calc change in SWE at pillow from feb 26 - march 11
 station_dswe <- sp %>%
   group_by(id) %>%
-  summarize(dswe_cm = swe_cm[8] - swe_cm[1])
+  summarize(dswe_cm = swe_cm[15] - swe_cm[1])
 
 station_dswe
 
@@ -153,11 +159,15 @@ dswe <-dswe_raw + tether_value
 plot(dswe)
 hist(dswe, breaks = 100)
 
+# list to loop through
+names <-c("ims","modscag","modis","viirs","flm","landsat")
+
 # save
-writeRaster(dswe[[1]], "./new_dswe/p4/p4_ims_dswe_cm_v2.tif")
-writeRaster(dswe[[2]], "./new_dswe/p4/p4_modscag_dswe_cm_v2.tif")
-writeRaster(dswe[[3]], "./new_dswe/p4/p4_modis_dswe_cm_v2.tif")
-writeRaster(dswe[[4]], "./new_dswe/p4/p4_viirs_dswe_cm_v2.tif")
-writeRaster(dswe[[5]], "./new_dswe/p4/p4_flm_dswe_cm_v2.tif")
-writeRaster(dswe[[6]], "./new_dswe/p4/p4_landsat_dswe_cm_v2.tif")
+for (i in 1:length(names)) {
+  
+  dataset <-names[i]
+  writeRaster(dswe[[i]], paste0("~/ch3_fusion/rasters/new_dswe/p4/p4_",dataset,"_dswe_cm_v3.tif"))
+  
+}
+
 
