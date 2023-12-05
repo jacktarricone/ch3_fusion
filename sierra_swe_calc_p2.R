@@ -156,6 +156,7 @@ hist(dswe, breaks = 100)
 
 names <-c("ims","modscag","modis","viirs","flm","landsat")
 
+# ### check this
 for (i in 1:length(names)) {
   
   dataset <-names[i]
@@ -163,11 +164,4 @@ for (i in 1:length(names)) {
   
 }
 
-# save
-writeRaster(dswe[[1]], "./new_dswe/p2/p2_ims_dswe_cm_v2.tif")
-writeRaster(dswe[[2]], "./new_dswe/p2/p2_modscag_dswe_cm_v2.tif")
-writeRaster(dswe[[3]], "./new_dswe/p2/p2_modis_dswe_cm_v2.tif")
-writeRaster(dswe[[4]], "./new_dswe/p2/p2_viirs_dswe_cm_v2.tif")
-writeRaster(dswe[[5]], "./new_dswe/p2/p2_flm_dswe_cm_v2.tif")
-writeRaster(dswe[[6]], "./new_dswe/p2/p2_landsat_dswe_cm_v2.tif")
 

@@ -40,12 +40,33 @@ theme_set(theme_classic(16))
 
 setwd("~/ch3_fusion/rasters/new_dswe/")
 
-# load in 80 m insar dswe products, and convert to meters
-p1_m <-rast(list.files("./p1", pattern = ".tif", full.names = T))/100
-p2_m <-rast(list.files("./p2", pattern = ".tif", full.names = T))/100
-p3_m <-rast(list.files("./p3", pattern = ".tif", full.names = T))/100
-p4_m <-rast(list.files("./p4", pattern = ".tif", full.names = T))/100
+# load sensor names
+names <-c("ims","modscag","modis","viirs","flm","landsat")
 
+# load in 80 m insar dswe products, and convert to meters
+p1_list <-list.files("./p1", pattern = ".tif", full.names = T)
+p1_m <-rast(p1_list)/100
+file_name <-basename(p1_list)
+col_name <-substr(file_name,1,nchar(file_name)-15)
+names(p1_m) <-col_name
+  
+p2_list <-list.files("./p2", pattern = ".tif", full.names = T)
+p2_m <-rast(p2_list)/100
+file_name <-basename(p2_list)
+col_name <-substr(file_name,1,nchar(file_name)-15)
+names(p2_m) <-col_name
+
+p3_list <-list.files("./p3", pattern = ".tif", full.names = T)
+p3_m <-rast(p3_list)/100
+file_name <-basename(p3_list)
+col_name <-substr(file_name,1,nchar(file_name)-15)
+names(p3_m) <-col_name
+
+p4_list <-list.files("./p4", pattern = ".tif", full.names = T)
+p4_m <-rast(p4_list)/100
+file_name <-basename(p4_list)
+col_name <-substr(file_name,1,nchar(file_name)-15)
+names(p4_m) <-col_name
 
 # bring in cc, mask, and resample
 cc_v2 <-rast("~/ch3_fusion/rasters/geo_layers/cc_domain.tif")
@@ -65,14 +86,17 @@ p1_sm <-focal(p1_m, c(41,41), na.rm=TRUE, fun = "sum")
 p1_sm_m3 <-p1_sm * cell_size_rast_m2
 plot(p1_sm_m3)
 
-names <-c("ims","modscag","modis","viirs","flm","landsat")
-
-for (i in 1:length(names)) {
+for (i in 1:length(col_name)){
   
-  dataset <-names[i]
-  writeRaster(p1_sm_m3[[i]], paste0("~/ch3_fusion/rasters/dswe_variabilty_analysis/p1/p1_",dataset,"_m3_41x41_v1.tif"))
+  dataset <-col_name[i]
+  writeRaster(p1_sm_m3[[i]], paste0("~/ch3_fusion/rasters/dswe_variabilty_analysis/p1/",dataset,"_m3_41x41_v1.tif"))
   
 }
+
+# save csv
+p1_csv <-as.data.frame(p1_sm_m3)
+data.table::fwrite(p1_csv, "~/ch3_fusion/rasters/dswe_variabilty_analysis/p1_m3_41x41_20200131_20200212.csv")
+
 
 ########## p2
 # 41 x 41 moving window sum in cubic meters
@@ -80,12 +104,52 @@ p2_sm <-focal(p2_m, c(41,41), na.rm=TRUE, fun = "sum")
 p2_sm_m3 <-p2_sm * cell_size_rast_m2
 plot(p2_sm_m3)
 
-for (i in 1:length(names)) {
+for (i in 1:length(col_name)){
   
-  dataset <-names[i]
+  dataset <-col_name[i]
   writeRaster(p2_sm_m3[[i]], paste0("~/ch3_fusion/rasters/dswe_variabilty_analysis/p2/p2_",dataset,"_m3_41x41_v1.tif"))
   
 }
+
+# save csv
+p2_csv <-as.data.frame(p2_sm_m3)
+data.table::fwrite(p2_csv, "~/ch3_fusion/rasters/dswe_variabilty_analysis/p2_m3_41x41_20200212_20200219.csv")
+
+
+########## p3
+# 41 x 41 moving window sum in cubic meters
+p3_sm <-focal(p3_m, c(41,41), na.rm=TRUE, fun = "sum")
+p3_sm_m3 <-p3_sm * cell_size_rast_m2
+plot(p3_sm_m3)
+
+for (i in 1:length(col_name)){
+  
+  dataset <-col_name[i]
+  writeRaster(p3_sm_m3[[i]], paste0("~/ch3_fusion/rasters/dswe_variabilty_analysis/p3/p3_",dataset,"_m3_41x41_v1.tif"))
+  
+}
+
+# save csv
+p3_csv <-as.data.frame(p3_sm_m3)
+data.table::fwrite(p3_csv, "~/ch3_fusion/rasters/dswe_variabilty_analysis/p3_m3_41x41_20200219_20200226.csv")
+
+########## p4
+# 41 x 41 moving window sum in cubic meters
+p4_sm <-focal(p4_m, c(41,41), na.rm=TRUE, fun = "sum")
+p4_sm_m3 <-p4_sm * cell_size_rast_m2
+plot(p4_sm_m3)
+
+for (i in 1:length(col_name)){
+  
+  dataset <-col_name[i]
+  writeRaster(p4_sm_m3[[i]], paste0("~/ch3_fusion/rasters/dswe_variabilty_analysis/p4/p4_",dataset,"_m3_41x41_v1.tif"))
+  
+}
+
+# save csv
+p4_csv <-as.data.frame(p4_sm_m3)
+data.table::fwrite(p4_csv, "~/ch3_fusion/rasters/dswe_variabilty_analysis/p4_m3_41x41_20200219_20200226.csv")
+
 
 
 
