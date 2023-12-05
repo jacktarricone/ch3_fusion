@@ -11,10 +11,9 @@ list.files()
 
 ## bring in inc
 inc <-rast("./data_80m_0226_0311/inc_80m.tif")
-unw <-rast("./data_80m_0226_0311/unw_80m.tif")
+unw_v1 <-rast("~/ch3_fusion/rasters/new_uavsar/p1_80m/p1_14d_VV_unw_80m.tif")
 cor <-rast("./data_80m_0226_0311/cor_80m.tif")
-plot(unw)
-plot(inc)
+unw <-resample(unw_v1, cor)
 
 # bring masked unwrapped phase rastesr
 ims <-rast("./data_80m_0226_0311/ims_sierra_80m.tif")

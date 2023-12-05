@@ -105,12 +105,16 @@ ims_stack_v2 <-crop(ims_stack_v1, ext(coh_80m))
 ims_stack_v3 <-mask(resample(project(ims_stack_v2, coh_80m, method = 'near'),coh_80m),coh_80m) # categorigcal, so near
 plot(ims_stack_v3)
 
+# convert all categorical values to percents
+ims_stack_v4 <-ifel(ims_stack_v3 == 4, 100, ims_stack_v3)
+ims_stack_v5 <-ifel(ims_stack_v4 == 2, 0, ims_stack_v4)
+plot(ims_stack_v5)
 
 # save
-writeRaster(ims_stack_v3[[2]], "./new_optical/p1_80m_20200131_20200212/ims_0212_80m.tif")
-writeRaster(ims_stack_v3[[3]], "./new_optical/p2_80m_20200212_20200219/ims_0219_80m.tif")
-writeRaster(ims_stack_v3[[4]], "./new_optical/p3_80m_20200219_20200226/ims_0226_80m.tif")
-writeRaster(ims_stack_v3[[5]], "./new_optical/p4_80m_20200226_20200311/ims_0311_80m.tif")
+writeRaster(ims_stack_v5[[2]], "./new_optical/p1_80m_20200131_20200212/ims_0212_80m.tif", overwrite = T)
+writeRaster(ims_stack_v5[[3]], "./new_optical/p2_80m_20200212_20200219/ims_0219_80m.tif", overwrite = T)
+writeRaster(ims_stack_v5[[4]], "./new_optical/p3_80m_20200219_20200226/ims_0226_80m.tif", overwrite = T)
+writeRaster(ims_stack_v5[[5]], "./new_optical/p4_80m_20200226_20200311/ims_0311_80m.tif", overwrite = T)
 
 ################
 #### viirs #####
