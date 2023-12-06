@@ -155,8 +155,6 @@ data.table::fwrite(p4_csv, "~/ch3_fusion/rasters/dswe_variabilty_analysis/p4_m3_
 
 
 
-
-
 # loss
 loss_mw_41x41 <-focal(loss_stack_m3, c(41,41), na.rm=TRUE, fun = "sum")
 plot(loss_mw_41x41[[4]])
