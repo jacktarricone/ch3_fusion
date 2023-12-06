@@ -69,7 +69,7 @@ sierra_sf <-st_geometry(sierra_v1)
 # define sd with na remove
 sd_na_rm <-function(x){sd(x, na.rm = TRUE)}
 
-# calculate pixelwise standard deviation
+# calculate pixelwise standard deviation, add pair row
 p1_sd <-app(p1_stack, fun = sd_na_rm)/1e5
 p1_df <-as.data.frame(p1_sd, xy = TRUE)
 p1_df$pair <-rep("p1", nrow(p1_df))
@@ -86,70 +86,63 @@ p4_sd <-app(p4_stack, fun = sd_na_rm)/1e5
 p4_df <-as.data.frame(p4_sd, xy = TRUE)
 p4_df$pair <-rep("p4", nrow(p4_df))
 
-plotting_df <-rbind(p1_df, p1_df, p3_df, p4_df)
-
 # # filter cc of 0
 # df_v2 <-dplyr::filter(cc_sd_df, cc_mean >= 0)
 # hist(df_v2$cc_mean, breaks = 100)
 
 # add bins col for box plot
-df_v3 <-plotting_df  %>%
+df_v3 <-cc_df  %>%
   mutate(bin = cut_width(cc_mean, width = 5, boundary=0))
+
+# join cc
+p1_df2 <-full_join(p1_df, df_v3, by = c("x","y"))
+p2_df2 <-full_join(p2_df, df_v3, by = c("x","y"))
+p3_df2 <-full_join(p3_df, df_v3, by = c("x","y"))
+p4_df2 <-full_join(p4_df, df_v3, by = c("x","y"))
+
+# combine
+plotting_df <-rbind(p1_df2, p2_df2, p3_df2, p4_df2)
+plotting_df_v2 <-na.omit(plotting_df)
+colnames(plotting_df_v2)[3] <-"sd"
+head(plotting_df_v2)
 
 # cc scale
 cc_scale <-colorRampPalette(c("#f7fcf5", "#00441b"))
 cc_scale(13)
 
 
+
 # starting plot
 ### gains
-p1_p <-ggplot(df_v3, mapping = aes(x = cc_mean, y = gain_sd_dam3, fill = as.factor(bin))) +
+p1_p <-ggplot(plotting_df_v2, mapping = aes(x = cc_mean, y = sd, fill = as.factor(bin))) +
   geom_boxplot(linewidth = .6, varwidth = TRUE, outlier.size = .001, outlier.shape = 4, 
                outlier.colour = "grey80", outlier.alpha  = .01) +
-  xlab("CC (%)") + ylab(expression(SWE~SD~(dam^3)))+ 
+  facet_wrap(~pair, scales = "fixed")+
+  xlab("CC (%)") + ylab(expression(Delta~SWE~SD~(m^3~ 10^5)))+ 
   scale_x_continuous(limits = c(0,50), breaks = seq(0,65,5), expand = c(0,.5)) +
-  scale_y_continuous(limits = c(0,25)) +
+  scale_y_continuous(limits = c(0,2)) +
   scale_fill_discrete(type = cc_scale(10)) +
   theme_classic(10) +
   theme(panel.border = element_rect(colour = "black", fill = NA, size = 1),
         legend.position = "none",
         legend.title = element_blank(),
         legend.margin = margin(-5,1,1,1),
-        legend.box.background = element_rect(colour = "black"))
-gains_plot
+        legend.box.background = element_rect(colour = "black"), 
+        strip.text.x = element_blank())
 
-# loss
-loss_plot <-ggplot(df_v3, mapping = aes(x = cc_mean, y = loss_sd_dam3, fill = as.factor(bin))) +
-  geom_boxplot(linewidth = .6, varwidth = TRUE, outlier.size = .001, outlier.shape = 4,
-               outlier.colour = "grey80", outlier.alpha  = .01) +
-  xlab("CC (%)") + ylab(expression(SWE~SD~(dam^3)))+ 
-  scale_x_continuous(limits = c(0,50), breaks = seq(0,65,5), expand = c(0,.5)) +
-  scale_y_continuous(limits = c(0,100)) +
-  scale_fill_discrete(type = cc_scale(13)) +
-  theme_classic(10) +
-  theme(panel.border = element_rect(colour = "black", fill = NA, size = 1),
-        legend.position = "none",
-        legend.title = element_blank(),
-        legend.margin = margin(-5,1,1,1),
-        legend.box.background = element_rect(colour = "black"))
-loss_plot
+# f_labels <- data.frame(drv = c("p1", "p2" ,"p3", "p4"), label = c("(a) P1", "(b) P2" ,"(c) P3", "(d) P4"))
 
-# cowplot test
-cow <-plot_grid(gains_plot, loss_plot,
-                 labels = c("(a) SWE Gain", "(b) SWE Loss"),
-                 nrow = 2, 
-                 align = "hv",
-                 label_size = 15,
-                 vjust =  3,
-                 hjust = -.7,
-                 rel_heights = c(1/2,1/2))
+# fix later!!
+# p1_p +  geom_text(x = 10, y = 1.8, aes(label = label), data = f_labels)
+p1_p
+
 # test save
 # make tighter together
-ggsave(cow,
-       file = "./plots/swe_sd_bp_dam3_41x41_v1.png",
+ggsave(p1_p,
+       file = "~/ch3_fusion/plots/cc_vs_sd_v1.png",
        width = 8, 
-       height = 6,
+       height = 4,
        dpi = 300)
 
-system("open ./plots/swe_sd_bp_dam3_41x41_v1.png")
+system("open ~/ch3_fusion/plots/cc_vs_sd_v1.png")
         
