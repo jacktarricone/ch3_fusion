@@ -122,7 +122,7 @@ p1_p <-ggplot(plotting_df_v2, mapping = aes(x = cc_mean, y = sd, fill = as.facto
   scale_x_continuous(limits = c(0,50), breaks = seq(0,65,5), expand = c(0,.5)) +
   scale_y_continuous(limits = c(0,2)) +
   scale_fill_discrete(type = cc_scale(10)) +
-  theme_classic(10) +
+  theme_classic(13) +
   theme(panel.border = element_rect(colour = "black", fill = NA, size = 1),
         legend.position = "none",
         legend.title = element_blank(),
@@ -139,10 +139,10 @@ p1_p
 # test save
 # make tighter together
 ggsave(p1_p,
-       file = "~/ch3_fusion/plots/cc_vs_sd_v1.png",
+       file = "~/ch3_fusion/plots/cc_vs_sd_v2.png",
        width = 8, 
        height = 4,
        dpi = 300)
 
-system("open ~/ch3_fusion/plots/cc_vs_sd_v1.png")
+system("open ~/ch3_fusion/plots/cc_vs_sd_v2.png")
         
