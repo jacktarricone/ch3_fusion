@@ -10,6 +10,7 @@ library(cowplot)
 library(sf)
 library(scales)
 library(viridis)
+library(ggpubr)
 
 theme_classic <- function(base_size = 11, base_family = "",
                           base_line_size = base_size / 22,
@@ -70,19 +71,20 @@ sierra_sf <-st_geometry(sierra_v1)
 sd_na_rm <-function(x){sd(x, na.rm = TRUE)}
 
 # calculate pixelwise standard deviation
-p1_sd <-app(p1_stack, fun = sd_na_rm)/10e4
+p1_sd <-app(p1_stack, fun = sd_na_rm)/1e5
+hist(p1_sd,breaks = 100)
 p1_df <-as.data.frame(p1_sd, xy = TRUE)
 plot(p1_sd)
 
-p2_sd <-app(p2_stack, fun = sd_na_rm)/10e4
+p2_sd <-app(p2_stack, fun = sd_na_rm)/1e5
 p2_df <-as.data.frame(p2_sd, xy = TRUE)
 plot(p2_sd)
 
-p3_sd <-app(p3_stack, fun = sd_na_rm)/10e4
+p3_sd <-app(p3_stack, fun = sd_na_rm)/1e5
 p3_df <-as.data.frame(p3_sd, xy = TRUE)
 plot(p3_sd)
 
-p4_sd <-app(p4_stack, fun = sd_na_rm)/10e4
+p4_sd <-app(p4_stack, fun = sd_na_rm)/1e5
 p4_df <-as.data.frame(p4_sd, xy = TRUE)
 plot(p4_sd)
 
@@ -102,7 +104,7 @@ p1_p <-ggplot(p1_df) +
   # geom_sf(data = sierra_sf, fill = NA, color = "black", linewidth = .7, inherit.aes = FALSE, alpha = 1) +
   annotate("text", x = -118.98, y = 37.87, label = "P1", size = 10) +
   scale_fill_gradientn(colors = scale1, limits = c(0,2), oob = squish) + # max of color bar so it saturates
-  labs(fill = expression(Delta~SWE~SD~(m^3~10^4))) +
+  labs(fill = expression(Delta~SWE~SD~(m^3~10^5))) +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
         axis.title.y = element_blank(),
@@ -116,7 +118,7 @@ p1_p <-ggplot(p1_df) +
                                label.position = 'top',
                                title.position ='bottom',
                                title.hjust = .5,
-                               barwidth = 11,
+                               barwidth = 30,
                                barheight = 1,
                                frame.colour = "black", 
                                ticks.colour = "black")) 
@@ -142,7 +144,7 @@ p2_p <-ggplot(p2_df) +
   # geom_sf(data = sierra_sf, fill = NA, color = "black", linewidth = .7, inherit.aes = FALSE, alpha = 1) +
   annotate("text", x = -118.98, y = 37.87, label = "P2", size = 10) +
   scale_fill_gradientn(colors = scale1, limits = c(0,2), oob = squish) + # max of color bar so it saturates
-  labs(fill = expression(Delta~SWE~SD~(m^3~10^4))) +
+  labs(fill = expression(Delta~SWE~SD~(m^3~10^5))) +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
         axis.title.y = element_blank(),
@@ -180,7 +182,7 @@ p3_p <-ggplot(p3_df) +
   # geom_sf(data = sierra_sf, fill = NA, color = "black", linewidth = .7, inherit.aes = FALSE, alpha = 1) +
   annotate("text", x = -118.98, y = 37.87, label = "P3", size = 10) +
   scale_fill_gradientn(colors = scale1, limits = c(0,2), oob = squish) + # max of color bar so it saturates
-  labs(fill = expression(Delta~SWE~SD~(m^3~10^4))) +
+  labs(fill = expression(Delta~SWE~SD~(m^3~10^5))) +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
         axis.title.y = element_blank(),
@@ -220,7 +222,7 @@ p4_p <-ggplot(p4_df) +
   # geom_sf(data = sierra_sf, fill = NA, color = "black", linewidth = .7, inherit.aes = FALSE, alpha = 1) +
   annotate("text", x = -118.98, y = 37.87, label = "P4", size = 10) +
   scale_fill_gradientn(colors = scale1, limits = c(0,2), oob = squish) + # max of color bar so it saturates
-  labs(fill = expression(Delta~SWE~SD~(m^3~10^4))) +
+  labs(fill = expression(Delta~SWE~SD~(m^3~10^5))) +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
         axis.title.y = element_blank(),
@@ -234,7 +236,7 @@ p4_p <-ggplot(p4_df) +
                                label.position = 'top',
                                title.position ='bottom',
                                title.hjust = .5,
-                               barwidth = 11,
+                               barwidth = 30,
                                barheight = 1,
                                frame.colour = "black", 
                                ticks.colour = "black")) 
@@ -307,5 +309,43 @@ ggsave(cow,
 
 system("open ~/ch3_fusion/plots/sd_vs_cc_plot_v1.png")
 
+## try ggarrange
+sd <-ggarrange(p1_p, p2_p, p3_p, p4_p, # list of plots
+                labels = c("(a)", "(b)", "(c)","(d)"), # labels
+                common.legend = T, # COMMON LEGEND
+                legend = "bottom", # legend position
+                align = "hv", # Align them both, horizontal and vertical
+                ncol = 4,
+                nrow = 1,
+                vjust =  2,
+                hjust = -.2,
+                font.label = list(size = 23, color = "black", face = "bold"))  
 
+# test save
+# make tighter together
+ggsave(sd,
+       file = "~/ch3_fusion/plots/sd_vs_cc_plot_v2.png",
+       width = 10, 
+       height = 9,
+       dpi = 300)
 
+system("open ~/ch3_fusion/plots/sd_vs_cc_plot_v2.png")
+
+# cowplot test
+sd_cc <-plot_grid(sd,cc,
+                labels = c("", "(e)"),
+                ncol = 2, 
+                align = "v",
+                label_size = 22,
+                vjust =  2,
+                hjust = -.2,
+                rel_widths = c(4/5, 1/5))
+# test save
+# make tighter together
+ggsave(sd_cc,
+       file = "~/ch3_fusion/plots/sd_vs_cc_plot_v3.png",
+       width = 12.5, 
+       height = 9,
+       dpi = 300)
+
+system("open ~/ch3_fusion/plots/sd_vs_cc_plot_v3.png")
