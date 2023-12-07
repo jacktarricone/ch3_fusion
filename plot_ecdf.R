@@ -80,6 +80,7 @@ p4_df_l <-pivot_longer(p4_df,
 
 # bind for plotting
 plotting_df <-rbind(p1_df_l,p2_df_l,p3_df_l,p4_df_l)
+# data.table::fwrite(plotting_df, "~/ch3_fusion/csvs/dswe_new_41_plotting.csv")
 head(plotting_df)
 
 display.brewer.all()

@@ -8,6 +8,7 @@ library(cowplot)
 library(scales)
 library(viridis)
 library(ggpubr)
+library(data.table)
 
 theme_classic <- function(base_size = 11, base_family = "",
                           base_line_size = base_size / 22,
@@ -38,33 +39,18 @@ theme_classic <- function(base_size = 11, base_family = "",
     )
 }
 
-theme_set(theme_classic(30))
+theme_set(theme_classic(15))
 
-setwd("~/ch3_fusion/rasters/")
+setwd("~/ch3_fusion/")
 
 # load in 80 m insar dswe products
-# load in 41x41 dswe products
-p1_stack <-rast(list.files("./dswe_variabilty_analysis/p1", pattern = ".tif", full.names = T))/1e5
-names(p1_stack) <-c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS")
-p2_stack <-rast(list.files("./dswe_variabilty_analysis/p2", pattern = ".tif", full.names = T))/1e5
-names(p2_stack) <-c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS")
-p3_stack <-rast(list.files("./dswe_variabilty_analysis/p3", pattern = ".tif", full.names = T))/1e5
-names(p3_stack) <-c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS")
-p4_stack <-rast(list.files("./dswe_variabilty_analysis/p4", pattern = ".tif", full.names = T))/1e5
-names(p4_stack) <-c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS")
+plotting_df <-fread("~/ch3_fusion/csvs/dswe_new_41_plotting.csv")
+plotting_df$pair <-gsub("p","P",plotting_df$pair)
+head(plotting_df)
 
 # read in sierra shp
 sierra_v1 <-st_read("~/ch3_fusion/shapefiles/sierra_multiseg_shp.gpkg")
 sierra_sf <-st_geometry(sierra_v1)
-
-# make df
-p1_df_v1 <-as.data.frame(p1_stack, xy = TRUE)
-p1_df_v1$pair <-rep("p1", nrow(p1_df_v1))
-p1_df <-pivot_longer(p1_df_v1, 
-                       cols = c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS"),
-                       names_to = c("data_set"))
-
-head(p1_df)
 
 ############
 ### plot
@@ -74,7 +60,34 @@ head(p1_df)
 # cc scale
 swe_scale <-brewer.pal(9, "RdBu")
 
-hist(gains_df$modis)
+p <-ggplot(plotting_df) +
+  geom_sf(data = sierra_sf, fill = "gray50", color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
+  geom_raster(mapping = aes(x,y, fill = value)) + 
+  facet_grid(vars(pair), vars(data_set), scales = "fixed") +
+  scale_fill_gradientn(colors = swe_scale, limits = c(-3,3), oob = squish, na.value = "gray50", guide = "none") + 
+  # annotate("text", x = -118.98, y = 37.87, label = label, size = 10) +
+  labs(fill = expression(Delta~SWE~(m^3~10^5))) +
+  theme(panel.border = element_blank(),
+        axis.text.x = element_blank(),
+        axis.title.y = element_blank(),
+        axis.title.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        legend.position = "bottom",
+        plot.margin = unit(c(0,0,0,0), "cm"),
+        strip.background = element_blank(), 
+        strip.position = c("top","left"),
+        legend.box.spacing = unit(0, "pt"), 
+        strip.text.y.left = element_text(angle = 0)) +
+  guides(fill = guide_colorbar(direction = "horizontal",
+                               label.position = 'top',
+                               title.position ='bottom',
+                               title.hjust = .5,
+                               barwidth = 20,
+                               barheight = 1,
+                               frame.colour = "black", 
+                               ticks.colour = "black")) 
+p
 
 # plot funciton
 dswe_gain_no_scale <-function(data, label){
@@ -92,7 +105,8 @@ dswe_gain_no_scale <-function(data, label){
         axis.title.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks = element_blank(),
-        plot.margin = unit(c(0,0,0,0), "cm")) 
+        plot.margin = unit(c(0,0,0,0), "cm"))+
+    
 
   return(p)
 }
