@@ -7,12 +7,11 @@ library(terra)
 setwd("~/ch3_fusion/")
 
 # bring in sierra shape
-sierra <-vect("./uavsar_shape_files/sierra_17305_20014-000_20016-005_0014d_s01_L090HH_01.cor.grd .shp")
+sierra <-vect("./shapefiles/sierra_multiseg_shp.gpkg")
 plot(sierra)
 
 # usj
-usj_v1 <-vect("./shapefiles/upper_san_joaquin.gpkg")
-usj <-project(usj_v1, crs(sierra))
+usj <-vect("./shapefiles/usj.shp")
 plot(usj)
 plot(sierra, add = TRUE)
 
@@ -33,7 +32,7 @@ plot(usj, add = TRUE)
 plot(sierra, add = TRUE)
 
 # save
-# writeRaster(cc, "./rasters/geo_layers/cc_domain.tif")
+writeRaster(cc, "./rasters/geo_layers/cc_domain_v2.tif")
 
 ########## nlcd canopy cover 2016
 lc_raw <-rast("./rasters/geo_layers/raw/NLCD_2019_Land_Cover_L48_20210604_8ILcwOA0bCSdi15EeQtJ.tiff")
@@ -52,7 +51,7 @@ plot(usj, add = TRUE)
 plot(sierra, add = TRUE)
 
 # save
-# writeRaster(lc, "./rasters/geo_layers/lc_domain.tif")
+writeRaster(lc, "./rasters/geo_layers/lc_domain_v2.tif")
 
 ## dem
 dem_raw <-rast("./rasters/geo_layers/raw/output_COP30.tif")
@@ -71,6 +70,34 @@ plot(usj, add = TRUE)
 plot(sierra, add = TRUE)
 
 # save
-# writeRaster(dem, "./rasters/geo_layers/dem_domain.tif")
+writeRaster(dem, "./rasters/geo_layers/dem_domain_v2.tif")
+
+
+## slope
+slope <-terrain(dem, v="slope", neighbors=8, unit="degrees")  
+plot(slope)
+
+# save
+writeRaster(slope, "./rasters/geo_layers/slope_domain_v2.tif")
+
+
+## fh
+fh_raw1 <-rast("./rasters/geo_layers/raw/Forest_height_2019_NAM.tif")
+fh_raw <-crop(fh_raw1, both_ext)
+fh_usj <-mask(fh_raw, usj) # mask usj
+fh_sierra <-mask(fh_raw, sierra) # mask sierra
+fh_both <-merge(fh_usj, fh_sierra) # merge together
+plot(fh_both)
+
+# make extent from both
+fh <-crop(fh_both, both_ext) # crop
+
+# test plot, looks good
+plot(fh)
+plot(usj, add = TRUE)
+plot(sierra, add = TRUE)
+
+# save
+writeRaster(fh, "./rasters/geo_layers/fh_domain_v2.tif")
 
 

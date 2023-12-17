@@ -1,0 +1,13 @@
+library(terra)
+# install.packages("devtools")
+devtools::install_github("ropensci/smapr")
+library(smapr)
+Sys.setenv(ed_un = "jacktarricone", ed_pw = "Dylanrieder1")
+Sys.getenv("ed_pw")
+
+available_data <- find_smap(id = "SPL3SMA", date = "2015-05-26", version = 3)
+str(available_data)
+downloads <- download_smap(available_data)
+str(downloads)
+sm_raster <- extract_smap(downloads, "Soil_Moisture_Retrieval_Data/soil_moisture")
+plot(sm_raster, main = "test")
