@@ -72,19 +72,19 @@ sd_na_rm <-function(x){sd(x, na.rm = TRUE)}
 # calculate pixelwise standard deviation, add pair row
 p1_sd <-app(p1_stack, fun = sd_na_rm)/1e5
 p1_df <-as.data.frame(p1_sd, xy = TRUE)
-p1_df$pair <-rep("p1", nrow(p1_df))
+p1_df$pair <-rep("P1", nrow(p1_df))
 
 p2_sd <-app(p2_stack, fun = sd_na_rm)/1e5
 p2_df <-as.data.frame(p2_sd, xy = TRUE)
-p2_df$pair <-rep("p2", nrow(p2_df))
+p2_df$pair <-rep("P2", nrow(p2_df))
 
 p3_sd <-app(p3_stack, fun = sd_na_rm)/1e5
 p3_df <-as.data.frame(p3_sd, xy = TRUE)
-p3_df$pair <-rep("p3", nrow(p3_df))
+p3_df$pair <-rep("P3", nrow(p3_df))
 
 p4_sd <-app(p4_stack, fun = sd_na_rm)/1e5
 p4_df <-as.data.frame(p4_sd, xy = TRUE)
-p4_df$pair <-rep("p4", nrow(p4_df))
+p4_df$pair <-rep("P4", nrow(p4_df))
 
 # # filter cc of 0
 # df_v2 <-dplyr::filter(cc_sd_df, cc_mean >= 0)
@@ -110,18 +110,23 @@ head(plotting_df_v2)
 cc_scale <-colorRampPalette(c("#f7fcf5", "#00441b"))
 cc_scale(13)
 
-
+f_labels <- data.frame(
+  pair = c("P1", "P2" ,"P3", "P4"),
+  label = c("(a) P1", "(b) P2" ,"(c) P3", "(d) P4"),
+  bin = c('(5,10]','(5,10]','(5,10]','(5,10]'),
+  # bin = as.factor(c('(0,5]','(0,5]','(0,5]','(0,5]')),
+  y = c(1.8, 1.8, 1.8, 1.8))
 
 # starting plot
 ### gains
 p1_p <-ggplot(plotting_df_v2, mapping = aes(x = cc_mean, y = sd, fill = as.factor(bin))) +
   geom_boxplot(linewidth = .6, varwidth = TRUE, outlier.size = .001, outlier.shape = 4, 
                outlier.colour = "grey80", outlier.alpha  = .01) +
+  scale_fill_discrete(type = cc_scale(10)) +
   facet_wrap(~pair, scales = "fixed")+
   xlab("CC (%)") + ylab(expression(Delta~SWE~SD~(m^3~ 10^5)))+ 
   scale_x_continuous(limits = c(0,50), breaks = seq(0,65,5), expand = c(0,.5)) +
   scale_y_continuous(limits = c(0,2)) +
-  scale_fill_discrete(type = cc_scale(10)) +
   theme_classic(13) +
   theme(panel.border = element_rect(colour = "black", fill = NA, size = 1),
         legend.position = "none",
@@ -130,19 +135,20 @@ p1_p <-ggplot(plotting_df_v2, mapping = aes(x = cc_mean, y = sd, fill = as.facto
         legend.box.background = element_rect(colour = "black"), 
         strip.text.x = element_blank())
 
-# f_labels <- data.frame(drv = c("p1", "p2" ,"p3", "p4"), label = c("(a) P1", "(b) P2" ,"(c) P3", "(d) P4"))
+# this works!!
+p2 <- p1_p + geom_text(data = f_labels, aes(x = 5, y = y, label = label), size = 5)
 
 # fix later!!
 # p1_p +  geom_text(x = 10, y = 1.8, aes(label = label), data = f_labels)
-p1_p
+p2
 
 # test save
 # make tighter together
-ggsave(p1_p,
-       file = "~/ch3_fusion/plots/cc_vs_sd_v2.png",
+ggsave(p2,
+       file = "~/ch3_fusion/plots/cc_vs_sd_v3.png",
        width = 8, 
        height = 4,
        dpi = 300)
 
-system("open ~/ch3_fusion/plots/cc_vs_sd_v2.png")
+system("open ~/ch3_fusion/plots/cc_vs_sd_v3.png")
         
