@@ -13,7 +13,7 @@ unw <-rast("./new_uavsar/p1_80m/p1_14d_VV_unw_80m.tif")
 cor <-rast("./new_uavsar/p1_80m/p1_14d_VV_coh_80m.tif")
 inc <-rast("./new_uavsar/inc_80m.tif")
 
-# bring masked unwrapped phase rastesr
+# bring in fsca data
 ims <-rast("./new_optical/p1_80m_20200131_20200212/ims_0212_80m.tif")
 modscag <-rast("./new_optical/p1_80m_20200131_20200212/modscag_0212_80m.tif")
 modis <-rast("./new_optical/p1_80m_20200131_20200212/modis_0212_80m.tif")

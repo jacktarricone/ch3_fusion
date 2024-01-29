@@ -53,7 +53,7 @@ devtools::source_url("https://raw.githubusercontent.com/jacktarricone/snowex_uav
 # }
 
 # approx density from mammoth pits
-density <-360 # check this
+density <-360 
 
 # calc perm using guni equation
 sierra_perm <- 1 + 1.6 * (density/1000) + 1.8 * (density/1000)^3
