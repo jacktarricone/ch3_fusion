@@ -52,8 +52,20 @@ devtools::source_url("https://raw.githubusercontent.com/jacktarricone/snowex_uav
 #   
 # }
 
-# approx density from mammoth pits
-density <-370 # check this
+# take mean pit values from cues and panorama
+snowex <-read.csv("/Users/jtarrico/ch3_fusion/snowex_insitu/SNEX20_TS_SP_Summary_SWE_v02.csv")
+
+# convert to date_time
+snowex$date_time <-ymd_hm(snowex$date_time)
+snowex$date <-as_date(snowex$date_time)
+mam <-filter(snowex, location == "Mammoth Lakes")
+mam
+mam_p1 <-mam %>% dplyr::filter(date > "2020-01-30" & date < "2020-02-13")
+mam_p1
+
+# calculate mean density between the four pits and two dates
+density <-mean(mam_p1$density_mean)
+print(density)
 
 # calc perm using guni equation
 sierra_perm <- 1 + 1.6 * (density/1000) + 1.8 * (density/1000)^3
@@ -68,7 +80,7 @@ depth_change <-depth_from_phase(delta_phase = unw_stack,
                                 wavelength = uavsar_wL)
 
 # convert to SWE change
-dswe_raw <-depth_change*(370/1000)
+dswe_raw <-depth_change*(density/1000)
 plot(dswe_raw)
 hist(dswe_raw[[1]])
 
@@ -83,7 +95,7 @@ points(pillow_point, cex = 1)
 text(pillow_point, labels = c("VLC", "DPO", "MHP","UBC","WWC"), pos = 3)
 
 # calculate SWE change at pillow
-cadwr_swe <-read.csv("~/ch3_fusion/csvs/cadwr_swe_depth_qaqc_v1.csvs")
+cadwr_swe <-read.csv("~/ch3_fusion/csvs/cadwr_swe_depth_qaqc_v1.csv")
 cadwr_swe$date <-as.Date(cadwr_swe$date)
 
 # test plot from vlc cadwr pillow
@@ -96,7 +108,7 @@ sp <-dplyr::filter(cadwr_swe, date > "2020-01-30" & date < "2020-02-13")
 ggplot(sp, aes(x = date, y = swe_cm, color = id)) +
   geom_line()
 
-# calc change in SWE at pillow from feb 26 - march 11
+# calc change in SWE at pillow from jan 31 - feb 12
 station_dswe <- sp %>%
   group_by(id) %>%
   summarize(dswe_cm = swe_cm[13] - swe_cm[1])
@@ -131,10 +143,10 @@ colnames(ubc_vals) <-rep("ubc", ncol(ubc_vals))
 # colnames(wwc_vals) <-"wwc"
 
 # make df
-vlc_mean <-mean(colMeans(vlc_vals, na.rm = TRUE))
-dpo_mean <-mean(colMeans(dpo_vals, na.rm = TRUE))
-mhp_mean <-mean(colMeans(mhp_vals, na.rm = TRUE))
-ubc_mean <-mean(colMeans(ubc_vals, na.rm = TRUE))
+vlc_mean <-mean(colMeans(vlc_vals, na.rm = TRUE), na.rm = TRUE)
+dpo_mean <-mean(colMeans(dpo_vals, na.rm = TRUE), na.rm = TRUE)
+mhp_mean <-mean(colMeans(mhp_vals, na.rm = TRUE), na.rm = TRUE)
+ubc_mean <-mean(colMeans(ubc_vals, na.rm = TRUE), na.rm = TRUE)
 
 # mean station dswe
 mean_pillow_dswe <-mean(station_dswe$dswe_cm)
@@ -153,11 +165,13 @@ dswe <-dswe_raw + tether_value
 plot(dswe)
 hist(dswe, breaks = 100)
 
-# save
-writeRaster(dswe[[1]], "./new_dswe/p1/p1_ims_dswe_cm_v2.tif")
-writeRaster(dswe[[2]], "./new_dswe/p1/p1_modscag_dswe_cm_v2.tif")
-writeRaster(dswe[[3]], "./new_dswe/p1/p1_modis_dswe_cm_v2.tif")
-writeRaster(dswe[[4]], "./new_dswe/p1/p1_viirs_dswe_cm_v2.tif")
-writeRaster(dswe[[5]], "./new_dswe/p1/p1_flm_dswe_cm_v2.tif")
-writeRaster(dswe[[6]], "./new_dswe/p1/p1_landsat_dswe_cm_v2.tif")
+# list names
+names <-c("ims","modscag","modis","viirs","flm","landsat")
 
+# save with looop
+for (i in 1:length(names)) {
+  
+  dataset <-names[i]
+  writeRaster(dswe[[i]], paste0("~/ch3_fusion/rasters/new_dswe/p1/p1_",dataset,"_dswe_cm_v4.tif"))
+  
+}

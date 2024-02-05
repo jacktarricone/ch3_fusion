@@ -108,7 +108,7 @@ sp <-dplyr::filter(cadwr_swe, date > "2020-02-11" & date < "2020-02-20")
 ggplot(sp, aes(x = date, y = swe_cm, color = id)) +
   geom_line()
 
-# calc change in SWE at pillow from feb 26 - march 11
+# calc change in SWE at pillow from feb 12 - 19
 station_dswe <- sp %>%
   group_by(id) %>%
   summarize(dswe_cm = swe_cm[8] - swe_cm[1])
@@ -143,10 +143,10 @@ colnames(ubc_vals) <-rep("ubc", ncol(ubc_vals))
 # colnames(wwc_vals) <-"wwc"
 
 # make df
-vlc_mean <-mean(colMeans(vlc_vals, na.rm = TRUE))
-dpo_mean <-mean(colMeans(dpo_vals, na.rm = TRUE))
-mhp_mean <-mean(colMeans(mhp_vals, na.rm = TRUE))
-ubc_mean <-mean(colMeans(ubc_vals, na.rm = TRUE))
+vlc_mean <-mean(colMeans(vlc_vals, na.rm = TRUE), na.rm = TRUE)
+dpo_mean <-mean(colMeans(dpo_vals, na.rm = TRUE), na.rm = TRUE)
+mhp_mean <-mean(colMeans(mhp_vals, na.rm = TRUE), na.rm = TRUE)
+ubc_mean <-mean(colMeans(ubc_vals, na.rm = TRUE), na.rm = TRUE)
 
 # mean station dswe
 mean_pillow_dswe <-mean(station_dswe$dswe_cm)
@@ -166,9 +166,10 @@ dswe <-dswe_raw + tether_value
 plot(dswe)
 hist(dswe, breaks = 100)
 
+# list names
 names <-c("ims","modscag","modis","viirs","flm","landsat")
 
-# ### check this
+# save with looop
 for (i in 1:length(names)) {
   
   dataset <-names[i]
