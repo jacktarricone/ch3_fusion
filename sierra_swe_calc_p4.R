@@ -52,8 +52,21 @@ devtools::source_url("https://raw.githubusercontent.com/jacktarricone/snowex_uav
 #   
 # }
 
-# approx density from mammoth pits
-density <-360 
+# take mean pit values from cues and panorama
+snowex <-read.csv("/Users/jtarrico/ch3_fusion/snowex_insitu/SNEX20_TS_SP_Summary_SWE_v02.csv")
+
+# convert to date_time
+snowex$date_time <-ymd_hm(snowex$date_time)
+snowex$date <-as_date(snowex$date_time)
+mam <-filter(snowex, location == "Mammoth Lakes")
+mam
+mam_p4 <-mam %>% dplyr::filter(date > "2020-02-25" & date < "2020-03-12")
+mam_p4
+
+# calculate mean density between the four pits and two dates
+density <-mean(mam_p4$density_mean)
+print(density)
+
 
 # calc perm using guni equation
 sierra_perm <- 1 + 1.6 * (density/1000) + 1.8 * (density/1000)^3
@@ -61,7 +74,6 @@ sierra_perm <- 1 + 1.6 * (density/1000) + 1.8 * (density/1000)^3
 ############### 
 ## unw_stack ##
 ###############
-
 depth_change <-depth_from_phase(delta_phase = unw_stack,
                                 inc_angle = inc,
                                 perm = sierra_perm,
@@ -90,27 +102,21 @@ cadwr_swe$date <-as.Date(cadwr_swe$date)
 ggplot(cadwr_swe, aes(x = date, y = swe_cm, color = id)) +
   geom_line()
 
-ggplot(cadwr_swe, aes(x = date, y = bulk_density, color = id)) +
-  geom_line()
-
 # study period filter
 sp <-dplyr::filter(cadwr_swe, date > "2020-02-25" & date < "2020-03-12")
 
 ggplot(sp, aes(x = date, y = swe_cm, color = id)) +
   geom_line()
 
-ggplot(sp, aes(x = date, y = bulk_density, color = id)) +
-  geom_line()
-
-# calc change in SWE at pillow from feb 26 - march 11
+# calc change in SWE at pillow from feb 19 - 26
 station_dswe <- sp %>%
   group_by(id) %>%
-  summarize(dswe_cm = swe_cm[15] - swe_cm[1])
+  summarize(dswe_cm = swe_cm[8] - swe_cm[1])
 
 station_dswe
 
 # extract using that vector
-pillow_cell_dswe <-terra::extract(dswe_raw[[1]], pillow_point,  cells = TRUE, xy = TRUE, ID = TRUE)
+pillow_cell_dswe <-terra::extract(dswe_raw, pillow_point,  cells = TRUE, xy = TRUE, ID = TRUE)
 pillow_cell_dswe$id <-c("VLC", "DPO", "MHP","UBC","WWC")
 pillow_cell_dswe
 
@@ -119,39 +125,40 @@ test_cells <-adjacent(dswe_raw, pillow_cell_dswe$cell, direction = 8)
 
 # for five stations
 vlc_cells <-c(pillow_cell_dswe$cell[1],test_cells[1,])
-# dpo_cells <-c(pillow_cell_dswe$cell[2],test_cells[2,])
+dpo_cells <-c(pillow_cell_dswe$cell[2],test_cells[2,])
 mhp_cells <-c(pillow_cell_dswe$cell[3],test_cells[3,])
 ubc_cells <-c(pillow_cell_dswe$cell[4],test_cells[4,])
 # wwc_cells <-c(pillow_cell_dswe$cell[5],test_cells[5,])
 
 # extract
 vlc_vals <-terra::extract(dswe_raw, vlc_cells)
-colnames(vlc_vals) <-"vlc"
-# dpo_vals <-terra::extract(modscag_dswe_raw, dpo_cells)
-# colnames(dpo_vals) <-"dpo"
+colnames(vlc_vals) <-rep("vlc", ncol(vlc_vals))
+dpo_vals <-terra::extract(dswe_raw, dpo_cells)
+colnames(dpo_vals) <-rep("dpo", ncol(dpo_vals))
 mhp_vals <-terra::extract(dswe_raw, mhp_cells)
-colnames(mhp_vals) <-"mhp"
+colnames(mhp_vals) <-rep("mph", ncol(mhp_vals))
 ubc_vals <-terra::extract(dswe_raw, ubc_cells)
-colnames(ubc_vals) <-"ubc"
+colnames(ubc_vals) <-rep("ubc", ncol(ubc_vals))
 # wwc_vals <-terra::extract(dswe_raw, wwc_cells)
 # colnames(wwc_vals) <-"wwc"
 
 # make df
-vals_df <-cbind(vlc_vals, mhp_vals, ubc_vals)
+vlc_mean <-mean(colMeans(vlc_vals, na.rm = TRUE), na.rm = TRUE)
+dpo_mean <-mean(colMeans(dpo_vals, na.rm = TRUE), na.rm = TRUE)
+mhp_mean <-mean(colMeans(mhp_vals, na.rm = TRUE), na.rm = TRUE)
+ubc_mean <-mean(colMeans(ubc_vals, na.rm = TRUE), na.rm = TRUE)
 
-# bind and find average swe change
-bind_v2 <-left_join(pillow_cell_dswe, station_dswe)
-bind_v2
+# mean station dswe
+mean_pillow_dswe <-mean(station_dswe$dswe_cm)
+mean_pillow_dswe
 
 # mean them all, pretty much the same
-mean_insar_dswe <-mean(c(vals_df$vlc, vals_df$mhp, vals_df$ubc, vals_df$wwc), na.rm = TRUE)
-
-# calc mean
-mean_pillow_dswe <-mean(bind_v2$dswe_cm)
-# mean_insar_dswe <-mean(bind_v2$'sierra_17305_20014-000_20016-005_0014d_s01_L090HH_01.unw.grd')
+mean_insar_dswe <-mean(c(vlc_mean,dpo_mean,mhp_mean,ubc_mean),na.rm = TRUE)
+mean_insar_dswe
 
 # create tether value
 tether_value <- mean_pillow_dswe - mean_insar_dswe
+tether_value
 
 ########## calc absolute dswe
 # modscag
@@ -166,7 +173,7 @@ names <-c("ims","modscag","modis","viirs","flm","landsat")
 for (i in 1:length(names)) {
   
   dataset <-names[i]
-  writeRaster(dswe[[i]], paste0("~/ch3_fusion/rasters/new_dswe/p4/p4_",dataset,"_dswe_cm_v3.tif"))
+  writeRaster(dswe[[i]], paste0("~/ch3_fusion/rasters/new_dswe/p4/p4_",dataset,"_dswe_cm_v4.tif"))
   
 }
 
