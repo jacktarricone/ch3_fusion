@@ -104,7 +104,7 @@ station_dswe <- sp %>%
 station_dswe
 
 # extract using that vector
-pillow_cell_dswe <-terra::extract(dswe_raw[[1]], pillow_point,  cells = TRUE, xy = TRUE, ID = TRUE)
+pillow_cell_dswe <-terra::extract(dswe_raw, pillow_point,  cells = TRUE, xy = TRUE, ID = TRUE)
 pillow_cell_dswe$id <-c("VLC", "DPO", "MHP","UBC","WWC")
 pillow_cell_dswe
 
@@ -116,37 +116,37 @@ vlc_cells <-c(pillow_cell_dswe$cell[1],test_cells[1,])
 dpo_cells <-c(pillow_cell_dswe$cell[2],test_cells[2,])
 mhp_cells <-c(pillow_cell_dswe$cell[3],test_cells[3,])
 ubc_cells <-c(pillow_cell_dswe$cell[4],test_cells[4,])
-wwc_cells <-c(pillow_cell_dswe$cell[5],test_cells[5,])
+# wwc_cells <-c(pillow_cell_dswe$cell[5],test_cells[5,])
 
 # extract
 vlc_vals <-terra::extract(dswe_raw, vlc_cells)
-colnames(vlc_vals) <-"vlc"
-# dpo_vals <-terra::extract(modscag_dswe_raw, dpo_cells)
-# colnames(dpo_vals) <-"dpo"
+colnames(vlc_vals) <-rep("vlc", ncol(vlc_vals))
+dpo_vals <-terra::extract(dswe_raw, dpo_cells)
+colnames(dpo_vals) <-rep("dpo", ncol(dpo_vals))
 mhp_vals <-terra::extract(dswe_raw, mhp_cells)
-colnames(mhp_vals) <-"mhp"
+colnames(mhp_vals) <-rep("mph", ncol(mhp_vals))
 ubc_vals <-terra::extract(dswe_raw, ubc_cells)
-colnames(ubc_vals) <-"ubc"
+colnames(ubc_vals) <-rep("ubc", ncol(ubc_vals))
 # wwc_vals <-terra::extract(dswe_raw, wwc_cells)
 # colnames(wwc_vals) <-"wwc"
 
 # make df
-vals_df <-cbind(vlc_vals, mhp_vals, ubc_vals)
+vlc_mean <-mean(colMeans(vlc_vals, na.rm = TRUE))
+dpo_mean <-mean(colMeans(dpo_vals, na.rm = TRUE))
+mhp_mean <-mean(colMeans(mhp_vals, na.rm = TRUE))
+ubc_mean <-mean(colMeans(ubc_vals, na.rm = TRUE))
 
-# bind and find average swe change
-bind_v2 <-left_join(pillow_cell_dswe, station_dswe)
-bind_v2
+# mean station dswe
+mean_pillow_dswe <-mean(station_dswe$dswe_cm)
+mean_pillow_dswe
 
 # mean them all, pretty much the same
-mean_insar_dswe <-mean(c(vals_df$vlc, vals_df$mhp, vals_df$ubc, vals_df$wwc), na.rm = TRUE)
-
-# calc mean
-mean_pillow_dswe <-mean(bind_v2$dswe_cm)
-# mean_insar_dswe <-mean(bind_v2$'sierra_17305_20014-000_20016-005_0014d_s01_L090HH_01.unw.grd')
+mean_insar_dswe <-mean(c(vlc_mean,dpo_mean,mhp_mean,ubc_mean),na.rm = TRUE)
+mean_insar_dswe
 
 # create tether value
 tether_value <- mean_pillow_dswe - mean_insar_dswe
-
+tether_value
 ########## calc absolute dswe
 # modscag
 dswe <-dswe_raw + tether_value
