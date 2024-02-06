@@ -133,10 +133,10 @@ p <-ggplot(plotting_df) +
                                ticks.colour = "black")) 
 
 ggsave(p,
-       file = "~/ch3_fusion/plots/dswe_plot_v3.png",
+       file = "~/ch3_fusion/plots/dswe_plot_v4.png",
        width = 7, 
        height = 12,
        dpi = 300)
 
-system("open ~/ch3_fusion/plots/dswe_plot_v3.png") 
+system("open ~/ch3_fusion/plots/dswe_plot_v4.png") 
 

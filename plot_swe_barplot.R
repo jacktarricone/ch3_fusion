@@ -4,6 +4,7 @@
 
 library(terra)
 library(ggplot2)
+library(tidyr)
 
 theme_classic <- function(base_size = 11, base_family = "",
                           base_line_size = base_size / 22,
@@ -36,6 +37,7 @@ theme_classic <- function(base_size = 11, base_family = "",
 
 
 theme_set(theme_classic(18))
+setwd("~/ch3_fusion")
 
 # load in 80 m insar dswe products
 p1_stack_cm <-rast(list.files("./rasters/new_dswe/p1", full.names = T))
@@ -87,6 +89,7 @@ p4_df_l <-pivot_longer(p4_df,
 plotting_df <-rbind(p1_df_l,p2_df_l,p3_df_l,p4_df_l)
 colnames(plotting_df)[5] <-"dswe_m3"
 plotting_df <-na.omit(plotting_df)
+head(plotting_df)
 
 # summarize for bar plots
 bar_results <- as.data.frame(plotting_df %>%
@@ -110,7 +113,7 @@ p <-ggplot(bar_plotting, aes(fill=stat, x = data_set, y=swe_change)) +
   # geom_text(aes(label=swe_change), position=position_dodge(width=0.9), vjust=-0.25)+
   facet_wrap(~pair)+
   geom_hline(yintercept = 0) +
-  scale_y_continuous(breaks = seq(-300,100,50),limits = c(-300,100))+
+  scale_y_continuous(breaks = seq(-350,100,50),limits = c(-350,100))+
   scale_fill_manual(values=c('darkblue','darkred','grey90'),name="")+
   ylab(expression(Delta~SWE~(m^3~10^3))) +
   xlab("fSCA Product") +
@@ -125,7 +128,7 @@ p <-ggplot(bar_plotting, aes(fill=stat, x = data_set, y=swe_change)) +
 
 # saves
 ggsave(p,
-       file = "~/ch3_fusion/plots/dswe_barplot_v2.png",
+       file = "~/ch3_fusion/plots/dswe_barplot_v3.png",
        width = 10.5,
        height = 6,
        dpi = 300)

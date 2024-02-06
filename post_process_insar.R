@@ -26,11 +26,14 @@ p4_coh_unw <-rast(p4_list[c(1,3)])
 p4_conncomp <-rast(p4_list[2])
 
 # apply 3x3 low pass filter to coherence and unw data
-p1_lp <-focal(p1_coh_unw, w=3, fun="mean")
-p2_lp <-focal(p2_coh_unw, w=3, fun="mean")
-p3_lp <-focal(p3_coh_unw, w=3, fun="mean")
-p4_lp <-focal(p4_coh_unw, w=3, fun="mean")
+p1_lp <-focal(p1_coh_unw, w=9, fun="mean", na.rm = TRUE)
+p2_lp <-focal(p2_coh_unw, w=3, fun="mean", na.rm = TRUE)
+p3_lp <-focal(p3_coh_unw, w=3, fun="mean", na.rm = TRUE)
+p4_lp <-focal(p4_coh_unw, w=3, fun="mean", na.rm = TRUE)
 
+# coh
+plot(p1_lp[[1]])
+writeRaster(p1_lp[[1]], "./new_uavsar/p1/p1_14d_VV_coh_for_shp.tif", overwrite = T)
 
 ##### mask unw for conncomp
 p1_unw_mask <-mask(p1_lp[[2]], p1_conncomp, maskvalues = 1, inverse = T)
@@ -55,7 +58,7 @@ writeRaster(p3_unw_mask, "./p3/p3_7d_VV_unw_v2.tif")
 writeRaster(p4_unw_mask, "./p4/p4_7d_VV_unw_v2.tif")
 
 # coh
-writeRaster(p1_lp[[1]], "./p1/p1_14d_VV_coh_v2.tif")
+writeRaster(p1_lp[[1]], "./p1/p1_14d_VV_coh_v3.tif")
 writeRaster(p2_lp[[1]], "./p2/p2_7d_VV_coh_v2.tif")
 writeRaster(p3_lp[[1]], "./p3/p3_7d_VV_coh_v2.tif")
 writeRaster(p4_lp[[1]], "./p4/p4_7d_VV_coh_v2.tif")

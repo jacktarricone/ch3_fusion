@@ -5,7 +5,7 @@ library(terra)
 setwd('~/ch3_fusion/rasters')
 
 # swe
-cor <-rast('./new_uavsar/p2/p2_7d_VV_coh_v2.tif')
+cor <-rast("./new_uavsar/p1/p1_14d_VV_coh_for_shp.tif")
 plot(cor)
 cor
 
@@ -18,11 +18,15 @@ plot(cor, add = T)
 
 # resamp
 cor_80m <-crop(resample(cor,nisar_cor,method = 'bilinear'),ext(cor))
+plot(cor_80m)
+# cor_80m <-ifel(is.na(cor_80m), 0, cor_80m)
 
 # conver to vect
 as_vect <-as.polygons(cor_80m)
+plot(as_vect)
 
 ## aggregate polyongs up to just data extent
 cor_shp <- aggregate(as_vect, dissolve = TRUE, fun = "mean", cores = 12)
-plot(cor_shp)
-writeVector(cor_shp, "~/ch3_fusion/shapefiles/sierra_multiseg_shp.gpkg")
+plot(cor_80m)
+plot(cor_shp, add = TRUE)
+writeVector(cor_shp, "~/ch3_fusion/shapefiles/sierra_multiseg_shp_v4.gpkg")
