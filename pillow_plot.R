@@ -46,9 +46,6 @@ cadwr_swe <-read.csv("~/ch3_fusion/csvs/cadwr_swe_depth_qaqc_v1.csv")
 cadwr_swe$date <-as.Date(cadwr_swe$date)
 
 
-
-
-
 # landsat aquisistions
 fsca1 <-vg_met_data$date_time[424]
 fsca2 <-vg_met_data$date_time[805]
@@ -63,8 +60,6 @@ flight3 <-as.numeric(cadwr_swe$date[51])
 flight4 <-as.numeric(cadwr_swe$date[59])
 
 
-
-
 p <-ggplot(cadwr_swe)+
   geom_vline(xintercept = start, linetype=2, col = "darkblue", alpha = .7) +
   geom_vline(xintercept = flight2, linetype=2, col = "darkblue", alpha = .7) +
@@ -73,7 +68,7 @@ p <-ggplot(cadwr_swe)+
   geom_vline(xintercept = end, linetype=2, col = "darkblue", alpha = .7) +
   annotate("rect", xmin = start, xmax = end,
            ymin = -Inf, ymax = Inf, alpha = .2)+
-  geom_line(aes(x = date, y = swe_cm, col = id),  size = 1)+
+  geom_line(aes(x = date, y = swe_cm,  = id),  size = 1)+
   # geom_line(aes(x = date_time, y = DSDepth_3), col = "gray50", size = .5)+
   # geom_line(aes(x = date_time, y = DSDepth_4), col = "gray50", size = .5)+
   # geom_line(aes(x = date_time, y = DSDepth_6), col = "gray50", size = .5)+
