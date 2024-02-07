@@ -153,11 +153,11 @@ plot_grid(temp, swe,
           labels = c("(a)","(b)"),
           align = "v", 
           nrow = 2, 
-          rel_heights = c(1/2, 1/2))
+          rel_heights = c(.48, .52))
 
 ggsave("~/ch3_fusion/plots/temp_swe_v1.pdf",
        width = 7,
-       height = 4,
+       height = 5,
        units = "in")
 
 system("open ~/ch3_fusion/plots/temp_swe_v1.pdf")
