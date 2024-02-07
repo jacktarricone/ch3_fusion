@@ -214,14 +214,14 @@ plot_grid(p1, p2, p3, p4,
           align = "v", 
           nrow = 4, 
           vjust = 10.5,
-          rel_heights = c(.26,.23,.23,.31))
+          rel_heights = c(.26,.23,.23,.32))
 
-ggsave("~/ch3_fusion/plots/dswe_plot_v8.pdf",
+ggsave("~/ch3_fusion/plots/dswe_plot_v9.pdf",
        width = 7,
        height = 12,
        units = "in")
 
-system("open ~/ch3_fusion/plots/dswe_plot_v8.pdf")
+system("open ~/ch3_fusion/plots/dswe_plot_v9.pdf")
 
 
 
