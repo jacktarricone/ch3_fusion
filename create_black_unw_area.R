@@ -24,5 +24,37 @@ na2 <-ifel(na1 > -999, NA, na1)
 na <-mask(na2, sierra)
 plot(na)
 
+# create shp for 
+# p1
+p1_na <-as.polygons(na[[1]], trunc=TRUE, dissolve=FALSE, values=FALSE,
+                       na.rm=TRUE, na.all=FALSE)
+
+p1_na_sf <-st_as_sf(p1_na)
+plot(p1_na_sf)
+
+# p2
+p2_na <-as.polygons(na[[2]], trunc=TRUE, dissolve=FALSE, values=FALSE,
+                    na.rm=TRUE, na.all=FALSE)
+
+p2_na_sf <-st_as_sf(p2_na)
+plot(p2_na_sf)
+
+# p3
+p3_na <-as.polygons(na[[3]], trunc=TRUE, dissolve=FALSE, values=FALSE,
+                    na.rm=TRUE, na.all=FALSE)
+
+p3_na_sf <-st_as_sf(p3_na)
+plot(p3_na_sf)
+
+# p4
+p4_na <-as.polygons(na[[4]], trunc=TRUE, dissolve=FALSE, values=FALSE,
+                    na.rm=TRUE, na.all=FALSE)
+
+p4_na_sf <-st_as_sf(p4_na)
+plot(p4_na_sf)
+
 # save
-writeRaster(na, "./rasters/new_uavsar/na_pixels_stack.tif")
+writeVector(p1_na, "./rasters/new_uavsar/p1_na.gpkg")
+writeVector(p2_na, "./rasters/new_uavsar/p2_na.gpkg")
+writeVector(p3_na, "./rasters/new_uavsar/p3_na.gpkg")
+writeVector(p4_na, "./rasters/new_uavsar/p4_na.gpkg")

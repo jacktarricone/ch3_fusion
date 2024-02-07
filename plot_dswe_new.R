@@ -93,8 +93,21 @@ p4_df_l <-pivot_longer(p4_df,
 # bind for plotting
 plotting_df <-rbind(p1_df_l,p2_df_l,p3_df_l,p4_df_l)
 
+# bring in NA df
+na_stack <-rast("./new_uavsar/na_pixels_stack.tif")
+na_df <-as.data.frame(na_stack, xy = T)
+
+# read in NA SHAPES
+p1_na <-vect("~/ch3_fusion/rasters/new_uavsar/p1_na.gpkg")
+p1_na_sf <-st_as_sf(p1_na)
+plot(p1_na_sf)
+
+p2_na <-vect("~/ch3_fusion/rasters/new_uavsar/p2_na.gpkg")
+p2_na_sf <-st_as_sf(p2_na)
+plot(p2_na_sf)
+
 # read in sierra shp
-sierra_v1 <-st_read("~/ch3_fusion/shapefiles/sierra_multiseg_shp.gpkg")
+sierra_v1 <-st_read("~/ch3_fusion/shapefiles/sierra_multiseg_shp_v4.gpkg")
 sierra_sf <-st_geometry(sierra_v1)
 
 ############
@@ -105,6 +118,84 @@ sierra_sf <-st_geometry(sierra_v1)
 # cc scale
 dswe_scale <-brewer.pal(9, "RdBu")
 
+??facet_wrap
+
+head(p1_df_l)
+
+# p2
+p1 <-ggplot(p1_df_l) +
+  geom_sf(data = sierra_sf, fill = "gray50", color = "black", linewidth = .2, inherit.aes = FALSE, alpha = 1) +
+  geom_sf(data = p1_na_sf, fill = NA, color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
+  geom_raster(mapping = aes(x,y, fill = value)) + 
+  facet_wrap(vars(data_set), scales = "fixed", dir = "h", strip.position = "top", nrow = 1) +
+  scale_fill_gradientn(colors = dswe_scale, limits = c(-6,6), oob = squish, na.value = "gray50", guide = "none") + # max of color bar so it saturates
+  labs(fill = expression(Delta~SWE~(m^3~10^3))) +
+  theme(panel.border = element_blank(),
+        axis.text.x = element_blank(),
+        axis.title.y = element_blank(),
+        axis.title.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        # legend.position = element_blank(),
+        plot.margin = unit(c(0,0,0,0), "cm"),
+        strip.background = element_blank(), 
+        strip.text = element_text(size = 13, face = "bold"))
+
+
+ggsave(p1,
+       file = "~/ch3_fusion/plots/dswe_plot_p1.pdf",
+       width = 7, 
+       height = 4,
+       dpi = 300)
+
+system("open ~/ch3_fusion/plots/dswe_plot_p1.pdf") 
+
+
+
+# P1
+p2 <-ggplot(p2_df_l) +
+  geom_sf(data = sierra_sf, fill = "gray50", color = "black", linewidth = .2, inherit.aes = FALSE, alpha = 1) +
+  geom_sf(data = p2_na_sf, fill = NA, color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
+  geom_raster(mapping = aes(x,y, fill = value)) + 
+  facet_wrap(vars(data_set), scales = "fixed", dir = "h", strip.position = "top", nrow = 1) +
+  scale_fill_gradientn(colors = dswe_scale, limits = c(-6,6), oob = squish, na.value = "gray50", guide = "none") + # max of color bar so it saturates
+  labs(fill = expression(Delta~SWE~(m^3~10^3))) +
+  theme(panel.border = element_blank(),
+        axis.text.x = element_blank(),
+        axis.title.y = element_blank(),
+        axis.title.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        plot.margin = unit(c(0,0,1,0), "cm"),
+        strip.background = element_blank(), 
+        strip.text = element_blank())
+
+
+ggsave(p2,
+       file = "~/ch3_fusion/plots/dswe_plot_p2.pdf",
+       width = 7, 
+       height = 4,
+       dpi = 300)
+
+system("open ~/ch3_fusion/plots/dswe_plot_p2.pdf") 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# good full plot
 p <-ggplot(plotting_df) +
   geom_sf(data = sierra_sf, fill = "gray50", color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
   geom_raster(mapping = aes(x,y, fill = value)) + 
