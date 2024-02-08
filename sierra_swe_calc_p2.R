@@ -47,9 +47,9 @@ devtools::source_url("https://raw.githubusercontent.com/jacktarricone/snowex_uav
 
 # from translated from uavsar_pytools function
 # depth_from_phase <-function(delta_phase, inc_angle, perm, wavelength = 0.238403545){
-#   
+# 
 #   delta_z = (-delta_phase * wavelength) / (4 * pi * (cos(inc_angle) - sqrt(perm - sin(inc_angle)^2)))
-#   
+# 
 # }
 
 # take mean pit values from cues and panorama
@@ -96,7 +96,7 @@ text(pillow_point, labels = c("VLC", "DPO", "MHP","UBC","WWC"), pos = 3)
 
 # calculate SWE change at pillow
 cadwr_swe <-read.csv("~/ch3_fusion/csvs/cadwr_swe_depth_qaqc_v1.csv")
-cadwr_swe$date <-as.Date(cadwr_swe$date)
+cadwr_swe$date <-mdy(cadwr_swe$date)
 
 # test plot from vlc cadwr pillow
 ggplot(cadwr_swe, aes(x = date, y = swe_cm, color = id)) +
