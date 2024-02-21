@@ -54,7 +54,7 @@ p4_stack <-rast(list.files("./dswe_variabilty_analysis/p4", pattern = ".tif", fu
 
 # bring in cc, mask, and resample
 cc_v2 <-rast("~/ch3_fusion/rasters/geo_layers/cc_domain.tif")
-sierra <-vect("~/ch3_fusion/shapefiles/sierra_multiseg_shp.gpkg")
+sierra <-vect("~/ch3_fusion/shapefiles/sierra_multiseg_shp_v4.gpkg")
 cc_v1 <-mask(cc_v2, sierra)
 cc <-resample(cc_v1, p4_stack, method = 'bilinear')
 cc_mw <-focal(cc, c(41,41), na.rm=TRUE, fun = "mean")

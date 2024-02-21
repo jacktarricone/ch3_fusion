@@ -5,6 +5,7 @@
 library(terra)
 library(ggplot2)
 library(tidyr)
+library(dplyr)
 
 theme_classic <- function(base_size = 11, base_family = "",
                           base_line_size = base_size / 22,
@@ -125,6 +126,7 @@ p <-ggplot(bar_plotting, aes(fill=stat, x = data_set, y=swe_change)) +
         legend.box.just = "center", 
         legend.margin = margin(t = 0, r = 0, b = 0, l = 0),
         legend.title = element_blank())
+p
 
 # saves
 ggsave(p,
@@ -135,4 +137,31 @@ ggsave(p,
 
 system('open ~/ch3_fusion/plots/dswe_barplot_v2.png')
 
+## numbers for text
+
+mean_changes <- as.data.frame(bar_plotting %>%
+                               group_by(pair,stat) %>%
+                               summarize(mean = as.integer(mean(swe_change))))
+
+mean_net <-filter(mean_changes, stat == "Net")
+mean_net
+
+mean_gain <-filter(mean_changes, stat == "Gain")
+mean_gain
+
+sensor_changes <- as.data.frame(bar_plotting %>%
+                                group_by(data_set,stat) %>%
+                                summarize(mean = as.integer(mean(swe_change))))
+
+# calc percent difference between landsat and FLM
+pd <- function(value1, value2) {
+  percent_difference <- abs((value1 - value2) / ((value1 + value2) / 2)) * 100
+  return(percent_difference)
+}
+
+# pairs
+p1_pd <-pd(-227,-119)
+p2_pd <-pd(-236,-118)
+p3_pd <-pd(-122,-49)
+p4_pd <-pd(-23,-5)
 

@@ -41,20 +41,18 @@ theme_set(theme_classic(16))
 setwd("~/ch3_fusion/rasters/new_dswe/")
 
 # load sensor names
-names <-c("ims","modscag","modis","viirs","flm","landsat")
+names <-c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS")
 
 # load in 80 m insar dswe products, and convert to meters
 p1_list <-list.files("./p1", pattern = ".tif", full.names = T)
 p1_m <-rast(p1_list)/100
 file_name <-basename(p1_list)
-col_name <-substr(file_name,1,nchar(file_name)-15)
-names(p1_m) <-col_name
+names(p1_m) <-names
   
 p2_list <-list.files("./p2", pattern = ".tif", full.names = T)
 p2_m <-rast(p2_list)/100
 file_name <-basename(p2_list)
-col_name <-substr(file_name,1,nchar(file_name)-15)
-names(p2_m) <-col_name
+names(p2_m) <-names
 
 p3_list <-list.files("./p3", pattern = ".tif", full.names = T)
 p3_m <-rast(p3_list)/100
@@ -149,4 +147,36 @@ for (i in 1:length(col_name)){
 # save csv
 p4_csv <-as.data.frame(p4_sm_m3)
 data.table::fwrite(p4_csv, "~/ch3_fusion/rasters/dswe_variabilty_analysis/p4_m3_41x41_20200219_20200226.csv")
+
+### format data.frames for plotting
+p1_df <-as.data.frame(p1_sm_m3, xy = TRUE)
+head(p1_df)
+p1_df$pair <-rep("P1", nrow(p1_df))
+p1_df_l <-pivot_longer(p1_df, 
+                       cols = c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS"),
+                       names_to = c("data_set"))
+
+p2_df <-as.data.frame(p2_sm_m3, xy = TRUE)
+p2_df$pair <-rep("P2", nrow(p2_df))
+p2_df_l <-pivot_longer(p2_df, 
+                       cols = c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS"),
+                       names_to = c("data_set"))
+
+p3_df <-as.data.frame(p3_sm_m3, xy = TRUE)
+p3_df$pair <-rep("P3", nrow(p3_df))
+p3_df_l <-pivot_longer(p3_df, 
+                       cols = c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS"),
+                       names_to = c("data_set"))
+
+p4_df <-as.data.frame(p4_sm_m3, xy = TRUE)
+p4_df$pair <-rep("P4", nrow(p4_df))
+p4_df_l <-pivot_longer(p4_df, 
+                       cols = c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS"),
+                       names_to = c("data_set"))
+
+
+# bind for plotting
+plotting_df <-rbind(p1_df_l,p2_df_l,p3_df_l,p4_df_l)
+data.table::fwrite(plotting_df, "~/ch3_fusion/csvs/dswe_new_41_plotting_v2.csv")
+
 

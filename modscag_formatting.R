@@ -4,7 +4,7 @@
 
 library(terra)
 
-setwd("/Users/jacktarricone/ch3_fusion/rasters/")
+setwd("~/ch3_fusion/rasters/")
 
 # list modscag files
 list_v1 <-list.files("./modscag/raw", pattern = "_snow_fraction_v2023.0.", full.names = TRUE)
