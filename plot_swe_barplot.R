@@ -153,6 +153,9 @@ sensor_changes <- as.data.frame(bar_plotting %>%
                                 group_by(data_set,stat) %>%
                                 summarize(mean = as.integer(mean(swe_change))))
 
+sensor_net <-filter(sensor_changes, stat == "Net")
+sensor_net
+
 # calc percent difference between landsat and FLM
 pd <- function(value1, value2) {
   percent_difference <- abs((value1 - value2) / ((value1 + value2) / 2)) * 100
@@ -165,3 +168,10 @@ p2_pd <-pd(-236,-118)
 p3_pd <-pd(-122,-49)
 p4_pd <-pd(-23,-5)
 
+# mult
+p1_times <-227/119
+p2_times <-236/118
+p3_times <-122/49
+p4_times <-23/5
+
+avg_time <-147/78

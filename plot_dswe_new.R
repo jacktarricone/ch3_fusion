@@ -100,11 +100,17 @@ na_df <-as.data.frame(na_stack, xy = T)
 # read in NA SHAPES
 p1_na <-vect("~/ch3_fusion/rasters/new_uavsar/p1_na.gpkg")
 p1_na_sf <-st_as_sf(p1_na)
-plot(p1_na_sf)
 
 p2_na <-vect("~/ch3_fusion/rasters/new_uavsar/p2_na.gpkg")
 p2_na_sf <-st_as_sf(p2_na)
-plot(p2_na_sf)
+
+# read in NA SHAPES
+p3_na <-vect("~/ch3_fusion/rasters/new_uavsar/p3_na.gpkg")
+p3_na_sf <-st_as_sf(p3_na)
+
+p4_na <-vect("~/ch3_fusion/rasters/new_uavsar/p4_na.gpkg")
+p4_na_sf <-st_as_sf(p4_na)
+
 
 # read in sierra shp
 sierra_v1 <-st_read("~/ch3_fusion/shapefiles/sierra_multiseg_shp_v4.gpkg")
@@ -185,7 +191,7 @@ p4 <-ggplot(p4_df_l) +
   geom_raster(mapping = aes(x,y, fill = value)) + 
   facet_wrap(vars(data_set), scales = "fixed", dir = "h", strip.position = "top", nrow = 1) +
   scale_fill_gradientn(colors = dswe_scale, limits = c(-6,6), oob = squish, na.value = "gray50", guide = "none") + # max of color bar so it saturates
-  labs(fill = expression(Delta~SWE~(m^3~10^3))) +
+  labs(fill = expression(Delta~SWE~(10^3~m^3))) +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
         axis.title.y = element_blank(),
@@ -216,12 +222,18 @@ plot_grid(p1, p2, p3, p4,
           vjust = 10.5,
           rel_heights = c(.26,.23,.23,.32))
 
-ggsave("~/ch3_fusion/plots/dswe_plot_v9.pdf",
+ggsave("~/ch3_fusion/plots/dswe_plot_v10.pdf",
        width = 7,
        height = 12,
        units = "in")
 
-system("open ~/ch3_fusion/plots/dswe_plot_v9.pdf")
+ggsave("~/ch3_fusion/plots/dswe_plot_v10.png",
+       width = 7,
+       height = 12,
+       dpi = 300,
+       units = "in")
+
+system("open ~/ch3_fusion/plots/dswe_plot_v10.pdf")
 
 
 

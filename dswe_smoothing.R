@@ -48,7 +48,7 @@ p1_list <-list.files("./p1", pattern = ".tif", full.names = T)
 p1_m <-rast(p1_list)/100
 file_name <-basename(p1_list)
 names(p1_m) <-names
-  
+
 p2_list <-list.files("./p2", pattern = ".tif", full.names = T)
 p2_m <-rast(p2_list)/100
 file_name <-basename(p2_list)
@@ -87,13 +87,13 @@ plot(p1_sm_m3)
 for (i in 1:length(col_name)){
   
   dataset <-col_name[i]
-  writeRaster(p1_sm_m3[[i]], paste0("~/ch3_fusion/rasters/dswe_variabilty_analysis/p1/",dataset,"_m3_41x41_v1.tif"))
+  writeRaster(p1_sm_m3[[i]], paste0("~/ch3_fusion/rasters/dswe_variabilty_analysis/p1/",dataset,"_m3_41x41_v2.tif"))
   
 }
 
 # save csv
 p1_csv <-as.data.frame(p1_sm_m3)
-data.table::fwrite(p1_csv, "~/ch3_fusion/rasters/dswe_variabilty_analysis/p1_m3_41x41_20200131_20200212.csv")
+data.table::fwrite(p1_csv, "~/ch3_fusion/rasters/dswe_variabilty_analysis/p1_m3_41x41_20200131_20200212_v2.csv")
 
 
 ########## p2
