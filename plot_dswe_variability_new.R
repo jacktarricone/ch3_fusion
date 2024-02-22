@@ -62,7 +62,7 @@ cc_df <-as.data.frame(cc_mw, xy = TRUE)
 head(cc_df)
 
 # read in sierra shp
-sierra_v1 <-st_read("~/ch3_fusion/shapefiles/sierra_multiseg_shp.gpkg")
+sierra_v1 <-st_read("~/ch3_fusion/shapefiles/sierra_multiseg_shp_v4.gpkg")
 sierra_sf <-st_geometry(sierra_v1)
 
 ####################
@@ -72,38 +72,38 @@ sd_na_rm <-function(x){sd(x, na.rm = TRUE)}
 
 # calculate pixelwise standard deviation
 p1_sd <-app(p1_stack, fun = sd_na_rm)/1e5
-hist(p1_sd,breaks = 100)
 p1_df <-as.data.frame(p1_sd, xy = TRUE)
-plot(p1_sd)
+p1_df$pair <-rep("P1", nrow(p1_df))
 
 p2_sd <-app(p2_stack, fun = sd_na_rm)/1e5
 p2_df <-as.data.frame(p2_sd, xy = TRUE)
-plot(p2_sd)
+p2_df$pair <-rep("P2", nrow(p2_df))
 
 p3_sd <-app(p3_stack, fun = sd_na_rm)/1e5
 p3_df <-as.data.frame(p3_sd, xy = TRUE)
-plot(p3_sd)
+p3_df$pair <-rep("P3", nrow(p3_df))
+
 
 p4_sd <-app(p4_stack, fun = sd_na_rm)/1e5
 p4_df <-as.data.frame(p4_sd, xy = TRUE)
-plot(p4_sd)
+p4_df$pair <-rep("P4", nrow(p4_df))
 
-head(p1_df)
-hist(p1_sd, breaks = 100)
+
+# bind for facet plotting
+plotting_df <-rbind(p1_df,p2_df,p3_df,p4_df)
 
 # set scolor scale
 scale1 <-c(viridis(10, option = "H", direction = 1))
 
 #############
-#### p1 #####
+#### plot four pairs SD rasters
 #############
 
-p1_p <-ggplot(p1_df) +
+p1_p <-ggplot(plotting_df) +
   geom_sf(data = sierra_sf, fill = "gray80", color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
   geom_raster(mapping = aes(x,y, fill = lyr.1)) + 
-  # geom_sf(data = sierra_sf, fill = NA, color = "black", linewidth = .7, inherit.aes = FALSE, alpha = 1) +
-  annotate("text", x = -118.98, y = 37.87, label = "P1", size = 10) +
-  scale_fill_gradientn(colors = scale1, limits = c(0,2), oob = squish) + # max of color bar so it saturates
+  facet_wrap(vars(pair), scales = "fixed", dir = "h", strip.position = "top", nrow = 1) +
+  scale_fill_gradientn(colors = scale1, limits = c(0,1.5), oob = squish) + # max of color bar so it saturates
   labs(fill = expression(Delta~SWE~SD~(m^3~10^5))) +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
@@ -112,8 +112,9 @@ p1_p <-ggplot(p1_df) +
         axis.text.y = element_blank(),
         axis.ticks = element_blank(),
         legend.position = "bottom",
-        plot.margin = unit(c(0,0,0,0), "cm"),
-        legend.box.spacing = unit(0, "pt")) +
+        plot.margin = unit(c(0,0,0,1), "cm"),
+        strip.background = element_blank(),
+        strip.text = element_text(size = 25)) +
   guides(fill = guide_colorbar(direction = "horizontal",
                                label.position = 'top',
                                title.position ='bottom',
@@ -125,12 +126,12 @@ p1_p <-ggplot(p1_df) +
 
 # save
 ggsave(p1_p,
-       file = "~/ch3_fusion/plots/p1_sd.png",
-       width = 3.5, 
-       height = 8,
-       dpi = 300)
+       file = "~/ch3_fusion/plots/test_sd.pdf",
+       width = 8, 
+       height = 8)
 
-system("open ~/ch3_fusion/plots/p1_sd.png")
+system("open ~/ch3_fusion/plots/test_sd.pdf")
+
 
 
 #############
