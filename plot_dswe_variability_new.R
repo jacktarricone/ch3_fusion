@@ -73,20 +73,20 @@ sd_na_rm <-function(x){sd(x, na.rm = TRUE)}
 # calculate pixelwise standard deviation
 p1_sd <-app(p1_stack, fun = sd_na_rm)/1e5
 p1_df <-as.data.frame(p1_sd, xy = TRUE)
-p1_df$pair <-rep("P1", nrow(p1_df))
+p1_df$pair <-rep("(a) P1", nrow(p1_df))
 
 p2_sd <-app(p2_stack, fun = sd_na_rm)/1e5
 p2_df <-as.data.frame(p2_sd, xy = TRUE)
-p2_df$pair <-rep("P2", nrow(p2_df))
+p2_df$pair <-rep("(b) P2", nrow(p2_df))
 
 p3_sd <-app(p3_stack, fun = sd_na_rm)/1e5
 p3_df <-as.data.frame(p3_sd, xy = TRUE)
-p3_df$pair <-rep("P3", nrow(p3_df))
+p3_df$pair <-rep("(c) P3", nrow(p3_df))
 
 
 p4_sd <-app(p4_stack, fun = sd_na_rm)/1e5
 p4_df <-as.data.frame(p4_sd, xy = TRUE)
-p4_df$pair <-rep("P4", nrow(p4_df))
+p4_df$pair <-rep("(d) P4", nrow(p4_df))
 
 
 # bind for facet plotting
@@ -112,14 +112,14 @@ p1_p <-ggplot(plotting_df) +
         axis.text.y = element_blank(),
         axis.ticks = element_blank(),
         legend.position = "bottom",
-        plot.margin = unit(c(0,0,0,1), "cm"),
+        plot.margin = unit(c(0,0,0,0), "cm"),
         strip.background = element_blank(),
         strip.text = element_text(size = 25)) +
   guides(fill = guide_colorbar(direction = "horizontal",
                                label.position = 'top',
                                title.position ='bottom',
                                title.hjust = .5,
-                               barwidth = 30,
+                               barwidth = 40,
                                barheight = 1,
                                frame.colour = "black", 
                                ticks.colour = "black")) 
@@ -128,132 +128,12 @@ p1_p <-ggplot(plotting_df) +
 ggsave(p1_p,
        file = "~/ch3_fusion/plots/test_sd.pdf",
        width = 8, 
-       height = 8)
+       height = 7)
 
 system("open ~/ch3_fusion/plots/test_sd.pdf")
 
 
 
-#############
-#### p2 #####
-#############
-
-
-p2_p <-ggplot(p2_df) +
-  geom_sf(data = sierra_sf, fill = "gray80", color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
-  geom_raster(mapping = aes(x,y, fill = lyr.1)) + 
-  # geom_sf(data = sierra_sf, fill = NA, color = "black", linewidth = .7, inherit.aes = FALSE, alpha = 1) +
-  annotate("text", x = -118.98, y = 37.87, label = "P2", size = 10) +
-  scale_fill_gradientn(colors = scale1, limits = c(0,2), oob = squish) + # max of color bar so it saturates
-  labs(fill = expression(Delta~SWE~SD~(m^3~10^5))) +
-  theme(panel.border = element_blank(),
-        axis.text.x = element_blank(),
-        axis.title.y = element_blank(),
-        axis.title.x = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks = element_blank(),
-        legend.position = "bottom",
-        plot.margin = unit(c(0,0,0,0), "cm"),
-        legend.box.spacing = unit(0, "pt")) +
-  guides(fill = guide_colorbar(direction = "horizontal",
-                               label.position = 'top',
-                               title.position ='bottom',
-                               title.hjust = .5,
-                               barwidth = 11,
-                               barheight = 1,
-                               frame.colour = "black", 
-                               ticks.colour = "black")) 
-
-# save
-ggsave(p2_p,
-       file = "~/ch3_fusion/plots/p2_sd.png",
-       width = 3.5, 
-       height = 8,
-       dpi = 300)
-
-system("open ~/ch3_fusion/plots/p2_sd.png")
-
-#############
-#### p3 #####
-#############
-
-p3_p <-ggplot(p3_df) +
-  geom_sf(data = sierra_sf, fill = "gray80", color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
-  geom_raster(mapping = aes(x,y, fill = lyr.1)) + 
-  # geom_sf(data = sierra_sf, fill = NA, color = "black", linewidth = .7, inherit.aes = FALSE, alpha = 1) +
-  annotate("text", x = -118.98, y = 37.87, label = "P3", size = 10) +
-  scale_fill_gradientn(colors = scale1, limits = c(0,2), oob = squish) + # max of color bar so it saturates
-  labs(fill = expression(Delta~SWE~SD~(m^3~10^5))) +
-  theme(panel.border = element_blank(),
-        axis.text.x = element_blank(),
-        axis.title.y = element_blank(),
-        axis.title.x = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks = element_blank(),
-        legend.position = "bottom",
-        plot.margin = unit(c(0,0,0,0), "cm"),
-        legend.box.spacing = unit(0, "pt")) +
-  guides(fill = guide_colorbar(direction = "horizontal",
-                               label.position = 'top',
-                               title.position ='bottom',
-                               title.hjust = .5,
-                               barwidth = 11,
-                               barheight = 1,
-                               frame.colour = "black", 
-                               ticks.colour = "black")) 
-
-# save
-ggsave(p3_p,
-       file = "~/ch3_fusion/plots/p3_sd.png",
-       width = 3.5, 
-       height = 8,
-       dpi = 300)
-
-system("open ~/ch3_fusion/plots/p3_sd.png")
-
-
-
-#############
-#### p4 #####
-#############
-
-p4_p <-ggplot(p4_df) +
-  geom_sf(data = sierra_sf, fill = "gray80", color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
-  geom_raster(mapping = aes(x,y, fill = lyr.1)) + 
-  # geom_sf(data = sierra_sf, fill = NA, color = "black", linewidth = .7, inherit.aes = FALSE, alpha = 1) +
-  annotate("text", x = -118.98, y = 37.87, label = "P4", size = 10) +
-  scale_fill_gradientn(colors = scale1, limits = c(0,2), oob = squish) + # max of color bar so it saturates
-  labs(fill = expression(Delta~SWE~SD~(m^3~10^5))) +
-  theme(panel.border = element_blank(),
-        axis.text.x = element_blank(),
-        axis.title.y = element_blank(),
-        axis.title.x = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks = element_blank(),
-        legend.position = "bottom",
-        plot.margin = unit(c(0,0,0,0), "cm"),
-        legend.box.spacing = unit(0, "pt")) +
-  guides(fill = guide_colorbar(direction = "horizontal",
-                               label.position = 'top',
-                               title.position ='bottom',
-                               title.hjust = .5,
-                               barwidth = 30,
-                               barheight = 1,
-                               frame.colour = "black", 
-                               ticks.colour = "black")) 
-
-# save
-ggsave(p4_p,
-       file = "~/ch3_fusion/plots/p4_sd.png",
-       width = 3.5, 
-       height = 8,
-       dpi = 300)
-
-system("open ~/ch3_fusion/plots/p4_sd.png")
-
-
-
-#### loss
 # set scale 
 cc_scale <-c(brewer.pal(9, 'YlGn'))
 
@@ -261,7 +141,7 @@ cc <-ggplot(cc_df) +
   geom_sf(data = sierra_sf, fill = "gray80", color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
   geom_raster(mapping = aes(x,y, fill = focal_mean)) + 
   # geom_sf(data = sierra_sf, fill = NA, color = "black", linewidth = .7, inherit.aes = FALSE, alpha = 1) +
-  annotate("text", x = -118.98, y = 37.87, label = "CC", size = 10) +
+  annotate("text", x = -118.98, y = 37.85, label = "(e) CC", size = 9) +
   scale_fill_gradientn(colors = cc_scale, limits = c(0,60), oob = squish) + # max of color bar so it saturates
   labs(fill = "CC (%)") +
   theme(panel.border = element_blank(),
@@ -271,82 +151,38 @@ cc <-ggplot(cc_df) +
         axis.text.y = element_blank(),
         axis.ticks = element_blank(),
         legend.position = "bottom",
-        plot.margin = unit(c(0,0,0,0), "cm"),
-        legend.box.spacing = unit(0, "pt")) +
+        plot.margin = unit(c(0,0,.5,0), "cm"),
+        legend.box.spacing = unit(13, "pt")) +
   guides(fill = guide_colorbar(direction = "horizontal",
                                label.position = 'top',
                                title.position ='bottom',
                                title.hjust = .5,
-                               barwidth = 11,
+                               barwidth = 10,
                                barheight = 1,
                                frame.colour = "black", 
                                ticks.colour = "black")) 
 
 # save
 ggsave(cc,
-       file = "~/ch3_fusion/plots/cc_map_41x41.png",
+       file = "~/ch3_fusion/plots/cc_map_41x41_v2.png",
        width = 3.5, 
        height = 8)
 
-system("open ~/ch3_fusion/plots/cc_map_41x41.png")
+system("open ~/ch3_fusion/plots/cc_map_41x41_v2.png")
 
 
 # cowplot test
-cow <-plot_grid(p1_p, p2_p, p3_p, p4_p, cc,
-                labels = c("(a)", "(b)", "(c)", "(d)", "(e)"),
-                ncol = 5, 
+cow <-plot_grid(p1_p, cc,
+                ncol = 2, 
                 align = "hv",
-                label_size = 22,
-                vjust =  2,
-                hjust = -.2,
-                rel_widths = c(1/5, 1/5, 1/5, 1/5, 1/5))
+                rel_widths = c(4/5, .21))
 # test save
 # make tighter together
 ggsave(cow,
-       file = "~/ch3_fusion/plots/sd_vs_cc_plot_v1.png",
-       width = 12.5, 
+       file = "~/ch3_fusion/plots/sd_vs_cc_plot_v3.pdf",
+       width = 13, 
        height = 9,
        dpi = 300)
 
-system("open ~/ch3_fusion/plots/sd_vs_cc_plot_v1.png")
+system("open ~/ch3_fusion/plots/sd_vs_cc_plot_v3.pdf")
 
-## try ggarrange
-sd <-ggarrange(p1_p, p2_p, p3_p, p4_p, # list of plots
-                labels = c("(a)", "(b)", "(c)","(d)"), # labels
-                common.legend = T, # COMMON LEGEND
-                legend = "bottom", # legend position
-                align = "hv", # Align them both, horizontal and vertical
-                ncol = 4,
-                nrow = 1,
-                vjust =  2,
-                hjust = -.2,
-                font.label = list(size = 23, color = "black", face = "bold"))  
-
-# test save
-# make tighter together
-ggsave(sd,
-       file = "~/ch3_fusion/plots/sd_vs_cc_plot_v2.png",
-       width = 10, 
-       height = 9,
-       dpi = 300)
-
-system("open ~/ch3_fusion/plots/sd_vs_cc_plot_v2.png")
-
-# cowplot test
-sd_cc <-plot_grid(sd,cc,
-                labels = c("", "(e)"),
-                ncol = 2, 
-                align = "v",
-                label_size = 22,
-                vjust =  2,
-                hjust = -.2,
-                rel_widths = c(4/5, 1/5))
-# test save
-# make tighter together
-ggsave(sd_cc,
-       file = "~/ch3_fusion/plots/sd_vs_cc_plot_v3.png",
-       width = 12.5, 
-       height = 9,
-       dpi = 300)
-
-system("open ~/ch3_fusion/plots/sd_vs_cc_plot_v3.png")
