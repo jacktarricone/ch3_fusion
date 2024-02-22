@@ -1,4 +1,4 @@
-# make boxplots for agu
+# plot 41 x 41 moving window rasters
 
 library(terra)
 library(ggplot2)
@@ -44,29 +44,28 @@ theme_set(theme_classic(15))
 setwd("~/ch3_fusion/")
 
 # load in 80 m insar dswe products
-plotting_df <-fread("~/ch3_fusion/csvs/dswe_new_41_plotting.csv")
-plotting_df$pair <-gsub("p","P",plotting_df$pair)
+plotting_df <-fread("~/ch3_fusion/csvs/dswe_new_41_plotting_v3.csv")
+plotting_df$value2 <-plotting_df$value/10e4
 head(plotting_df)
+hist(plotting_df$value2)
 
 # read in sierra shp
-sierra_v1 <-st_read("~/ch3_fusion/shapefiles/sierra_multiseg_shp.gpkg")
+sierra_v1 <-st_read("~/ch3_fusion/shapefiles/sierra_multiseg_shp_v4.gpkg")
 sierra_sf <-st_geometry(sierra_v1)
 
 ############
 ### plot
 ############
 
-# set scolor scale
-# cc scale
+# set color scale
 swe_scale <-brewer.pal(9, "RdBu")
 
 p <-ggplot(plotting_df) +
   geom_sf(data = sierra_sf, fill = "gray50", color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
-  geom_raster(mapping = aes(x,y, fill = value)) + 
+  geom_raster(mapping = aes(x,y, fill = value2)) + 
   facet_grid(vars(pair), vars(data_set), scales = "fixed", switch = "y") +
   scale_fill_gradientn(colors = swe_scale, limits = c(-3,3), oob = squish, na.value = "gray50", guide = "none") + 
-  # annotate("text", x = -118.98, y = 37.87, label = label, size = 10) +
-  labs(fill = expression(Delta~SWE~(m^3~10^5))) +
+  labs(fill = expression(Delta~SWE~(10^4~m^3))) +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
         axis.title.y = element_blank(),
@@ -89,12 +88,12 @@ p <-ggplot(plotting_df) +
                                ticks.colour = "black")) 
 
 ggsave(p,
-       file = "./plots/dswe_mw_v2.png",
+       file = "./plots/dswe_mw_v3.png",
        width = 7, 
        height = 12,
        dpi = 300)
 
-system("open ./plots/dswe_mw_v2.png") 
+system("open ./plots/dswe_mw_v3.png") 
 
 
 

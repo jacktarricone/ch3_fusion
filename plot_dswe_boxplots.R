@@ -1,4 +1,5 @@
-# plot dswe boxplots
+# plot dswe_mw  boxplots
+
 library(terra)
 library(tidyverse)
 library(dtplyr)
@@ -41,19 +42,18 @@ theme_classic <- function(base_size = 11, base_family = "",
 theme_set(theme_classic(18))
 
 # read in csv
-df <-fread("./csvs/dswe_new_41_plotting.csv")
-df$pair <-gsub("p","P",df$pair)
+df <-fread("./csvs/dswe_new_41_plotting_v3.csv")
+df$value2 <-df$value/10e4
+head(df)
 
 # define colors
 cols <-brewer_pal(palette = "Spectral")(6)
 df$data_set <-factor(df$data_set, levels = c('IMS','FLM','MODSCAG','MODIS','VIIRS','Landsat')) # conver to facor for plotting
-stats_df
+df
 
 # plot
-p <-ggplot(df, mapping = aes(x = as.factor(pair), y = value, fill = data_set)) +
-  geom_boxplot(linewidth = .3, width = .7, 
-               outlier.shape = 4, outlier.color = 'gray90', outlier.alpha = .05, outlier.size = .01,
-               position = 'dodge') +
+p <-ggplot(df, mapping = aes(x = as.factor(pair), y = value2, fill = data_set)) +
+  geom_violin(width=2, position=position_dodge(width=0.5)) +
   scale_fill_manual(name = "fSCA Data",
                     values = c('IMS' = cols[2], 'FLM' = cols[4], 
                                'MODSCAG' = cols[3], 'MODIS' = cols[5],
@@ -61,7 +61,7 @@ p <-ggplot(df, mapping = aes(x = as.factor(pair), y = value, fill = data_set)) +
                     labels = c('IMS','FLM','MODSCAG',
                                'MODIS','VIIRS','Landsat')) +
   guides(fill = guide_legend(ncol = 3, override.aes = list(order = c(1,2,3,4,5,6)))) +
-  xlab("InSAR Pair") + ylab(expression(Delta~SWE~(m^3~10^5))) +
+  xlab("InSAR Pair") + ylab(expression(Delta~SWE~(10^4~m^3))) +
   scale_y_continuous(limits = c(-8,6), breaks = seq(-8,6,2)) +
   theme_classic(25) +
   theme(panel.border = element_rect(colour = "black", fill = NA, linewidth  = 1),
@@ -72,12 +72,12 @@ p <-ggplot(df, mapping = aes(x = as.factor(pair), y = value, fill = data_set)) +
 
 
 ggsave(p,
-       file = "./plots/dswe_boxplots_v4.png",
+       file = "./plots/dswe_violin_v1.png",
        width = 12, 
        height = 5,
        units = "in",
        dpi = 300) 
 
-system("open ./plots/dswe_boxplots_v4.png")
+system("open ./plots/dswe_violin_v1.png")
 
 

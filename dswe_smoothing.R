@@ -48,6 +48,7 @@ p1_list <-list.files("./p1", pattern = ".tif", full.names = T)
 p1_m <-rast(p1_list)/100
 file_name <-basename(p1_list)
 names(p1_m) <-names
+plot(p1_m)
 
 p2_list <-list.files("./p2", pattern = ".tif", full.names = T)
 p2_m <-rast(p2_list)/100
@@ -68,7 +69,7 @@ names(p4_m) <-names
 cc_v2 <-rast("~/ch3_fusion/rasters/geo_layers/cc_domain.tif")
 sierra <-vect("~/ch3_fusion/shapefiles/sierra_multiseg_shp_v4.gpkg")
 cc_v1 <-mask(cc_v2, sierra)
-cc <-resample(cc_v1, p4_m, method = 'bilinear')
+cc <-resample(cc_v1, p1_m, method = 'bilinear')
 cc
 
 # calculate average cell area in cubic meters
@@ -77,9 +78,13 @@ cell_size_rast_m2 <-cellSize(p1_m, unit = "m")
 
 ########## p1
 # 41 x 41 moving window sum in cubic meters
-p1_sm <-focal(p1_m, c(41,41), na.rm=TRUE, fun = "sum")
-p1_sm_m3 <-p1_sm * cell_size_rast_m2
-plot(p1_sm_m3)
+# conver to cubic meters
+p1_m3 <-p1_m * cell_size_rast_m2
+
+# apply moving window
+p1_41 <-focal(p1_m3, c(41,41), na.rm=TRUE, fun = "sum")
+plot(p1_41)
+hist(p1_41/10e4)
 
 # names for looop
 col_name <-c("flm","ims","landsat","modis","modscag","viirs")
@@ -178,5 +183,5 @@ p4_df_l <-pivot_longer(p4_df,
 # bind for plotting
 plotting_df <-rbind(p1_df_l,p2_df_l,p3_df_l,p4_df_l)
 data.table::fwrite(plotting_df, "~/ch3_fusion/csvs/dswe_new_41_plotting_v3.csv")
-
+head(plotting_df)
 
