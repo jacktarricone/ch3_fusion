@@ -1,4 +1,5 @@
 # plot cc vs sd boxplots
+# update: feb 23
 
 library(terra)
 library(ggplot2)
@@ -70,20 +71,19 @@ sierra_sf <-st_geometry(sierra_v1)
 sd_na_rm <-function(x){sd(x, na.rm = TRUE)}
 
 # calculate pixelwise standard deviation, add pair row
-p1_sd <-app(p1_stack, fun = sd_na_rm)1e5
-
+p1_sd <-app(p1_stack, fun = sd_na_rm)/10^5
 p1_df <-as.data.frame(p1_sd, xy = TRUE)
 p1_df$pair <-rep("P1", nrow(p1_df))
 
-p2_sd <-app(p2_stack, fun = sd_na_rm)/1e5
+p2_sd <-app(p2_stack, fun = sd_na_rm)/10^5
 p2_df <-as.data.frame(p2_sd, xy = TRUE)
 p2_df$pair <-rep("P2", nrow(p2_df))
 
-p3_sd <-app(p3_stack, fun = sd_na_rm)/1e5
+p3_sd <-app(p3_stack, fun = sd_na_rm)/10^5
 p3_df <-as.data.frame(p3_sd, xy = TRUE)
 p3_df$pair <-rep("P3", nrow(p3_df))
 
-p4_sd <-app(p4_stack, fun = sd_na_rm)/1e5
+p4_sd <-app(p4_stack, fun = sd_na_rm)/10^5
 p4_df <-as.data.frame(p4_sd, xy = TRUE)
 p4_df$pair <-rep("P4", nrow(p4_df))
 
@@ -111,7 +111,6 @@ f_labels <- data.frame(
   pair = c("P1", "P2" ,"P3", "P4"),
   label = c("(a) P1", "(b) P2" ,"(c) P3", "(d) P4"),
   bin = c('(5,10]','(5,10]','(5,10]','(5,10]'),
-  # bin = as.factor(c('(0,5]','(0,5]','(0,5]','(0,5]')),
   y = c(2.3, 2.3, 2.3, 2.3))
 
 # starting plot
@@ -121,7 +120,7 @@ p1_p <-ggplot(plotting_df_v2, mapping = aes(x = cc_mean, y = sd, fill = as.facto
                outlier.colour = "grey80", outlier.alpha  = .01) +
   scale_fill_discrete(type = cc_scale(10)) +
   facet_wrap(~pair, scales = "fixed", nrow = 4)+
-  xlab("CC (%)") + ylab(expression(Delta~SWE~SD~(10^4~m^3)))+ 
+  xlab("CC (%)") + ylab(expression(Delta~SWE~SD~(10^5~m^3)))+ 
   scale_x_continuous(limits = c(0,50), breaks = seq(0,65,5), expand = c(0,.5)) +
   scale_y_continuous(limits = c(0,2.5)) +
   theme_classic(13) +
@@ -134,16 +133,14 @@ p1_p <-ggplot(plotting_df_v2, mapping = aes(x = cc_mean, y = sd, fill = as.facto
 
 # this works!!
 p2 <- p1_p + geom_text(data = f_labels, aes(x = 5, y = y, label = label), size = 5)
-
-# fix later!!
 p2
 
 # test save
 # make tighter together
 ggsave(p2,
-       file = "~/ch3_fusion/plots/cc_vs_sd_boxplot_v4.pdf",
+       file = "~/ch3_fusion/plots/cc_vs_sd_boxplot_v5.pdf",
        width = 4, 
        height = 7)
 
-system("open ~/ch3_fusion/plots/cc_vs_sd_boxplot_v4.pdf")
+system("open ~/ch3_fusion/plots/cc_vs_sd_boxplot_v5.pdf")
         

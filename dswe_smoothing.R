@@ -48,12 +48,13 @@ p1_list <-list.files("./p1", pattern = ".tif", full.names = T)
 p1_m <-rast(p1_list)/100
 file_name <-basename(p1_list)
 names(p1_m) <-names
-plot(p1_m)
+p1_m
 
 p2_list <-list.files("./p2", pattern = ".tif", full.names = T)
 p2_m <-rast(p2_list)/100
 file_name <-basename(p2_list)
 names(p2_m) <-names
+p2_m
 
 p3_list <-list.files("./p3", pattern = ".tif", full.names = T)
 p3_m <-rast(p3_list)/100
@@ -74,17 +75,19 @@ cc
 
 # calculate average cell area in cubic meters
 cell_size_rast_m2 <-cellSize(p1_m, unit = "m")
-# cell_size_m2 <-as.numeric(global(cell_size_v1, 'max') + global(cell_size_v1, 'min'))/2
+cell_size_rast_m2
 
 ########## p1
 # 41 x 41 moving window sum in cubic meters
 # conver to cubic meters
+
+
+##################### UPDATE FOR ROSS AND CSV AND PLOTS
 p1_m3 <-p1_m * cell_size_rast_m2
 
 # apply moving window
 p1_41 <-focal(p1_m3, c(41,41), na.rm=TRUE, fun = "sum")
-plot(p1_41)
-hist(p1_41/10e4)
+p1_mw <-(p1_41/(41*41))
 
 # names for looop
 col_name <-c("flm","ims","landsat","modis","modscag","viirs")

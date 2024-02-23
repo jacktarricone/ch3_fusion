@@ -57,12 +57,11 @@ names(p4_stack_cm) <-c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS")
 # create cell size raster in m^2
 cell_size_m2 <- cellSize(p4_stack_cm, unit = "m")
 
-# convert SWE cm to m^3 
-p1_stack_m3 <-(p1_stack_cm/10 * cell_size_m2)*1e-3
-p2_stack_m3 <-(p2_stack_cm/10 * cell_size_m2)*1e-3
-p3_stack_m3 <-(p3_stack_cm/10 * cell_size_m2)*1e-3
-p4_stack_m3 <-(p4_stack_cm/10 * cell_size_m2)*1e-3
-
+# convert SWE cm to m^3, and then divide for plotting purposes
+p1_stack_m3 <-(p1_stack_cm/100 * cell_size_m2)/10^2
+p2_stack_m3 <-(p2_stack_cm/100 * cell_size_m2)/10^2
+p3_stack_m3 <-(p3_stack_cm/100 * cell_size_m2)/10^2
+p4_stack_m3 <-(p4_stack_cm/100 * cell_size_m2)/10^2
 
 ### format data.frames for plotting
 p1_df <-as.data.frame(p1_stack_m3, xy = TRUE)
@@ -191,7 +190,7 @@ p4 <-ggplot(p4_df_l) +
   geom_raster(mapping = aes(x,y, fill = value)) + 
   facet_wrap(vars(data_set), scales = "fixed", dir = "h", strip.position = "top", nrow = 1) +
   scale_fill_gradientn(colors = dswe_scale, limits = c(-6,6), oob = squish, na.value = "gray50", guide = "none") + # max of color bar so it saturates
-  labs(fill = expression(Delta~SWE~(10^3~m^3))) +
+  labs(fill = expression(Delta~SWE~(10^2~m^3))) +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
         axis.title.y = element_blank(),
@@ -222,18 +221,22 @@ plot_grid(p1, p2, p3, p4,
           vjust = 10.5,
           rel_heights = c(.26,.23,.23,.32))
 
-ggsave("~/ch3_fusion/plots/dswe_plot_v10.pdf",
+# pdf
+ggsave("~/ch3_fusion/plots/dswe_plot_v11.pdf",
        width = 7,
        height = 12,
        units = "in")
 
-ggsave("~/ch3_fusion/plots/dswe_plot_v10.png",
+system("open ~/ch3_fusion/plots/dswe_plot_v11.pdf")
+
+# png
+ggsave("~/ch3_fusion/plots/dswe_plot_v11.png",
        width = 7,
        height = 12,
        dpi = 300,
        units = "in")
 
-system("open ~/ch3_fusion/plots/dswe_plot_v10.pdf")
+system("open ~/ch3_fusion/plots/dswe_plot_v11.png")
 
 
 
