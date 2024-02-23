@@ -67,9 +67,9 @@ file_name <-basename(p4_list)
 names(p4_m) <-names
 
 # bring in cc, mask, and resample
-cc_v2 <-rast("~/ch3_fusion/rasters/geo_layers/cc_domain.tif")
+cc_v3 <-rast("~/ch3_fusion/rasters/geo_layers/cc_domain.tif")
 sierra <-vect("~/ch3_fusion/shapefiles/sierra_multiseg_shp_v4.gpkg")
-cc_v1 <-mask(cc_v2, sierra)
+cc_v1 <-mask(cc_v3, sierra)
 cc <-resample(cc_v1, p1_m, method = 'bilinear')
 cc
 
@@ -95,88 +95,94 @@ col_name <-c("flm","ims","landsat","modis","modscag","viirs")
 for (i in 1:length(col_name)){
   
   dataset <-col_name[i]
-  writeRaster(p1_sm_m3[[i]], paste0("~/ch3_fusion/rasters/dswe_variabilty_analysis/p1/",dataset,"_m3_41x41_v2.tif"))
+  writeRaster(p1_mw[[i]], paste0("~/ch3_fusion/rasters/dswe_variabilty_analysis/p1/",dataset,"_m3_41x41_v3.tif"))
   
 }
 
 # save csv
-p1_csv <-as.data.frame(p1_sm_m3)
-data.table::fwrite(p1_csv, "~/ch3_fusion/rasters/dswe_variabilty_analysis/p1_m3_41x41_20200131_20200212_v2.csv")
+p1_csv <-as.data.frame(p1_mw)
+data.table::fwrite(p1_csv, "~/ch3_fusion/rasters/dswe_variabilty_analysis/p1_m3_41x41_20200131_20200212_v3.csv")
 
 
 ########## p2
 # 41 x 41 moving window sum in cubic meters
-p2_sm <-focal(p2_m, c(41,41), na.rm=TRUE, fun = "sum")
-p2_sm_m3 <-p2_sm * cell_size_rast_m2
-plot(p2_sm_m3)
+p2_m3 <-p2_m * cell_size_rast_m2
+
+# apply moving window
+p2_41 <-focal(p2_m3, c(41,41), na.rm=TRUE, fun = "sum")
+p2_mw <-(p2_41/(41*41))
 
 for (i in 1:length(col_name)){
   
   dataset <-col_name[i]
-  writeRaster(p2_sm_m3[[i]], paste0("~/ch3_fusion/rasters/dswe_variabilty_analysis/p2/p2_",dataset,"_m3_41x41_v2.tif"))
+  writeRaster(p2_mw[[i]], paste0("~/ch3_fusion/rasters/dswe_variabilty_analysis/p2/p2_",dataset,"_m3_41x41_v3.tif"))
   
 }
 
 # save csv
-p2_csv <-as.data.frame(p2_sm_m3)
-data.table::fwrite(p2_csv, "~/ch3_fusion/rasters/dswe_variabilty_analysis/p2_m3_41x41_20200212_20200219_v2.csv")
+p2_csv <-as.data.frame(p2_mw)
+data.table::fwrite(p2_csv, "~/ch3_fusion/rasters/dswe_variabilty_analysis/p2_m3_41x41_20200212_20200219_v3.csv")
 
 
 ########## p3
 # 41 x 41 moving window sum in cubic meters
-p3_sm <-focal(p3_m, c(41,41), na.rm=TRUE, fun = "sum")
-p3_sm_m3 <-p3_sm * cell_size_rast_m2
-plot(p3_sm_m3)
+p3_m3 <-p3_m * cell_size_rast_m2
+
+# apply moving window
+p3_41 <-focal(p3_m3, c(41,41), na.rm=TRUE, fun = "sum")
+p3_mw <-(p3_41/(41*41))
 
 for (i in 1:length(col_name)){
   
   dataset <-col_name[i]
-  writeRaster(p3_sm_m3[[i]], paste0("~/ch3_fusion/rasters/dswe_variabilty_analysis/p3/p3_",dataset,"_m3_41x41_v2.tif"))
+  writeRaster(p3_mw[[i]], paste0("~/ch3_fusion/rasters/dswe_variabilty_analysis/p3/p3_",dataset,"_m3_41x41_v3.tif"))
   
 }
 
 # save csv
-p3_csv <-as.data.frame(p3_sm_m3)
-data.table::fwrite(p3_csv, "~/ch3_fusion/rasters/dswe_variabilty_analysis/p3_m3_41x41_20200219_20200226_v2.csv")
+p3_csv <-as.data.frame(p3_mw)
+data.table::fwrite(p3_csv, "~/ch3_fusion/rasters/dswe_variabilty_analysis/p3_m3_41x41_20200219_20200226_v3.csv")
 
 ########## p4
 # 41 x 41 moving window sum in cubic meters
-p4_sm <-focal(p4_m, c(41,41), na.rm=TRUE, fun = "sum")
-p4_sm_m3 <-p4_sm * cell_size_rast_m2
-plot(p4_sm_m3)
+p4_m3 <-p4_m * cell_size_rast_m2
+
+# apply moving window
+p4_41 <-focal(p4_m3, c(41,41), na.rm=TRUE, fun = "sum")
+p4_mw <-(p4_41/(41*41))
 
 for (i in 1:length(col_name)){
   
   dataset <-col_name[i]
-  writeRaster(p4_sm_m3[[i]], paste0("~/ch3_fusion/rasters/dswe_variabilty_analysis/p4/p4_",dataset,"_m3_41x41_v2.tif"))
+  writeRaster(p4_mw[[i]], paste0("~/ch3_fusion/rasters/dswe_variabilty_analysis/p4/p4_",dataset,"_m3_41x41_v3.tif"))
   
 }
 
 # save csv
-p4_csv <-as.data.frame(p4_sm_m3)
-data.table::fwrite(p4_csv, "~/ch3_fusion/rasters/dswe_variabilty_analysis/p4_m3_41x41_20200226_20200311_v2.csv")
+p4_csv <-as.data.frame(p4_mw)
+data.table::fwrite(p4_csv, "~/ch3_fusion/rasters/dswe_variabilty_analysis/p4_m3_41x41_20200226_20200311_v3.csv")
 
 ### format data.frames for plotting
-p1_df <-as.data.frame(p1_sm_m3, xy = TRUE)
+p1_df <-as.data.frame(p1_mw, xy = TRUE)
 head(p1_df)
 p1_df$pair <-rep("P1", nrow(p1_df))
 p1_df_l <-pivot_longer(p1_df, 
                        cols = c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS"),
                        names_to = c("data_set"))
 
-p2_df <-as.data.frame(p2_sm_m3, xy = TRUE)
+p2_df <-as.data.frame(p2_mw, xy = TRUE)
 p2_df$pair <-rep("P2", nrow(p2_df))
 p2_df_l <-pivot_longer(p2_df, 
                        cols = c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS"),
                        names_to = c("data_set"))
 
-p3_df <-as.data.frame(p3_sm_m3, xy = TRUE)
+p3_df <-as.data.frame(p3_mw, xy = TRUE)
 p3_df$pair <-rep("P3", nrow(p3_df))
 p3_df_l <-pivot_longer(p3_df, 
                        cols = c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS"),
                        names_to = c("data_set"))
 
-p4_df <-as.data.frame(p4_sm_m3, xy = TRUE)
+p4_df <-as.data.frame(p4_mw, xy = TRUE)
 p4_df$pair <-rep("P4", nrow(p4_df))
 p4_df_l <-pivot_longer(p4_df, 
                        cols = c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS"),
@@ -185,6 +191,5 @@ p4_df_l <-pivot_longer(p4_df,
 
 # bind for plotting
 plotting_df <-rbind(p1_df_l,p2_df_l,p3_df_l,p4_df_l)
-data.table::fwrite(plotting_df, "~/ch3_fusion/csvs/dswe_new_41_plotting_v3.csv")
-head(plotting_df)
-
+colnames(plotting_df)[5] <-"dswe_m3"
+data.table::fwrite(plotting_df, "~/ch3_fusion/csvs/dswe_new_41_plotting_v4.csv")
