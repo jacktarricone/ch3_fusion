@@ -45,7 +45,7 @@ setwd("~/ch3_fusion/")
 
 # load in 80 m insar dswe products
 plotting_df <-fread("~/ch3_fusion/csvs/dswe_new_41_plotting_v3.csv")
-plotting_df$value2 <-plotting_df$value/10e4
+plotting_df$value2 <-plotting_df$value/10^5
 head(plotting_df)
 hist(plotting_df$value2)
 
@@ -65,7 +65,7 @@ p <-ggplot(plotting_df) +
   geom_raster(mapping = aes(x,y, fill = value2)) + 
   facet_grid(vars(pair), vars(data_set), scales = "fixed", switch = "y") +
   scale_fill_gradientn(colors = swe_scale, limits = c(-3,3), oob = squish, na.value = "gray50", guide = "none") + 
-  labs(fill = expression(Delta~SWE~(10^4~m^3))) +
+  labs(fill = expression(Delta~SWE~(10^5~m^3))) +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
         axis.title.y = element_blank(),
@@ -88,15 +88,15 @@ p <-ggplot(plotting_df) +
                                ticks.colour = "black")) 
 
 ggsave(p,
-       file = "./plots/dswe_mw_v3.png",
+       file = "./plots/dswe_mw_v4.pdf",
        width = 7, 
-       height = 12,
-       dpi = 300)
+       height = 12)
 
-system("open ./plots/dswe_mw_v3.png") 
+system("open ./plots/dswe_mw_v4.pdf") 
 
-
-
+# 80*80*41*41
+# (10758400/10^5)*.03
+# 10758400/(1000^3)
 #################################
 
 

@@ -104,7 +104,7 @@ p1_p <-ggplot(plotting_df) +
   geom_raster(mapping = aes(x,y, fill = lyr.1)) + 
   facet_wrap(vars(pair), scales = "fixed", dir = "h", strip.position = "top", nrow = 1) +
   scale_fill_gradientn(colors = scale1, limits = c(0,1.5), oob = squish) + # max of color bar so it saturates
-  labs(fill = expression(Delta~SWE~SD~(m^3~10^5))) +
+  labs(fill = expression(Delta~SWE~SD~(10^4~m^3))) +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
         axis.title.y = element_blank(),
