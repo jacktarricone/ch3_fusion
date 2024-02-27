@@ -71,19 +71,19 @@ sierra_sf <-st_geometry(sierra_v1)
 sd_na_rm <-function(x){sd(x, na.rm = TRUE)}
 
 # calculate pixelwise standard deviation, add pair row
-p1_sd <-app(p1_stack, fun = sd_na_rm)/10^5
+p1_sd <-app(p1_stack, fun = sd_na_rm)/10^2
 p1_df <-as.data.frame(p1_sd, xy = TRUE)
 p1_df$pair <-rep("P1", nrow(p1_df))
 
-p2_sd <-app(p2_stack, fun = sd_na_rm)/10^5
+p2_sd <-app(p2_stack, fun = sd_na_rm)/10^2
 p2_df <-as.data.frame(p2_sd, xy = TRUE)
 p2_df$pair <-rep("P2", nrow(p2_df))
 
-p3_sd <-app(p3_stack, fun = sd_na_rm)/10^5
+p3_sd <-app(p3_stack, fun = sd_na_rm)/10^2
 p3_df <-as.data.frame(p3_sd, xy = TRUE)
 p3_df$pair <-rep("P3", nrow(p3_df))
 
-p4_sd <-app(p4_stack, fun = sd_na_rm)/10^5
+p4_sd <-app(p4_stack, fun = sd_na_rm)/10^2
 p4_df <-as.data.frame(p4_sd, xy = TRUE)
 p4_df$pair <-rep("P4", nrow(p4_df))
 
@@ -102,6 +102,7 @@ plotting_df <-rbind(p1_df2, p2_df2, p3_df2, p4_df2)
 plotting_df_v2 <-na.omit(plotting_df)
 colnames(plotting_df_v2)[3] <-"sd"
 head(plotting_df_v2)
+hist(plotting_df_v2$sd)
 
 # cc scale
 cc_scale <-colorRampPalette(c("#f7fcf5", "#00441b"))
@@ -120,9 +121,9 @@ p1_p <-ggplot(plotting_df_v2, mapping = aes(x = cc_mean, y = sd, fill = as.facto
                outlier.colour = "grey80", outlier.alpha  = .01) +
   scale_fill_discrete(type = cc_scale(10)) +
   facet_wrap(~pair, scales = "fixed", nrow = 4)+
-  xlab("CC (%)") + ylab(expression(Delta~SWE~SD~(10^5~m^3)))+ 
+  xlab("CC (%)") + ylab(expression(Delta~SWE~SD~(10^2~m^3)))+ 
   scale_x_continuous(limits = c(0,50), breaks = seq(0,65,5), expand = c(0,.5)) +
-  scale_y_continuous(limits = c(0,2.5)) +
+  scale_y_continuous(limits = c(0,1.5)) +
   theme_classic(13) +
   theme(panel.border = element_rect(colour = "black", fill = NA, size = 1),
         legend.position = "none",
@@ -138,9 +139,9 @@ p2
 # test save
 # make tighter together
 ggsave(p2,
-       file = "~/ch3_fusion/plots/cc_vs_sd_boxplot_v5.pdf",
+       file = "~/ch3_fusion/plots/cc_vs_sd_boxplot_v6.pdf",
        width = 4, 
-       height = 7)
+       height = 5.5)
 
-system("open ~/ch3_fusion/plots/cc_vs_sd_boxplot_v5.pdf")
+system("open ~/ch3_fusion/plots/cc_vs_sd_boxplot_v6.pdf")
         

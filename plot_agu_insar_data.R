@@ -40,7 +40,7 @@ theme_classic <- function(base_size = 11, base_family = "",
     )
 }
 
-theme_set(theme_classic(23))
+theme_set(theme_classic(16))
 
 setwd("~/ch3_fusion/rasters")
 
@@ -51,7 +51,7 @@ cor <-rast("./new_uavsar/p3_80m/p3_7d_VV_coh_80m.tif")
 inc <-rast("./new_uavsar/inc_80m.tif")
 
 # read in sierra shp
-sierra_v1 <-st_read("~/ch3_fusion/shapefiles/sierra_multiseg_shp.gpkg")
+sierra_v1 <-st_read("~/ch3_fusion/shapefiles/sierra_multiseg_shp_v4.gpkg")
 sierra_sf <-st_geometry(sierra_v1)
 
 # make df
@@ -61,24 +61,18 @@ cor_df <-as.data.frame(cor, xy = TRUE, cell = TRUE)
 colnames(cor_df)[4] <- "cor"
 inc_df <-as.data.frame(inc, xy = TRUE, cell = TRUE)
 colnames(inc_df)[4] <- "rad"
-head(unw_df)
-head(cor_df)
-head(inc_df)
-hist(unw)
-
-
 
 # set scolor scale
 unw_scale <-viridis(9, alpha = 1, begin = 0, end = 1, direction = 1, option = "D")
 inc_scale <-brewer.pal(9, "Spectral")
 cor_scale <-rev(brewer.pal(9, "Greys"))
 
-# phase
+### phase
 unw_p <-ggplot(unw_df) +
       geom_sf(data = sierra_sf, fill = "black", color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
       geom_raster(mapping = aes(x,y, fill = phase)) + 
       scale_fill_gradientn(colors = unw_scale, limits = c(-2,2), oob = squish, na.value = "black", guide = "none") + 
-      geom_sf(data = sierra_sf, fill = NA, color = "black", linewidth = .2, inherit.aes = FALSE, alpha = 1) +
+      geom_sf(data = sierra_sf, fill = NA, color = "black", linewidth = .3, inherit.aes = FALSE, alpha = 1) +
       #geom_sf(data = nans_sf, fill = "black", color = "black", linewidth = .2, inherit.aes = FALSE, alpha = 1) +
       labs(fill = "Upwrapped Phase (rad)")+
       # annotate("text", x = -118.98, y = 37.87, label = "(a)", size = 10) +
@@ -94,19 +88,19 @@ unw_p <-ggplot(unw_df) +
       guides(fill = guide_colorbar(direction = "horizontal",
                                  label.position = 'top',
                                  title.position ='bottom',
-                                 title.hjust = -.5,
-                                 barwidth = 11,
+                                 title.hjust = 0.3,
+                                 barwidth = 10,
                                  barheight = 1.5,
                                  frame.colour = "black", 
                                  ticks.colour = "black")) 
 
 
-
+### inc angle
 inc_p <-ggplot(inc_df) +
-  geom_sf(data = sierra_sf, fill = "black", color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
+  geom_sf(data = sierra_sf, fill = NA, color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
   geom_raster(mapping = aes(x,y, fill = rad)) + 
   scale_fill_gradientn(colors = inc_scale, limits = c(0,2), oob = squish, na.value = "black", guide = "none") + 
-  geom_sf(data = sierra_sf, fill = NA, color = "black", linewidth = .2, inherit.aes = FALSE, alpha = 1) +
+  geom_sf(data = sierra_sf, fill = NA, color = "black", linewidth = .3, inherit.aes = FALSE, alpha = 1) +
   #geom_sf(data = nans_sf, fill = "black", color = "black", linewidth = .2, inherit.aes = FALSE, alpha = 1) +
   labs(fill = "Incidence Angle (rad)")+
   # annotate("text", x = -118.98, y = 37.87, label = "(a)", size = 10) +
@@ -122,18 +116,18 @@ inc_p <-ggplot(inc_df) +
   guides(fill = guide_colorbar(direction = "horizontal",
                                label.position = 'top',
                                title.position ='bottom',
-                               title.hjust = -.5,
-                               barwidth = 11,
+                               title.hjust = .4,
+                               barwidth = 10,
                                barheight = 1.5,
                                frame.colour = "black", 
                                ticks.colour = "black")) 
 
-
+### coherence
 cor_p <-ggplot(cor_df) +
-  geom_sf(data = sierra_sf, fill = "black", color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
+  geom_sf(data = sierra_sf, fill = NA, color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
   geom_raster(mapping = aes(x,y, fill = cor)) + 
   scale_fill_gradientn(colors = cor_scale, limits = c(0,1), oob = squish, na.value = "black", guide = "none") + 
-  geom_sf(data = sierra_sf, fill = NA, color = "black", linewidth = .2, inherit.aes = FALSE, alpha = 1) +
+  geom_sf(data = sierra_sf, fill = NA, color = "black", linewidth = .3, inherit.aes = FALSE, alpha = 1) +
   #geom_sf(data = nans_sf, fill = "black", color = "black", linewidth = .2, inherit.aes = FALSE, alpha = 1) +
   labs(fill = "Coherence")+
   # annotate("text", x = -118.98, y = 37.87, label = "(a)", size = 10) +
@@ -149,8 +143,8 @@ cor_p <-ggplot(cor_df) +
   guides(fill = guide_colorbar(direction = "horizontal",
                                label.position = 'top',
                                title.position ='bottom',
-                               title.hjust = -.5,
-                               barwidth = 11,
+                               title.hjust = .5,
+                               barwidth = 10,
                                barheight = 1.5,
                                frame.colour = "black", 
                                ticks.colour = "black")) 
@@ -171,9 +165,10 @@ cow <-plot_grid(unw_p,cor_p,inc_p, # list of plots
 # test save
 # make tighter together
 ggsave(cow,
-       file = "~/ch3_fusion/plots/uavsar_data_agu.png",
-       width = 8.5, 
+       file = "~/ch3_fusion/plots/uavsar_data_agu_v3.pdf",
+       width = 9, 
        height = 9,
        dpi = 300)
 
-system("open ~/ch3_fusion/plots/uavsar_data_agu.png") 
+system("open ~/ch3_fusion/plots/uavsar_data_agu_v3.pdf") 
+
