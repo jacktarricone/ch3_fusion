@@ -131,7 +131,7 @@ p1 <-ggplot(p1_df_l) +
   geom_raster(mapping = aes(x,y, fill = value)) + 
   facet_wrap(vars(data_set), scales = "fixed", dir = "h", strip.position = "top", nrow = 1) +
   scale_fill_gradientn(colors = dswe_scale, limits = c(-500,500), oob = squish, na.value = "gray50", guide = "none") + # max of color bar so it saturates
-  labs(fill = expression(Delta~SWE~(m^3~10^3))) +
+  labs(fill = expression(Delta~SWE~(m^3))) +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
         axis.title.y = element_blank(),
@@ -151,7 +151,7 @@ p2 <-ggplot(p2_df_l) +
   geom_raster(mapping = aes(x,y, fill = value)) + 
   facet_wrap(vars(data_set), scales = "fixed", dir = "h", strip.position = "top", nrow = 1) +
   scale_fill_gradientn(colors = dswe_scale, limits = c(-500,500), oob = squish, na.value = "gray50", guide = "none") + # max of color bar so it saturates
-  labs(fill = expression(Delta~SWE~(m^3~10^3))) +
+  labs(fill = expression(Delta~SWE~(m^3))) +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
         axis.title.y = element_blank(),
@@ -171,7 +171,7 @@ p3 <-ggplot(p3_df_l) +
   geom_raster(mapping = aes(x,y, fill = value)) + 
   facet_wrap(vars(data_set), scales = "fixed", dir = "h", strip.position = "top", nrow = 1) +
   scale_fill_gradientn(colors = dswe_scale, limits = c(-500,500), oob = squish, na.value = "gray50", guide = "none") + # max of color bar so it saturates
-  labs(fill = expression(Delta~SWE~(m^3~10^3))) +
+  labs(fill = expression(Delta~SWE~(m^3))) +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
         axis.title.y = element_blank(),
@@ -190,7 +190,7 @@ p4 <-ggplot(p4_df_l) +
   geom_raster(mapping = aes(x,y, fill = value)) + 
   facet_wrap(vars(data_set), scales = "fixed", dir = "h", strip.position = "top", nrow = 1) +
   scale_fill_gradientn(colors = dswe_scale, limits = c(-500,500), oob = squish, na.value = "gray50", guide = "none") + # max of color bar so it saturates
-  labs(fill = expression(Delta~SWE~(10^2~m^3))) +
+  labs(fill = expression(Delta~SWE~(m^3))) +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
         axis.title.y = element_blank(),
@@ -222,21 +222,21 @@ plot_grid(p1, p2, p3, p4,
           rel_heights = c(.26,.23,.23,.32))
 
 # pdf
-ggsave("~/ch3_fusion/plots/dswe_plot_v13.pdf",
+ggsave("~/ch3_fusion/plots/dswe_plot_v14.pdf",
        width = 7,
        height = 12,
        units = "in")
 
-system("open ~/ch3_fusion/plots/dswe_plot_v13.pdf")
+system("open ~/ch3_fusion/plots/dswe_plot_v14.pdf")
 
 # png
-ggsave("~/ch3_fusion/plots/dswe_plot_v13.png",
+ggsave("~/ch3_fusion/plots/dswe_plot_v14.png",
        width = 7,
        height = 12,
        dpi = 300,
        units = "in")
 
-system("open ~/ch3_fusion/plots/dswe_plot_v13.png")
+system("open ~/ch3_fusion/plots/dswe_plot_v14.png")
 
 
 

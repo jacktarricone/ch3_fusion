@@ -45,7 +45,6 @@ setwd("~/ch3_fusion/")
 
 # load in 80 m insar dswe products
 plotting_df <-fread("~/ch3_fusion/csvs/dswe_new_41_plotting_v4.csv")
-plotting_df$dswe_m3_100 <-plotting_df$dswe_m3/10^2
 head(plotting_df)
 
 # read in sierra shp
@@ -61,10 +60,10 @@ swe_scale <-brewer.pal(9, "RdBu")
 
 p <-ggplot(plotting_df) +
   geom_sf(data = sierra_sf, fill = "gray50", color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
-  geom_raster(mapping = aes(x,y, fill = dswe_m3_100)) + 
+  geom_raster(mapping = aes(x,y, fill = dswe_m3)) + 
   facet_grid(vars(pair), vars(data_set), scales = "fixed", switch = "y") +
-  scale_fill_gradientn(colors = swe_scale, limits = c(-2,2), oob = squish, na.value = "gray50", guide = "none") + 
-  labs(fill = expression(Delta~SWE~(10^2~m^3))) +
+  scale_fill_gradientn(colors = swe_scale, limits = c(-300,300), oob = squish, na.value = "gray50", guide = "none") + 
+  labs(fill = expression(Delta~SWE~(m^3))) +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
         axis.title.y = element_blank(),
@@ -87,11 +86,11 @@ p <-ggplot(plotting_df) +
                                ticks.colour = "black")) 
 
 ggsave(p,
-       file = "./plots/dswe_mw_v5.pdf",
+       file = "./plots/dswe_mw_v6.pdf",
        width = 7, 
        height = 12)
 
-system("open ./plots/dswe_mw_v5.pdf") 
+system("open ./plots/dswe_mw_v6.pdf") 
 
 # 80*80*41*41
 # (10758400/10^5)*.03

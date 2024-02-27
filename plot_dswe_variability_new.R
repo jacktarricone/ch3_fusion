@@ -71,20 +71,20 @@ sierra_sf <-st_geometry(sierra_v1)
 sd_na_rm <-function(x){sd(x, na.rm = TRUE)}
 
 # calculate pixelwise standard deviation
-p1_sd <-app(p1_stack, fun = sd_na_rm)/10^2
+p1_sd <-app(p1_stack, fun = sd_na_rm)
 p1_df <-as.data.frame(p1_sd, xy = TRUE)
 p1_df$pair <-rep("(a) P1", nrow(p1_df))
 
-p2_sd <-app(p2_stack, fun = sd_na_rm)/10^2
+p2_sd <-app(p2_stack, fun = sd_na_rm)
 p2_df <-as.data.frame(p2_sd, xy = TRUE)
 p2_df$pair <-rep("(b) P2", nrow(p2_df))
 
-p3_sd <-app(p3_stack, fun = sd_na_rm)/10^2
+p3_sd <-app(p3_stack, fun = sd_na_rm)
 p3_df <-as.data.frame(p3_sd, xy = TRUE)
 p3_df$pair <-rep("(c) P3", nrow(p3_df))
 
 
-p4_sd <-app(p4_stack, fun = sd_na_rm)/10^2
+p4_sd <-app(p4_stack, fun = sd_na_rm)
 p4_df <-as.data.frame(p4_sd, xy = TRUE)
 p4_df$pair <-rep("(d) P4", nrow(p4_df))
 
@@ -103,8 +103,8 @@ p1_p <-ggplot(plotting_df) +
   geom_sf(data = sierra_sf, fill = "gray80", color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
   geom_raster(mapping = aes(x,y, fill = lyr.1)) + 
   facet_wrap(vars(pair), scales = "fixed", dir = "h", strip.position = "top", nrow = 1) +
-  scale_fill_gradientn(colors = scale1, limits = c(0,1), oob = squish) + # max of color bar so it saturates
-  labs(fill = expression(Delta~SWE~SD~(10^2~m^3))) +
+  scale_fill_gradientn(colors = scale1, limits = c(0,100), oob = squish) + # max of color bar so it saturates
+  labs(fill = expression(Delta~SWE~SD~(m^3))) +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
         axis.title.y = element_blank(),
@@ -179,9 +179,9 @@ cow <-plot_grid(p1_p, cc,
 # test save
 # make tighter together
 ggsave(cow,
-       file = "~/ch3_fusion/plots/sd_vs_cc_plot_v4.pdf",
+       file = "~/ch3_fusion/plots/sd_vs_cc_plot_v5.pdf",
        width = 13, 
        height = 9,
        dpi = 300)
 
-system("open ~/ch3_fusion/plots/sd_vs_cc_plot_v4.pdf")
+system("open ~/ch3_fusion/plots/sd_vs_cc_plot_v5.pdf")
