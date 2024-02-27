@@ -185,4 +185,3 @@ ggsave(cow,
        dpi = 300)
 
 system("open ~/ch3_fusion/plots/sd_vs_cc_plot_v4.pdf")
-

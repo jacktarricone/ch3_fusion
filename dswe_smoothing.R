@@ -77,6 +77,8 @@ cc
 cell_size_rast_m2 <-cellSize(p1_m, unit = "m")
 cell_size_rast_m2
 
+global(cell_size_rast_m2, mean)
+
 ########## p1
 # 41 x 41 moving window sum in cubic meters
 # conver to cubic meters

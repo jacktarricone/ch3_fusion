@@ -54,10 +54,10 @@ names(p4_stack_cm) <-c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS")
 cell_size_m2 <- cellSize(p4_stack_cm, unit = "m")
 
 # convert SWE cm to m^3 
-p1_stack_m3 <-(p1_stack_cm/100 * cell_size_m2)/10^2
-p2_stack_m3 <-(p2_stack_cm/100 * cell_size_m2)/10^2
-p3_stack_m3 <-(p3_stack_cm/100 * cell_size_m2)/10^2
-p4_stack_m3 <-(p4_stack_cm/100 * cell_size_m2)/10^2
+p1_stack_m3 <-(p1_stack_cm/100 * cell_size_m2)
+p2_stack_m3 <-(p2_stack_cm/100 * cell_size_m2)
+p3_stack_m3 <-(p3_stack_cm/100 * cell_size_m2)
+p4_stack_m3 <-(p4_stack_cm/100 * cell_size_m2)
 
 
 ### format data.frames for plotting
@@ -96,9 +96,9 @@ head(plotting_df)
 bar_results <- as.data.frame(plotting_df %>%
   group_by(pair,data_set) %>%
   summarize(
-    Loss = as.integer(sum(dswe_m3[dswe_m3 < 0])*1e-3),
-    Gain = as.integer(sum(dswe_m3[dswe_m3 > 0])*1e-3),
-    Net = as.integer(sum(dswe_m3)*1e-3)))
+    Loss = as.numeric(sum(dswe_m3[dswe_m3 < 0])*1e-4),
+    Gain = as.numeric(sum(dswe_m3[dswe_m3 > 0])*1e-4),
+    Net = as.numeric(sum(dswe_m3)*1e-4)))
 
 print(bar_results)
 
@@ -114,9 +114,9 @@ p <-ggplot(bar_plotting, aes(fill=stat, x = data_set, y=swe_change)) +
   # geom_text(aes(label=swe_change), position=position_dodge(width=0.9), vjust=-0.25)+
   facet_wrap(~pair)+
   geom_hline(yintercept = 0) +
-  scale_y_continuous(breaks = seq(-350,100,50),limits = c(-350,100))+
+  scale_y_continuous(breaks = seq(-35,10,5),limits = c(-35,10))+
   scale_fill_manual(values=c('darkblue','darkred','grey90'),name="")+
-  ylab(expression(Delta~SWE~(10^2~m^2))) +
+  ylab(expression(Delta~SWE~(10^4~m^3))) +
   xlab("fSCA Product") +
   theme_classic(15) +
   theme(panel.border = element_rect(colour = "black", fill=NA, linewidth = 1),
@@ -128,14 +128,15 @@ p <-ggplot(bar_plotting, aes(fill=stat, x = data_set, y=swe_change)) +
         legend.title = element_blank())
 p
 
+
 # saves
 ggsave(p,
-       file = "~/ch3_fusion/plots/dswe_barplot_v3.pdf",
+       file = "~/ch3_fusion/plots/dswe_barplot_v4.pdf",
        width = 10.5,
        height = 6,
        dpi = 300)
 
-system('open ~/ch3_fusion/plots/dswe_barplot_v3.pdf')
+system('open ~/ch3_fusion/plots/dswe_barplot_v4.pdf')
 
 ## numbers for text
 
@@ -175,3 +176,5 @@ p3_times <-122/49
 p4_times <-23/5
 
 avg_time <-147/78
+
+6822*.01
