@@ -91,14 +91,15 @@ plotting_df <-rbind(p1_df_l,p2_df_l,p3_df_l,p4_df_l)
 colnames(plotting_df)[5] <-"dswe_m3"
 plotting_df <-na.omit(plotting_df)
 head(plotting_df)
+hist(plotting_df$dswe_m3)
 
 # summarize for bar plots
 bar_results <- as.data.frame(plotting_df %>%
   group_by(pair,data_set) %>%
   summarize(
-    Loss = as.numeric(sum(dswe_m3[dswe_m3 < 0])*1e-4),
-    Gain = as.numeric(sum(dswe_m3[dswe_m3 > 0])*1e-4),
-    Net = as.numeric(sum(dswe_m3)*1e-4)))
+    Loss = as.numeric(sum(dswe_m3[dswe_m3 < 0])*10^-7),
+    Gain = as.numeric(sum(dswe_m3[dswe_m3 > 0])*10^-7),
+    Net = as.numeric(sum(dswe_m3)*10^-7)))
 
 print(bar_results)
 
@@ -111,12 +112,11 @@ bar_plotting
 # make group bar plot
 p <-ggplot(bar_plotting, aes(fill=stat, x = data_set, y=swe_change)) + 
   geom_bar(position="dodge", stat="identity", color = "black", width = .5)+
-  # geom_text(aes(label=swe_change), position=position_dodge(width=0.9), vjust=-0.25)+
   facet_wrap(~pair)+
   geom_hline(yintercept = 0) +
-  scale_y_continuous(breaks = seq(-35,10,5),limits = c(-35,10))+
+  scale_y_continuous(breaks = seq(-3.5,1.0,.5),limits = c(-3.5,1.0))+
   scale_fill_manual(values=c('darkblue','darkred','grey90'),name="")+
-  ylab(expression(Delta~SWE~(10^4~m^3))) +
+  ylab(expression(Delta~SWE~(10^7~m^3))) +
   xlab("fSCA Product") +
   theme_classic(15) +
   theme(panel.border = element_rect(colour = "black", fill=NA, linewidth = 1),
@@ -131,18 +131,18 @@ p
 
 # saves
 ggsave(p,
-       file = "~/ch3_fusion/plots/dswe_barplot_v4.pdf",
+       file = "~/ch3_fusion/plots/dswe_barplot_v5.pdf",
        width = 10.5,
        height = 6,
        dpi = 300)
 
-system('open ~/ch3_fusion/plots/dswe_barplot_v4.pdf')
+system('open ~/ch3_fusion/plots/dswe_barplot_v5.pdf')
 
 ## numbers for text
 
 mean_changes <- as.data.frame(bar_plotting %>%
                                group_by(pair,stat) %>%
-                               summarize(mean = as.integer(mean(swe_change))))
+                               summarize(mean = round(mean(swe_change),digits = 2)))
 
 mean_net <-filter(mean_changes, stat == "Net")
 mean_net
@@ -152,7 +152,7 @@ mean_gain
 
 sensor_changes <- as.data.frame(bar_plotting %>%
                                 group_by(data_set,stat) %>%
-                                summarize(mean = as.integer(mean(swe_change))))
+                                  summarize(mean = round(mean(swe_change),digits = 2)))
 
 sensor_net <-filter(sensor_changes, stat == "Net")
 sensor_net

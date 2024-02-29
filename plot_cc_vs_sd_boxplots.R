@@ -71,19 +71,19 @@ sierra_sf <-st_geometry(sierra_v1)
 sd_na_rm <-function(x){sd(x, na.rm = TRUE)}
 
 # calculate pixelwise standard deviation, add pair row
-p1_sd <-app(p1_stack, fun = sd_na_rm)/10^2
+p1_sd <-app(p1_stack, fun = sd_na_rm)
 p1_df <-as.data.frame(p1_sd, xy = TRUE)
 p1_df$pair <-rep("P1", nrow(p1_df))
 
-p2_sd <-app(p2_stack, fun = sd_na_rm)/10^2
+p2_sd <-app(p2_stack, fun = sd_na_rm)
 p2_df <-as.data.frame(p2_sd, xy = TRUE)
 p2_df$pair <-rep("P2", nrow(p2_df))
 
-p3_sd <-app(p3_stack, fun = sd_na_rm)/10^2
+p3_sd <-app(p3_stack, fun = sd_na_rm)
 p3_df <-as.data.frame(p3_sd, xy = TRUE)
 p3_df$pair <-rep("P3", nrow(p3_df))
 
-p4_sd <-app(p4_stack, fun = sd_na_rm)/10^2
+p4_sd <-app(p4_stack, fun = sd_na_rm)
 p4_df <-as.data.frame(p4_sd, xy = TRUE)
 p4_df$pair <-rep("P4", nrow(p4_df))
 
@@ -105,25 +105,25 @@ head(plotting_df_v2)
 hist(plotting_df_v2$sd)
 
 # cc scale
-cc_scale <-colorRampPalette(c("#f7fcf5", "#00441b"))
+cc_scale <-colorRampPalette(c("#f7fcf5", "green4"))
 cc_scale(13)
 
 f_labels <- data.frame(
   pair = c("P1", "P2" ,"P3", "P4"),
   label = c("(a) P1", "(b) P2" ,"(c) P3", "(d) P4"),
   bin = c('(5,10]','(5,10]','(5,10]','(5,10]'),
-  y = c(2.3, 2.3, 2.3, 2.3))
+  y = c(125, 125, 125, 125))
 
 # starting plot
 ### gains
 p1_p <-ggplot(plotting_df_v2, mapping = aes(x = cc_mean, y = sd, fill = as.factor(bin))) +
-  geom_boxplot(linewidth = .6, varwidth = TRUE, outlier.size = .001, outlier.shape = 4, 
+  geom_boxplot(linewidth = .3, varwidth = TRUE, outlier.size = .001, outlier.shape = 4, 
                outlier.colour = "grey80", outlier.alpha  = .01) +
   scale_fill_discrete(type = cc_scale(10)) +
   facet_wrap(~pair, scales = "fixed", nrow = 4)+
-  xlab("CC (%)") + ylab(expression(Delta~SWE~SD~(10^2~m^3)))+ 
-  scale_x_continuous(limits = c(0,50), breaks = seq(0,65,5), expand = c(0,.5)) +
-  scale_y_continuous(limits = c(0,1.5)) +
+  xlab("CC (%)") + ylab(expression(Delta~SWE~SD~(m^3)))+ 
+  scale_x_continuous(limits = c(0,50), breaks = seq(0,50,5), expand = c(0,.5)) +
+  scale_y_continuous(limits = c(0,150)) +
   theme_classic(13) +
   theme(panel.border = element_rect(colour = "black", fill = NA, size = 1),
         legend.position = "none",
@@ -139,9 +139,31 @@ p2
 # test save
 # make tighter together
 ggsave(p2,
-       file = "~/ch3_fusion/plots/cc_vs_sd_boxplot_v6.pdf",
+       file = "~/ch3_fusion/plots/cc_vs_sd_boxplot_v8.pdf",
        width = 4, 
        height = 5.5)
 
-system("open ~/ch3_fusion/plots/cc_vs_sd_boxplot_v6.pdf")
+system("open ~/ch3_fusion/plots/cc_vs_sd_boxplot_v8.pdf")
         
+
+### numbers for results section
+plotting_df
+
+# Group by 'bin' and calculate the median and mean values
+result <- plotting_df_v2 %>%
+  group_by(pair,bin) %>%
+  summarize(med = median(sd), mean = mean(sd))
+
+# Print the result
+print(result)
+p1 <-filter(result, pair == "P1")
+p1
+
+p2 <-filter(result, pair == "P2")
+p2
+
+p3 <-filter(result, pair == "P3")
+p3
+
+p4 <-filter(result, pair == "P4")
+p4
