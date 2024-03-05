@@ -9,8 +9,8 @@ library(ggplot2);theme_set(theme_classic(12))
 setwd("~/ch3_fusion/rasters/")
 
 ## bring in inc
-unw <-rast("./new_uavsar/p4_80m/p4_7d_VV_unw_80m.tif")
-cor <-rast("./new_uavsar/p4_80m/p4_7d_VV_coh_80m.tif")
+unw <-rast("./new_uavsar/p4_80m/p4_14d_VV_unw_80m.tif")
+cor <-rast("./new_uavsar/p4_80m/p4_14d_VV_coh_80m.tif")
 inc <-rast("./new_uavsar/inc_80m.tif")
 
 # bring masked unwrapped phase rastesr
@@ -39,50 +39,23 @@ unw_landsat <-mask(unw, stack_50[[6]], maskvalue = NA)
 # stack phase data
 unw_stack <-c(unw_ims,unw_modscag,unw_modis,unw_viirs,unw_flm,unw_landsat)
 
-# radar wave length from uavsar annotation file (cm)
-uavsar_wL <- 23.8403545
+# import leinss swe change function
+devtools::source_url("https://raw.githubusercontent.com/jacktarricone/jemez_zenodo/main/insar_swe_functions.R")
 
-# import depth_from_phase function
-devtools::source_url("https://raw.githubusercontent.com/jacktarricone/snowex_uavsar/master/insar_swe_functions.R")
-
-# from translated from uavsar_pytools function
-# depth_from_phase <-function(delta_phase, inc_angle, perm, wavelength = 0.238403545){
+# function(phase, alpha, inc_angle) {
 #   
-#   delta_z = (-delta_phase * wavelength) / (4 * pi * (cos(inc_angle) - sqrt(perm - sin(inc_angle)^2)))
-#   
+#   wavelength <- 0.238403545
+#   k <- 2 * pi / wavelength
+#   return(phase / (alpha * k * (1.59 + inc_angle^2.5)))
 # }
-
-# take mean pit values from cues and panorama
-snowex <-read.csv("/Users/jtarrico/ch3_fusion/snowex_insitu/SNEX20_TS_SP_Summary_SWE_v02.csv")
-
-# convert to date_time
-snowex$date_time <-ymd_hm(snowex$date_time)
-snowex$date <-as_date(snowex$date_time)
-mam <-filter(snowex, location == "Mammoth Lakes")
-mam
-mam_p4 <-mam %>% dplyr::filter(date > "2020-02-25" & date < "2020-03-12")
-mam_p4
-
-# calculate mean density between the four pits and two dates
-density <-mean(mam_p4$density_mean)
-print(density)
-
-
-# calc perm using guni equation
-sierra_perm <- 1 + 1.6 * (density/1000) + 1.8 * (density/1000)^3
+# 
 
 ############### 
-## unw_stack ##
+## calc dswe and convert to cm
 ###############
-depth_change <-depth_from_phase(delta_phase = unw_stack,
-                                inc_angle = inc,
-                                perm = sierra_perm,
-                                wavelength = uavsar_wL)
 
-# convert to SWE change
-dswe_raw <-depth_change*(density/1000)
-plot(dswe_raw)
-hist(dswe_raw[[1]])
+dswe_raw <-leinss_swe(phase = unw_stack, alpha = 1, inc_angle = inc)*100
+
 
 ####### bring in snow pillow data
 # pull out location info into separate df
@@ -96,7 +69,7 @@ text(pillow_point, labels = c("VLC", "DPO", "MHP","UBC","WWC"), pos = 3)
 
 # calculate SWE change at pillow
 cadwr_swe <-read.csv("~/ch3_fusion/csvs/cadwr_swe_depth_qaqc_v1.csv")
-cadwr_swe$date <-as.Date(cadwr_swe$date)
+cadwr_swe$date <-mdy(cadwr_swe$date)
 
 # test plot from vlc cadwr pillow
 ggplot(cadwr_swe, aes(x = date, y = swe_cm, color = id)) +
@@ -128,7 +101,6 @@ vlc_cells <-c(pillow_cell_dswe$cell[1],test_cells[1,])
 dpo_cells <-c(pillow_cell_dswe$cell[2],test_cells[2,])
 mhp_cells <-c(pillow_cell_dswe$cell[3],test_cells[3,])
 ubc_cells <-c(pillow_cell_dswe$cell[4],test_cells[4,])
-# wwc_cells <-c(pillow_cell_dswe$cell[5],test_cells[5,])
 
 # extract
 vlc_vals <-terra::extract(dswe_raw, vlc_cells)
@@ -139,10 +111,8 @@ mhp_vals <-terra::extract(dswe_raw, mhp_cells)
 colnames(mhp_vals) <-rep("mph", ncol(mhp_vals))
 ubc_vals <-terra::extract(dswe_raw, ubc_cells)
 colnames(ubc_vals) <-rep("ubc", ncol(ubc_vals))
-# wwc_vals <-terra::extract(dswe_raw, wwc_cells)
-# colnames(wwc_vals) <-"wwc"
 
-# make df
+# calc means
 vlc_mean <-mean(colMeans(vlc_vals, na.rm = TRUE), na.rm = TRUE)
 dpo_mean <-mean(colMeans(dpo_vals, na.rm = TRUE), na.rm = TRUE)
 mhp_mean <-mean(colMeans(mhp_vals, na.rm = TRUE), na.rm = TRUE)
@@ -173,7 +143,7 @@ names <-c("ims","modscag","modis","viirs","flm","landsat")
 for (i in 1:length(names)) {
   
   dataset <-names[i]
-  writeRaster(dswe[[i]], paste0("~/ch3_fusion/rasters/new_dswe/p4/p4_",dataset,"_dswe_cm_v4.tif"))
+  writeRaster(dswe[[i]], paste0("~/ch3_fusion/rasters/new_dswe/p4/p4_",dataset,"_dswe_cm_v5.tif"))
   
 }
 
