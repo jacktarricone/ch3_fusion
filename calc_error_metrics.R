@@ -88,7 +88,7 @@ calc_error_mets <-function(insar_dswe, insitu_dswe, name){
   # mae and rmse
   mae <-mae(insitu_dswe$dswe_cm, mean_sar_swe)
   rmse <-rmse(insitu_dswe$dswe_cm, mean_sar_swe)
-  dat <-c(name,mae,rmse)
+  dat <-c(name,as.numeric(mae),as.numeric(rmse))
   return(dat)
 }
 
@@ -102,4 +102,9 @@ p4_error <-calc_error_mets(p4, p4_insitu,"p4")
 mat <-rbind(p1_error,p2_error,p3_error,p4_error)
 df <-as.data.frame(mat)
 colnames(df)[1:3] <-c("pair","mae","rmse")
+df$mae <-as.numeric(df$mae)
+df$rmse <-as.numeric(df$rmse)
 write.csv(df, "~/ch3_fusion/csvs/error_metrics.csv")
+
+mean(df$mae)
+mean(df$rmse)
