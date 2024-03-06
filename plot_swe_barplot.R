@@ -59,30 +59,29 @@ p2_stack_m3 <-(p2_stack_cm/100 * cell_size_m2)
 p3_stack_m3 <-(p3_stack_cm/100 * cell_size_m2)
 p4_stack_m3 <-(p4_stack_cm/100 * cell_size_m2)
 
-
 ### format data.frames for plotting
 p1_df <-as.data.frame(p1_stack_m3, xy = TRUE)
 p1_df$pair <-rep("(a) P1", nrow(p1_df))
 p1_df_l <-pivot_longer(p1_df, 
-                       cols = c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS"),
+                       cols = c("IMS","MODIS","VIIRS","MODSCAG","Landsat","FLM"),
                        names_to = c("data_set"))
 
 p2_df <-as.data.frame(p2_stack_m3, xy = TRUE)
 p2_df$pair <-rep("(b) P2", nrow(p2_df))
 p2_df_l <-pivot_longer(p2_df, 
-                       cols = c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS"),
+                       cols = c("IMS","MODIS","VIIRS","MODSCAG","Landsat","FLM"),
                        names_to = c("data_set"))
 
 p3_df <-as.data.frame(p3_stack_m3, xy = TRUE)
 p3_df$pair <-rep("(c) P3", nrow(p3_df))
 p3_df_l <-pivot_longer(p3_df, 
-                       cols = c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS"),
+                       cols = c("IMS","MODIS","VIIRS","MODSCAG","Landsat","FLM"),
                        names_to = c("data_set"))
 
 p4_df <-as.data.frame(p4_stack_m3, xy = TRUE)
 p4_df$pair <-rep("(d) P4", nrow(p4_df))
 p4_df_l <-pivot_longer(p4_df, 
-                       cols = c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS"),
+                       cols = c("IMS","MODIS","VIIRS","MODSCAG","Landsat","FLM"),
                        names_to = c("data_set"))
 
 
@@ -107,7 +106,8 @@ print(bar_results)
 bar_plotting <- bar_results %>%
   pivot_longer(cols = c("Loss", "Gain", "Net"), names_to = "stat", values_to = "swe_change")
 
-bar_plotting
+bar_plotting$data_set <-factor(bar_plotting$data_set, 
+                               levels=c("IMS","MODIS","VIIRS","MODSCAG","Landsat","FLM"))
 
 # make group bar plot
 p <-ggplot(bar_plotting, aes(fill=stat, x = data_set, y=swe_change)) + 
@@ -131,18 +131,36 @@ p
 
 # saves
 ggsave(p,
-       file = "~/ch3_fusion/plots/dswe_barplot_v5.pdf",
+       file = "~/ch3_fusion/plots/fig6_dswe_barplot_v7.pdf",
        width = 10.5,
        height = 6,
        dpi = 300)
 
-system('open ~/ch3_fusion/plots/dswe_barplot_v5.pdf')
+system('open ~/ch3_fusion/plots/fig_dswe_barplot_v7.pdf')
 
 ## numbers for text
 
 mean_changes <- as.data.frame(bar_plotting %>%
                                group_by(pair,stat) %>%
                                summarize(mean = round(mean(swe_change),digits = 2)))
+
+mult_diff <- as.data.frame(bar_plotting %>%
+                                 group_by(pair,stat) %>%
+                                 summarize(abs_max = round(max(abs(swe_change)),digits = 2),
+                                           abs_min = round(min(abs(swe_change)),digits = 2),
+                                           fact = round((abs_max/abs_min), digits = 2)))
+
+mult_diff
+net_mult_diff <-filter(mult_diff, stat == "Net")
+net_mult_diff
+
+gain_mult_diff <-filter(mult_diff, stat == "Gain")
+gain_mult_diff
+
+loss_mult_diff <-filter(mult_diff, stat == "Loss")
+loss_mult_diff
+
+mean_changes
 
 mean_net <-filter(mean_changes, stat == "Net")
 mean_net
@@ -156,6 +174,11 @@ sensor_changes <- as.data.frame(bar_plotting %>%
 
 sensor_net <-filter(sensor_changes, stat == "Net")
 sensor_net
+
+sensor_loss <-filter(sensor_changes, stat == "Loss")
+sensor_loss
+
+
 
 # calc percent difference between landsat and FLM
 pd <- function(value1, value2) {

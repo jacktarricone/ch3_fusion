@@ -5,6 +5,7 @@
 library(terra)
 library(dplyr)
 library(ggplot2);theme_set(theme_classic(12))
+library(lubridate)
 
 setwd("~/ch3_fusion/rasters/")
 
@@ -55,7 +56,6 @@ devtools::source_url("https://raw.githubusercontent.com/jacktarricone/jemez_zeno
 ###############
 
 dswe_raw <-leinss_swe(phase = unw_stack, alpha = 1, inc_angle = inc)*100
-
 
 ####### bring in snow pillow data
 # pull out location info into separate df

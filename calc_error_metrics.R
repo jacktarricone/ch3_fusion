@@ -53,6 +53,12 @@ p2_insitu <-insitu_swe_change(uavsar_dates[2],uavsar_dates[3])
 p3_insitu <-insitu_swe_change(uavsar_dates[3],uavsar_dates[4])
 p4_insitu <-insitu_swe_change(uavsar_dates[4],uavsar_dates[5])
 
+# make df for supplement
+df_insitu <-cbind(p1_insitu,p2_insitu$dswe_cm,p3_insitu$dswe_cm,p4_insitu$dswe_cm)
+colnames(df_insitu)[2:5] <-c("p1","p2","p3","p4")
+df_insitu
+write.csv(df_insitu, "~/ch3_fusion/csvs/insitu_swe_change_cadwr.csv", row.names = F)
+
 # fun for error mets
 calc_error_mets <-function(insar_dswe, insitu_dswe, name){
   
@@ -104,6 +110,7 @@ df <-as.data.frame(mat)
 colnames(df)[1:3] <-c("pair","mae","rmse")
 df$mae <-as.numeric(df$mae)
 df$rmse <-as.numeric(df$rmse)
+df
 write.csv(df, "~/ch3_fusion/csvs/error_metrics.csv")
 
 mean(df$mae)

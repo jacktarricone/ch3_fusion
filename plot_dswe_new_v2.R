@@ -1,4 +1,4 @@
-# plot 41 x 41 moving window rasters
+# plot 41 x 41 moving window rasters and 80 m dswe
 
 library(terra)
 library(ggplot2)
@@ -45,7 +45,9 @@ theme_set(theme_classic(15))
 setwd("~/ch3_fusion/")
 
 # load in 80 m insar dswe products
-plotting_df <-fread("~/ch3_fusion/csvs/dswe_new_41_plotting_v4.csv")
+plotting_df <-fread("~/ch3_fusion/csvs/dswe_new_41_plotting_v5.csv")
+plotting_df$data_set <-factor(plotting_df$data_set, 
+                          levels=c("IMS","MODIS","VIIRS","MODSCAG","Landsat","FLM"))
 head(plotting_df)
 
 # read in sierra shp
@@ -125,28 +127,33 @@ p1_df$pair <-rep("P1", nrow(p1_df))
 p1_df_l <-pivot_longer(p1_df, 
                        cols = c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS"),
                        names_to = c("data_set"))
+p1_df_l$data_set <-factor(p1_df_l$data_set, 
+                               levels=c("IMS","MODIS","VIIRS","MODSCAG","Landsat","FLM"))
 
 p2_df <-as.data.frame(p2_stack_m3, xy = TRUE)
 p2_df$pair <-rep("P2", nrow(p2_df))
 p2_df_l <-pivot_longer(p2_df, 
                        cols = c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS"),
                        names_to = c("data_set"))
+p2_df_l$data_set <-factor(p2_df_l$data_set, 
+                          levels=c("IMS","MODIS","VIIRS","MODSCAG","Landsat","FLM"))
+
 
 p3_df <-as.data.frame(p3_stack_m3, xy = TRUE)
 p3_df$pair <-rep("P3", nrow(p3_df))
 p3_df_l <-pivot_longer(p3_df, 
                        cols = c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS"),
                        names_to = c("data_set"))
+p3_df_l$data_set <-factor(p3_df_l$data_set, 
+                          levels=c("IMS","MODIS","VIIRS","MODSCAG","Landsat","FLM"))
 
 p4_df <-as.data.frame(p4_stack_m3, xy = TRUE)
 p4_df$pair <-rep("P4", nrow(p4_df))
 p4_df_l <-pivot_longer(p4_df, 
                        cols = c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS"),
                        names_to = c("data_set"))
-
-
-# bind for plotting
-plotting_df <-rbind(p1_df_l,p2_df_l,p3_df_l,p4_df_l)
+p4_df_l$data_set <-factor(p4_df_l$data_set, 
+                          levels=c("IMS","MODIS","VIIRS","MODSCAG","Landsat","FLM"))
 
 # bring in NA df
 na_stack <-rast("./new_uavsar/na_pixels_stack.tif")
@@ -285,19 +292,19 @@ full <-plot_grid(dswe, dswe_mw,
                  vjust = 1.5,
                  rel_widths = c(.5,.5))
 # png
-ggsave("~/ch3_fusion/plots/dswe_plot_2col_v1.png",
+ggsave("~/ch3_fusion/plots/fig5_dswe_full_v2.png",
        width = 13,
        height = 12,
        dpi = 300,
        units = "in")
 
-system("open ~/ch3_fusion/plots/dswe_plot_2col_v1.png")
+system("open ~/ch3_fusion/plots/fig5_dswe_full_v2.png")
 
-ggsave("~/ch3_fusion/plots/dswe_plot_2col_v1.pdf",
+ggsave("~/ch3_fusion/plots/fig5_dswe_full_v2.pdf",
        width = 13,
        height = 12,
        dpi = 300,
        units = "in")
 
-system("open ~/ch3_fusion/plots/dswe_plot_2col_v1.pdf")
+system("open ~/ch3_fusion/plots/fig5_dswe_full_v2.pdf")
 
