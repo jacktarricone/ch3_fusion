@@ -89,7 +89,7 @@ p4_df$pair <-rep("P4", nrow(p4_df))
 
 # add bins col for box plot
 df_v3 <-cc_df  %>%
-  mutate(bin = cut_width(cc_mean, width = 5, boundary=0))
+  mutate(bin = cut(cc_mean, c(0,5,10,15,20,25,30,35,40,45,50,55,Inf)))
 
 # join cc
 p1_df2 <-full_join(p1_df, df_v3, by = c("x","y"))
@@ -119,10 +119,10 @@ f_labels <- data.frame(
 p1_p <-ggplot(plotting_df_v2, mapping = aes(x = cc_mean, y = sd, fill = as.factor(bin))) +
   geom_boxplot(linewidth = .3, varwidth = TRUE, outlier.size = .001, outlier.shape = 4, 
                outlier.colour = "grey80", outlier.alpha  = .01) +
-  scale_fill_discrete(type = cc_scale(10)) +
+  scale_fill_discrete(type = cc_scale(12)) +
   facet_wrap(~pair, scales = "fixed", nrow = 4)+
   xlab("CC (%)") + ylab(expression(Delta~SWE~SD~(m^3)))+ 
-  scale_x_continuous(limits = c(0,50), breaks = seq(0,50,5), expand = c(0,.5)) +
+  scale_x_continuous(limits = c(0,55), breaks = c(0,5,10,15,20,25,30,35,40,45,50,55), expand = c(0,.5)) +
   scale_y_continuous(limits = c(0,150)) +
   theme_classic(13) +
   theme(panel.border = element_rect(colour = "black", fill = NA, size = 1),
@@ -139,11 +139,11 @@ p2
 # test save
 # make tighter together
 ggsave(p2,
-       file = "~/ch3_fusion/plots/cc_vs_sd_boxplot_v8.pdf",
+       file = "~/ch3_fusion/plots/fig8_cc_vs_sd_boxplot_v9.pdf",
        width = 4, 
        height = 5.5)
 
-system("open ~/ch3_fusion/plots/cc_vs_sd_boxplot_v8.pdf")
+system("open ~/ch3_fusion/plots/fig8_cc_vs_sd_boxplot_v9.pdf")
         
 
 ### numbers for results section

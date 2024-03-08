@@ -179,9 +179,10 @@ cow <-plot_grid(p1_p, cc,
 # test save
 # make tighter together
 ggsave(cow,
-       file = "~/ch3_fusion/plots/sd_vs_cc_plot_v5.pdf",
+       file = "~/ch3_fusion/plots/fig7_sd_vs_cc_plot_v6.pdf",
        width = 13, 
        height = 9,
        dpi = 300)
 
-system("open ~/ch3_fusion/plots/sd_vs_cc_plot_v5.pdf")
+system("open ~/ch3_fusion/plots/fig7_sd_vs_cc_plot_v6.pdf")
+

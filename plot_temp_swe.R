@@ -44,7 +44,7 @@ theme_classic <- function(base_size = 11, base_family = "",
     )
 }
 
-theme_set(theme_classic(14))
+theme_set(theme_classic(16))
 
 
 # read in pillow data
@@ -117,13 +117,15 @@ temp <-ggplot(daily_temp)+
   geom_line(aes(x = date, y = min_temp_c), color = "blue3", size = .9) +
   ylab("Air Temp (°C)")+
   xlab("Date") +
-  scale_x_date(date_labels = "%m",
+  scale_x_date(date_labels = "%m/%y",
                date_breaks = "1 month",
                expand = c(0,3))+
-               # limits = ymd(c("2020-01-01", "2020-06-01")) +
-  theme(panel.border = element_rect(colour = "black", fill=NA, linewidth  = 1),
-        axis.text.x=element_blank(),
-        axis.title.x=element_blank())
+  theme(panel.border = element_rect(colour = "black", fill=NA, linewidth  = 1))
+
+
+
+## new plot
+my_colors <-c('#e41a1c', '#4daf4a', '#984ea3',  '#bebada')
 
 # plot swe
 swe <-ggplot(cadwr_swe)+
@@ -137,30 +139,42 @@ swe <-ggplot(cadwr_swe)+
   geom_vline(xintercept = end, linetype=2, col = "orange", alpha = 1) +
   annotate("rect", xmin = start, xmax = end,
            ymin = -Inf, ymax = Inf, alpha = .2)+
-  geom_line(aes(x = date, y = swe_cm, group = id),  size = .5)+
+  geom_line(aes(x = date, y = swe_cm, color = id),  size = .7)+
   scale_x_date(date_labels = "%m/%y",
                date_breaks = "1 month",
                expand = c(0,3))+
-  scale_y_continuous(expand = c(0,0), 
+  scale_y_continuous(expand = c(.01,.01), 
                      limits = c(0,70),
                      breaks = c(seq(0,70,10)))+
   ylab("SWE (cm)")+
   xlab("Date") +
-  theme(panel.border = element_rect(colour = "black", fill=NA, linewidth  = 1))
+  theme(panel.border = element_rect(colour = "black", fill=NA, linewidth  = 1))+
+  scale_color_manual(values = my_colors,
+                     breaks = c('DPO', 'MHP',
+                                'UBC', 'VLC'),
+                     labels = c('DPO', 'MHP',
+                                'UBC', 'VLC'))+
+  theme(legend.position = c(.92,.74),
+        panel.border = element_rect(colour = "black", fill=NA, linewidth  = 1),
+        axis.text.x=element_blank(),
+        axis.title.x=element_blank(),
+        legend.title=element_blank())
+
+swe
 
 # stack with cow plot
-plot_grid(temp, swe,
+plot_grid(swe,temp,
           labels = c("(a)","(b)"),
           align = "v", 
           nrow = 2, 
-          rel_heights = c(.48, .52))
+          rel_heights = c(.47, .53))
 
-ggsave("~/ch3_fusion/plots/temp_swe_v1.pdf",
-       width = 7,
-       height = 5,
+ggsave("~/ch3_fusion/plots/fig2_temp_swe_v3.pdf",
+       width = 8,
+       height = 6,
        units = "in")
 
-system("open ~/ch3_fusion/plots/temp_swe_v1.pdf")
+system("open ~/ch3_fusion/plots/fig2_temp_swe_v3.pdf")
 
 
 

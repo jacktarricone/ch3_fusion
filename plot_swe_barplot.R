@@ -130,13 +130,13 @@ p
 
 
 # saves
-ggsave(p,
-       file = "~/ch3_fusion/plots/fig6_dswe_barplot_v7.pdf",
-       width = 10.5,
-       height = 6,
-       dpi = 300)
-
-system('open ~/ch3_fusion/plots/fig_dswe_barplot_v7.pdf')
+# ggsave(p,
+#        file = "~/ch3_fusion/plots/fig6_dswe_barplot_v7.pdf",
+#        width = 10.5,
+#        height = 6,
+#        dpi = 300)
+# 
+# system('open ~/ch3_fusion/plots/fig_dswe_barplot_v7.pdf')
 
 ## numbers for text
 

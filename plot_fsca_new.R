@@ -84,14 +84,11 @@ p4_df_l <-pivot_longer(p4_df,
 plotting_df <-rbind(p1_df_l,p2_df_l,p3_df_l,p4_df_l)
 plotting_50 <-plotting_df
 plotting_50$value <-ifelse(plotting_50$value < 50, NA, plotting_50$value)
-plotting_50$data_set <-factor(plotting_50, 
+plotting_50$data_set <-factor(plotting_50$data_set, 
                           levels=c("IMS","MODIS","VIIRS","MODSCAG","Landsat","FLM"))
 
-# data.table::fwrite(plotting_df, "~/ch3_fusion/csvs/fsca_plotting.csv")
-hist(plotting_50$value)
-
 # read in sierra shp
-sierra_v1 <-st_read("~/ch3_fusion/shapefiles/sierra_multiseg_shp.gpkg")
+sierra_v1 <-st_read("~/ch3_fusion/shapefiles/sierra_multiseg_shp_v4.gpkg")
 sierra_sf <-st_geometry(sierra_v1)
 
 ############
@@ -170,9 +167,8 @@ p50 <-ggplot(plotting_50) +
                                ticks.colour = "black")) 
 
 ggsave(p50,
-       file = "~/ch3_fusion/plots/fcsa_50mask_plot_v3.png",
+       file = "~/ch3_fusion/plots/fig4_fcsa_50mask_plot_v3.pdf",
        width = 7, 
-       height = 12,
-       dpi = 300)
+       height = 12)
 
-system("open ~/ch3_fusion/plots/fcsa_50mask_plot_v3.png") 
+system("open ~/ch3_fusion/plots/fig4_fcsa_50mask_plot_v3.pdf") 
