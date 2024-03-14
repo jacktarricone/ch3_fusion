@@ -11,7 +11,7 @@ library(stringr)
 library(lubridate)
 library(XML)
 
-setwd("/Users/jacktarricone/ch3_fusion")
+setwd("~/ch3_fusion")
 
 # list hdf files
 h5_list <-list.files("./rasters/VNP10A1F_wy2020/raw", pattern = "\\.h5$", full.names = TRUE)
@@ -36,33 +36,36 @@ viirs_proj <-"+proj=sinu +lon_0=0 +x_0=0 +y_0=0 +R=6371007.181 +no_defs"
 viirs_ext_m <-ext(-11119505, -10007555, 3335852, 4447802) # from modis
 
 # for extent cropping
-flm_raw <-rast("./rasters/flm/SSN.downscaled.20200403.v4.3e+05.tif")
+flm_raw <-rast("./rasters/flm/raw/SSN.downscaled.20191001.v4.3e+05.tif")
 flm <-project(flm_raw, 'EPSG:4326')
-rm(flm_raw)
 flm
+
 
 # function for concerting, cropping, and saving
 # VIIRS ndsi to fsca
-
 viirs_ndsi_to_fsca <-function(x){
     
     # read in raw raster
-    ndsi_rast <-rast(x)
+    ndsi_rast1 <-rast(x)
     
     # project
-    crs(ndsi_rast) <-viirs_proj
-    ext(ndsi_rast) <-viirs_ext_m
+    crs(ndsi_rast1) <-viirs_proj
+    ext(ndsi_rast1) <-viirs_ext_m
+    ndsi_rast <-ifel(ndsi_rast1[[3]] >= 100, NA, ndsi_rast1[[3]])
+    
     
     # convert to fsca using equation presented in stillinger et al. 2022
-    # fsca = −0.01 + (1.45 × ndsi)
-    fsca_rast <-ndsi_rast
-    fsca_rast[[1]] <- -.01 + (1.45*ndsi_rast[[1]])
+    # fsca = 0.06 + (1.21 × ndsi)
+    fsca_rast1 <- 0.06 + (1.21*ndsi_rast)
+    fsca_rast2 <-ifel(fsca_rast1 < 15, NA, fsca_rast1) # remote pixels below 15%
+    fsca_rast <-ifel(fsca_rast2 > 100, 100, fsca_rast2) # anything above 100 = 100
     
     # reproject to geographic coords
     fsca_reproj <-project(fsca_rast, 'EPSG:4326')
-
+    
     # crop down to flm ext
     fsca <-crop(fsca_reproj, ext(flm))
+    plot(fsca)
     
     # pull out file name
     file_name <-basename(x)
@@ -89,7 +92,7 @@ viirs_ndsi_to_fsca <-function(x){
       }
     
     # save
-    saving_path <-file.path("./rasters/VNP10A1F_wy2020/fsca/")
+    saving_path <-file.path("./rasters/VNP10A1F_wy2020/fsca_v2/")
     writeRaster(fsca, paste0(saving_path, name_v1))
 }
 
