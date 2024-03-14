@@ -33,7 +33,7 @@ ndsi_to_fsca <-function(x){
     ndsi_rast1 <-rast(x)
     ndsi_rast <-ifel(ndsi_rast1[[1]] >= 100, NA, ndsi_rast1[[1]])
     
-    # convert to fsca using equation presented in stillinger et al. 2022
+    # convert to fsca using equation presented in salomonson & appel (2004)
     # fsca = 0.06 + (1.21 × ndsi)
     fsca_rast1 <- 0.06 + (1.21*ndsi_rast)
     fsca_rast2 <-ifel(fsca_rast1 < 15, NA, fsca_rast1) # remote pixels below 15%
