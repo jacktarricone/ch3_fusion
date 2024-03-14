@@ -1,4 +1,5 @@
-# plot moving window dswe values
+# plot updated fsca data
+# march 14th, 2024
 
 library(terra)
 library(ggplot2)
@@ -46,37 +47,37 @@ setwd("~/ch3_fusion/rasters")
 
 # load in 80 m insar dswe products
 p1_stack <-rast(list.files("./new_optical/p1_80m_20200131_20200212", pattern = "_80m", full.names = T))
-names(p1_stack) <-c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS")
+names(p1_stack) <-c("FLM","IMS","Landsat","MODIS","STC","VIIRS")
 p2_stack <-rast(list.files("./new_optical/p2_80m_20200212_20200219/", pattern = "_80m", full.names = T))
-names(p2_stack) <-c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS")
+names(p2_stack) <-c("FLM","IMS","Landsat","MODIS","STC","VIIRS")
 p3_stack <-rast(list.files("./new_optical/p3_80m_20200219_20200226/", pattern = "_80m", full.names = T))
-names(p3_stack) <-c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS")
+names(p3_stack) <-c("FLM","IMS","Landsat","MODIS","STC","VIIRS")
 p4_stack <-rast(list.files("./new_optical/p4_80m_20200226_20200311/", pattern = "_80m", full.names = T))
-names(p4_stack) <-c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS")
+names(p4_stack) <-c("FLM","IMS","Landsat","MODIS","STC","VIIRS")
 
 ### format data.frames for plotting
 p1_df <-as.data.frame(p1_stack, xy = TRUE)
 p1_df$pair <-rep("P1", nrow(p1_df))
 p1_df_l <-pivot_longer(p1_df, 
-                       cols = c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS"),
+                       cols = c("FLM","IMS","Landsat","MODIS","STC","VIIRS"),
                        names_to = c("data_set"))
 
 p2_df <-as.data.frame(p2_stack, xy = TRUE)
 p2_df$pair <-rep("P2", nrow(p2_df))
 p2_df_l <-pivot_longer(p2_df, 
-                       cols = c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS"),
+                       cols = c("FLM","IMS","Landsat","MODIS","STC","VIIRS"),
                        names_to = c("data_set"))
 
 p3_df <-as.data.frame(p3_stack, xy = TRUE)
 p3_df$pair <-rep("P3", nrow(p3_df))
 p3_df_l <-pivot_longer(p3_df, 
-                       cols = c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS"),
+                       cols = c("FLM","IMS","Landsat","MODIS","STC","VIIRS"),
                        names_to = c("data_set"))
 
 p4_df <-as.data.frame(p4_stack, xy = TRUE)
 p4_df$pair <-rep("P4", nrow(p4_df))
 p4_df_l <-pivot_longer(p4_df, 
-                       cols = c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS"),
+                       cols = c("FLM","IMS","Landsat","MODIS","STC","VIIRS"),
                        names_to = c("data_set"))
 
 
@@ -85,7 +86,7 @@ plotting_df <-rbind(p1_df_l,p2_df_l,p3_df_l,p4_df_l)
 plotting_50 <-plotting_df
 plotting_50$value <-ifelse(plotting_50$value < 50, NA, plotting_50$value)
 plotting_50$data_set <-factor(plotting_50$data_set, 
-                          levels=c("IMS","MODIS","VIIRS","MODSCAG","Landsat","FLM"))
+                          levels=c("IMS","MODIS","VIIRS","STC","Landsat","FLM"))
 
 # read in sierra shp
 sierra_v1 <-st_read("~/ch3_fusion/shapefiles/sierra_multiseg_shp_v4.gpkg")
@@ -127,12 +128,12 @@ p <-ggplot(plotting_df) +
                                ticks.colour = "black")) 
 
 ggsave(p,
-       file = "./plots/fcsa_plot_v2.png",
+       file = "./plots/fcsa_plot_v3.png",
        width = 7, 
        height = 12,
        dpi = 300)
 
-system("open ./plots/fcsa_plot_v2.png") 
+system("open ./plots/fcsa_plot_v3.png") 
 
 
 
@@ -167,8 +168,8 @@ p50 <-ggplot(plotting_50) +
                                ticks.colour = "black")) 
 
 ggsave(p50,
-       file = "~/ch3_fusion/plots/fig4_fcsa_50mask_plot_v3.pdf",
+       file = "~/ch3_fusion/plots/fig4_fcsa_50mask_plot_v5.pdf",
        width = 7, 
        height = 12)
 
-system("open ~/ch3_fusion/plots/fig4_fcsa_50mask_plot_v3.pdf") 
+system("open ~/ch3_fusion/plots/fig4_fcsa_50mask_plot_v5.pdf") 

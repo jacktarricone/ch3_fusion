@@ -9,7 +9,7 @@ library(ggplot2);theme_set(theme_classic(12))
 setwd("~/ch3_fusion/rasters/")
 
 # define sensor names
-names <-c("flm","ims","landsat","modis","modscag","viirs")
+names <-c("FLM","IMS","Landsat fSCA","MODIS fSCA","STC-MODSCAG","VIIRS fSCA")
 
 ##### load in fsca raster stacks for the four pairs
 # p1
@@ -37,17 +37,18 @@ names(p4_stack) <-names
 p4_stack
 
 ## load in sierra shape
-sierra <-vect("~/ch3_fusion/shapefiles/sierra_multiseg_shp.gpkg")
+sierra <-vect("~/ch3_fusion/shapefiles/sierra_multiseg_shp_v4.gpkg")
 plot(sierra)
 
 # calc total study area
 total_area <-expanse(sierra, unit="km", transform=TRUE)
+total_area
 
 # mask for 50% fsca
 calc_fsca_stats <-function(fsca_stack){
-  p_50 <-ifel(fsca_stack< 50, NA, fsca_stack)
+  p_50 <-ifel(fsca_stack <= 50, NA, fsca_stack)
   result <-expanse(p_50, unit="km", transform=TRUE)
-  result$percent <-round((result$area/total_area)*100, digits = 0)
+  result$percent <-round((result$area/total_area)*100, digits = 1)
   result$dataset <-names
   df <-result[-c(1,2)]
   df <-df[c(2,1)]
