@@ -12,7 +12,7 @@ library(lubridate)
 setwd("/Users/jtarrico/ch3_fusion")
 
 # list hdf files
-date_list <-list.files("/Users/jtarrico/proposal_drafts/disseration/ppt/modis", pattern = "\\.hdf$", full.names = TRUE)
+date_list <-list.files("./rasters/MOD10A1F_wy2020/raw", pattern = "\\.hdf$", full.names = TRUE)
 head(date_list)
 
 # for extent cropping
@@ -22,23 +22,29 @@ rm(flm_raw)
 flm
 plot(flm)
 
+x <-date_list[160]
+x
+
 # function for concerting, cropping, and saving
 # MODIS ndsi to fsca
 ndsi_to_fsca <-function(x){
     
     # read in raw raster
-    ndsi_rast <-rast(x)
+    ndsi_rast1 <-rast(x)
+    ndsi_rast <-ifel(ndsi_rast1[[1]] >= 100, NA, ndsi_rast1[[1]])
     
     # convert to fsca using equation presented in stillinger et al. 2022
-    # fsca = −0.01 + (1.45 × ndsi)
-    fsca_rast <-ndsi_rast
-    fsca_rast[[1]] <- -.01 + (1.45*ndsi_rast[[1]])
+    # fsca = 0.06 + (1.21 × ndsi)
+    fsca_rast1 <- 0.06 + (1.21*ndsi_rast)
+    fsca_rast2 <-ifel(fsca_rast1 < 15, NA, fsca_rast1) # remote pixels below 15%
+    fsca_rast <-ifel(fsca_rast2 > 100, 100, fsca_rast2) # anything above 100 = 100
     
     # reproject to geographic coords
     fsca_reproj <-project(fsca_rast, 'EPSG:4326')
-
+    
     # crop down to flm ext
     fsca <-crop(fsca_reproj, ext(flm))
+    plot(fsca)
     
     # pull out file name
     file_name <-basename(x)
@@ -64,7 +70,7 @@ ndsi_to_fsca <-function(x){
       }
     
     # save
-    saving_path <-file.path("./rasters/MOD10A1F_wy2020/fsca/")
+    saving_path <-file.path("./rasters/MOD10A1F_wy2020/fsca_v2/")
     writeRaster(fsca, paste0(saving_path, name_v1))
 }
 
