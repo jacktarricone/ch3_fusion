@@ -25,7 +25,7 @@ landsat <-rast("./new_optical/p2_80m_20200212_20200219/landsat_fsca_80m_20200217
 stack <-c(ims,modscag,modis,viirs,flm,landsat)
 
 # mask pixels below 50% fsca
-stack_50 <-ifel(stack < 50, NA, stack)
+stack_50 <-ifel(stack <= 50, NA, stack)
 plot(stack_50)
 
 # bring masked unwrapped phase rastesr

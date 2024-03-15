@@ -25,7 +25,7 @@ landsat <-rast("./new_optical/p1_80m_20200131_20200212/landsat_fsca_80m_20200201
 stack <-c(ims,modscag,modis,viirs,flm,landsat)
 
 # mask pixels below 50% fsca
-stack_50 <-ifel(stack < 50, NA, stack)
+stack_50 <-ifel(stack <= 50, NA, stack)
 plot(stack_50)
 
 # bring masked unwrapped phase rastesr
@@ -144,6 +144,6 @@ names <-c("ims","modscag","modis","viirs","flm","landsat")
 for (i in 1:length(names)) {
   
   dataset <-names[i]
-  writeRaster(dswe[[i]], paste0("~/ch3_fusion/rasters/new_dswe/p1/p1_",dataset,"_dswe_cm_v5.tif"))
+  writeRaster(dswe[[i]], paste0("~/ch3_fusion/rasters/new_dswe/p1/p1_",dataset,"_dswe_cm_v6.tif"))
   
 }
