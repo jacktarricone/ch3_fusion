@@ -160,7 +160,7 @@ names <-c("ims","modscag","modis","viirs","flm","landsat")
 for (i in 1:length(names)) {
   
   dataset <-names[i]
-  writeRaster(dswe[[i]], paste0("~/ch3_fusion/rasters/new_dswe/p2/p2_",dataset,"_dswe_cm_v5.tif"))
+  writeRaster(dswe[[i]], paste0("~/ch3_fusion/rasters/new_dswe/p2/p2_",dataset,"_dswe_cm_v6.tif"))
   
 }
 
