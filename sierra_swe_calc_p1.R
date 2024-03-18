@@ -92,13 +92,14 @@ pit_diff <-read.csv("~/ch3_fusion/csvs/mam_pit_diff.csv")
 colnames(pit_diff)[2:3] <-c("id","dswe_cm")
 pit_diff
 
+######### UPDATE this!!!!!!!!!!#######
 # select row 1 and row 5 for first pair for both pits
 p1_v1 <-pit_diff[c(1,5),]
-p1 <-subset(p2_v1, select = -X)
+p1 <-subset(p1_v1, select = -X)
 p1
 
 # rbind
-station_dswe <-rbind(station_dswe_v1,p2)
+station_dswe <-rbind(station_dswe_v1,p1)
 station_dswe
 
 # hist(dswe_raw[[1]], breaks = 100)
@@ -116,7 +117,8 @@ vlc_cells <-c(pillow_cell_dswe$cell[1],test_cells[1,])
 dpo_cells <-c(pillow_cell_dswe$cell[2],test_cells[2,])
 mhp_cells <-c(pillow_cell_dswe$cell[3],test_cells[3,])
 ubc_cells <-c(pillow_cell_dswe$cell[4],test_cells[4,])
-cues_cells <-c(pillow_cell_dswe$cell[6],test_cells[6,])
+cues_cells <-c(pillow_cell_dswe$cell[5],test_cells[5,])
+pd_cells <-c(pillow_cell_dswe$cell[6],test_cells[6,])
 
 # extract
 vlc_vals <-terra::extract(dswe_raw, vlc_cells)
@@ -129,7 +131,8 @@ ubc_vals <-terra::extract(dswe_raw, ubc_cells)
 colnames(ubc_vals) <-rep("ubc", ncol(ubc_vals))
 cues_vals <-terra::extract(dswe_raw, cues_cells)
 colnames(cues_vals) <-rep("cues", ncol(cues_vals))
-
+pd_vals <-terra::extract(dswe_raw, pd_cells)
+colnames(pd_vals) <-rep("cues", ncol(pd_vals))
 
 # make df
 vlc_mean <-mean(colMeans(vlc_vals, na.rm = TRUE), na.rm = TRUE)
@@ -137,6 +140,7 @@ dpo_mean <-mean(colMeans(dpo_vals, na.rm = TRUE), na.rm = TRUE)
 mhp_mean <-mean(colMeans(mhp_vals, na.rm = TRUE), na.rm = TRUE)
 ubc_mean <-mean(colMeans(ubc_vals, na.rm = TRUE), na.rm = TRUE)
 cues_mean <-mean(colMeans(cues_vals, na.rm = TRUE), na.rm = TRUE)
+pd_mean <-mean(colMeans(pd_vals, na.rm = TRUE), na.rm = TRUE)
 
 
 # mean station dswe
@@ -144,7 +148,7 @@ mean_pillow_dswe <-mean(station_dswe$dswe_cm)
 mean_pillow_dswe
 
 # mean them all, pretty much the same
-mean_insar_dswe <-mean(c(vlc_mean,dpo_mean,mhp_mean,ubc_mean,cues_mean),na.rm = TRUE)
+mean_insar_dswe <-mean(c(vlc_mean,dpo_mean,mhp_mean,ubc_mean,cues_mean,pd_mean),na.rm = TRUE)
 mean_insar_dswe
 
 # create tether value
