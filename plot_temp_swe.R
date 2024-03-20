@@ -48,9 +48,15 @@ theme_set(theme_classic(16))
 
 
 # read in pillow data
-cadwr_swe <-read.csv("~/ch3_fusion/csvs/cadwr_swe_depth_qaqc_v1.csv")
-cadwr_swe$date <-mdy(cadwr_swe$date)
-cadwr_swe <-filter(cadwr_swe, date >= "2020-01-01" & date <= "2020-06-01")
+# calculate SWE change at pillow
+cadwr_swe1 <-read.csv("~/ch3_fusion/csvs/cadwr_swe_depth_qaqc_v1.csv")
+cues_swe <-read.csv("~/ch3_fusion/csvs/cues_swe.csv")
+cadwr_swe1$date <-mdy(cadwr_swe1$date)
+cues_swe$date <-mdy(cues_swe$date)
+
+# bind
+cadwr_swe <-bind_rows(cadwr_swe1,cues_swe)
+cadwr_swe
 
 # read in data from noah
 temp_path <-list.files("./csvs/", pattern = "_temp.csv", full.names = T)
