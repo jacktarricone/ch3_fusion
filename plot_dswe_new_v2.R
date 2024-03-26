@@ -45,7 +45,7 @@ theme_set(theme_classic(15))
 setwd("~/ch3_fusion/")
 
 # load in 80 m insar dswe products
-plotting_df <-fread("~/ch3_fusion/csvs/dswe_new_41_plotting_v7.csv")
+plotting_df <-fread("~/ch3_fusion/csvs/dswe_new_41_plotting_v8.csv")
 plotting_df$data_set <-factor(plotting_df$data_set, 
                           levels=c("IMS","MODIS","VIIRS","STC","Landsat","FLM"))
 head(plotting_df)
@@ -293,19 +293,19 @@ full <-plot_grid(dswe, dswe_mw,
                  vjust = 1.5,
                  rel_widths = c(.5,.5))
 # png
-ggsave("~/ch3_fusion/plots/fig5_dswe_full_v5.png",
+ggsave("~/ch3_fusion/plots/fig5_dswe_full_v6.png",
        width = 13,
        height = 12,
        dpi = 300,
        units = "in")
 
-system("open ~/ch3_fusion/plots/fig5_dswe_full_v5.png")
+system("open ~/ch3_fusion/plots/fig5_dswe_full_v6.png")
 
-ggsave("~/ch3_fusion/plots/fig5_dswe_full_v5.pdf",
+ggsave("~/ch3_fusion/plots/fig5_dswe_full_v6.pdf",
        width = 13,
        height = 12,
        dpi = 300,
        units = "in")
 
-system("open ~/ch3_fusion/plots/fig5_dswe_full_v5.pdf")
+system("open ~/ch3_fusion/plots/fig5_dswe_full_v6.pdf")
 
