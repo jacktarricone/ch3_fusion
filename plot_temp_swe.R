@@ -105,7 +105,7 @@ end <-daily_temp$date[71]
 # define flight dates and times for uavsar
 flight2 <-daily_temp$date[43]
 flight3 <-daily_temp$date[50]
-flight4 <-daily_temp$date[58]
+flight4 <-daily_temp$date[57]
 
 # quick test plot
 temp <-ggplot(daily_temp)+
@@ -122,7 +122,7 @@ temp <-ggplot(daily_temp)+
            ymin = -Inf, ymax = Inf, alpha = .2)+
   geom_line(aes(x = date, y = max_temp_c), color = "red2", size = .8) +
   geom_line(aes(x = date, y = min_temp_c), color = "blue3", size = .9) +
-  ylab("Air Temp (°C)")+
+  ylab("Air Temperature (°C)")+
   xlab("Date") +
   scale_x_date(date_labels = "%m/%y",
                date_breaks = "1 month",
@@ -132,7 +132,7 @@ temp <-ggplot(daily_temp)+
 
 
 ## new plot
-my_colors <-c('#e41a1c', '#4daf4a', '#984ea3',  '#bebada','darkblue')
+my_colors <-c('yellow2', '#4daf4a', '#984ea3',  '#bebada','brown')
 
 # plot swe
 swe <-ggplot(cadwr_swe)+
@@ -176,12 +176,12 @@ plot_grid(swe,temp,
           nrow = 2, 
           rel_heights = c(.47, .53))
 
-ggsave("~/ch3_fusion/plots/fig2_temp_swe_v4.pdf",
+ggsave("~/ch3_fusion/plots/fig2_temp_swe_v5.pdf",
        width = 8.5,
        height = 6.6,
        units = "in")
 
-system("open ~/ch3_fusion/plots/fig2_temp_swe_v4.pdf")
+system("open ~/ch3_fusion/plots/fig2_temp_swe_v5.pdf")
 
 
 

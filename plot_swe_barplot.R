@@ -42,13 +42,13 @@ setwd("~/ch3_fusion")
 
 # load in 80 m insar dswe products
 p1_stack_cm <-rast(list.files("./rasters/new_dswe/p1", full.names = T))
-names(p1_stack_cm) <-c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS")
+names(p1_stack_cm) <-c("FLM","IMS","Landsat","MODIS","STC","VIIRS")
 p2_stack_cm <-rast(list.files("./rasters/new_dswe/p2", full.names = T))
-names(p2_stack_cm) <-c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS")
+names(p2_stack_cm) <-c("FLM","IMS","Landsat","MODIS","STC","VIIRS")
 p3_stack_cm <-rast(list.files("./rasters/new_dswe/p3", full.names = T))
-names(p3_stack_cm) <-c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS")
+names(p3_stack_cm) <-c("FLM","IMS","Landsat","MODIS","STC","VIIRS")
 p4_stack_cm <-rast(list.files("./rasters/new_dswe/p4", full.names = T))
-names(p4_stack_cm) <-c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS")
+names(p4_stack_cm) <-c("FLM","IMS","Landsat","MODIS","STC","VIIRS")
 
 # create cell size raster in m^2
 cell_size_m2 <- cellSize(p4_stack_cm, unit = "m")
@@ -63,25 +63,25 @@ p4_stack_m3 <-(p4_stack_cm/100 * cell_size_m2)
 p1_df <-as.data.frame(p1_stack_m3, xy = TRUE)
 p1_df$pair <-rep("(a) P1", nrow(p1_df))
 p1_df_l <-pivot_longer(p1_df, 
-                       cols = c("IMS","MODIS","VIIRS","MODSCAG","Landsat","FLM"),
+                       cols = c("IMS","MODIS","VIIRS","STC","Landsat","FLM"),
                        names_to = c("data_set"))
 
 p2_df <-as.data.frame(p2_stack_m3, xy = TRUE)
 p2_df$pair <-rep("(b) P2", nrow(p2_df))
 p2_df_l <-pivot_longer(p2_df, 
-                       cols = c("IMS","MODIS","VIIRS","MODSCAG","Landsat","FLM"),
+                       cols = c("IMS","MODIS","VIIRS","STC","Landsat","FLM"),
                        names_to = c("data_set"))
 
 p3_df <-as.data.frame(p3_stack_m3, xy = TRUE)
 p3_df$pair <-rep("(c) P3", nrow(p3_df))
 p3_df_l <-pivot_longer(p3_df, 
-                       cols = c("IMS","MODIS","VIIRS","MODSCAG","Landsat","FLM"),
+                       cols = c("IMS","MODIS","VIIRS","STC","Landsat","FLM"),
                        names_to = c("data_set"))
 
 p4_df <-as.data.frame(p4_stack_m3, xy = TRUE)
 p4_df$pair <-rep("(d) P4", nrow(p4_df))
 p4_df_l <-pivot_longer(p4_df, 
-                       cols = c("IMS","MODIS","VIIRS","MODSCAG","Landsat","FLM"),
+                       cols = c("IMS","MODIS","VIIRS","STC","Landsat","FLM"),
                        names_to = c("data_set"))
 
 
@@ -107,14 +107,16 @@ bar_plotting <- bar_results %>%
   pivot_longer(cols = c("Loss", "Gain", "Net"), names_to = "stat", values_to = "swe_change")
 
 bar_plotting$data_set <-factor(bar_plotting$data_set, 
-                               levels=c("IMS","MODIS","VIIRS","MODSCAG","Landsat","FLM"))
+                               levels=c("IMS","MODIS","VIIRS","STC","Landsat","FLM"))
+
+min(bar_plotting$swe_change)
 
 # make group bar plot
 p <-ggplot(bar_plotting, aes(fill=stat, x = data_set, y=swe_change)) + 
   geom_bar(position="dodge", stat="identity", color = "black", width = .5)+
   facet_wrap(~pair)+
   geom_hline(yintercept = 0) +
-  scale_y_continuous(breaks = seq(-3.5,1.0,.5),limits = c(-3.5,1.0))+
+  scale_y_continuous(breaks = seq(-2,1.5,.5),limits = c(-2,1.5))+
   scale_fill_manual(values=c('darkblue','darkred','grey90'),name="")+
   ylab(expression(Delta~SWE~(10^7~m^3))) +
   xlab("fSCA Product") +
@@ -131,12 +133,12 @@ p
 
 # saves
 # ggsave(p,
-#        file = "~/ch3_fusion/plots/fig6_dswe_barplot_v7.pdf",
+#        file = "~/ch3_fusion/plots/fig6_dswe_barplot_v8.pdf",
 #        width = 10.5,
 #        height = 6,
 #        dpi = 300)
 # 
-# system('open ~/ch3_fusion/plots/fig_dswe_barplot_v7.pdf')
+# system('open ~/ch3_fusion/plots/fig6_dswe_barplot_v8.pdf')
 
 ## numbers for text
 

@@ -65,7 +65,7 @@ dswe_mw <-ggplot(plotting_df) +
   geom_sf(data = sierra_sf, fill = "gray50", color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
   geom_raster(mapping = aes(x,y, fill = dswe_m3)) + 
   facet_grid(vars(pair), vars(data_set), scales = "fixed", switch = "y") +
-  scale_fill_gradientn(colors = swe_scale, limits = c(-200,200), oob = squish, na.value = "gray50", guide = "none") + 
+  scale_fill_gradientn(colors = swe_scale, limits = c(-300,300), oob = squish, na.value = "gray50", guide = "none") + 
   labs(fill = expression(Delta~SWE~(m^3))) +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
@@ -293,19 +293,19 @@ full <-plot_grid(dswe, dswe_mw,
                  vjust = 1.5,
                  rel_widths = c(.5,.5))
 # png
-ggsave("~/ch3_fusion/plots/fig5_dswe_full_v6.png",
+ggsave("~/ch3_fusion/plots/fig5_dswe_full_v7.png",
        width = 13,
        height = 12,
        dpi = 300,
        units = "in")
 
-system("open ~/ch3_fusion/plots/fig5_dswe_full_v6.png")
+system("open ~/ch3_fusion/plots/fig5_dswe_full_v7.png")
 
-ggsave("~/ch3_fusion/plots/fig5_dswe_full_v6.pdf",
+ggsave("~/ch3_fusion/plots/fig5_dswe_full_v7.pdf",
        width = 13,
        height = 12,
        dpi = 300,
        units = "in")
 
-system("open ~/ch3_fusion/plots/fig5_dswe_full_v6.pdf")
+system("open ~/ch3_fusion/plots/fig5_dswe_full_v7.pdf")
 

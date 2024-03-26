@@ -168,8 +168,8 @@ p50 <-ggplot(plotting_50) +
                                ticks.colour = "black")) 
 
 ggsave(p50,
-       file = "~/ch3_fusion/plots/fig4_fcsa_50mask_plot_v5.pdf",
+       file = "~/ch3_fusion/plots/fig4_fcsa_50mask_plot_v6.pdf",
        width = 7, 
        height = 12)
 
-system("open ~/ch3_fusion/plots/fig4_fcsa_50mask_plot_v5.pdf") 
+system("open ~/ch3_fusion/plots/fig4_fcsa_50mask_plot_v6.pdf") 
