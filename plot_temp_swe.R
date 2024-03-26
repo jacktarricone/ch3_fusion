@@ -47,7 +47,6 @@ theme_classic <- function(base_size = 11, base_family = "",
 theme_set(theme_classic(16))
 
 
-# read in pillow data
 # calculate SWE change at pillow
 cadwr_swe1 <-read.csv("~/ch3_fusion/csvs/cadwr_swe_depth_qaqc_v1.csv")
 cues_swe <-read.csv("~/ch3_fusion/csvs/cues_swe.csv")
@@ -57,6 +56,8 @@ cues_swe$date <-mdy(cues_swe$date)
 # bind
 cadwr_swe <-bind_rows(cadwr_swe1,cues_swe)
 cadwr_swe
+
+cadwr_swe <-filter(cadwr_swe, date >= "2020-01-01" & date <= "2020-06-01")
 
 # read in data from noah
 temp_path <-list.files("./csvs/", pattern = "_temp.csv", full.names = T)
@@ -131,7 +132,7 @@ temp <-ggplot(daily_temp)+
 
 
 ## new plot
-my_colors <-c('#e41a1c', '#4daf4a', '#984ea3',  '#bebada')
+my_colors <-c('#e41a1c', '#4daf4a', '#984ea3',  '#bebada','darkblue')
 
 # plot swe
 swe <-ggplot(cadwr_swe)+
@@ -157,9 +158,9 @@ swe <-ggplot(cadwr_swe)+
   theme(panel.border = element_rect(colour = "black", fill=NA, linewidth  = 1))+
   scale_color_manual(values = my_colors,
                      breaks = c('DPO', 'MHP',
-                                'UBC', 'VLC'),
+                                'UBC', 'VLC','CUES'),
                      labels = c('DPO', 'MHP',
-                                'UBC', 'VLC'))+
+                                'UBC', 'VLC','CUES'))+
   theme(legend.position = c(.92,.74),
         panel.border = element_rect(colour = "black", fill=NA, linewidth  = 1),
         axis.text.x=element_blank(),
@@ -175,12 +176,12 @@ plot_grid(swe,temp,
           nrow = 2, 
           rel_heights = c(.47, .53))
 
-ggsave("~/ch3_fusion/plots/fig2_temp_swe_v3.pdf",
-       width = 8,
-       height = 6,
+ggsave("~/ch3_fusion/plots/fig2_temp_swe_v4.pdf",
+       width = 8.5,
+       height = 6.6,
        units = "in")
 
-system("open ~/ch3_fusion/plots/fig2_temp_swe_v3.pdf")
+system("open ~/ch3_fusion/plots/fig2_temp_swe_v4.pdf")
 
 
 

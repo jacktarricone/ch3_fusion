@@ -45,9 +45,9 @@ theme_set(theme_classic(15))
 setwd("~/ch3_fusion/")
 
 # load in 80 m insar dswe products
-plotting_df <-fread("~/ch3_fusion/csvs/dswe_new_41_plotting_v5.csv")
+plotting_df <-fread("~/ch3_fusion/csvs/dswe_new_41_plotting_v7.csv")
 plotting_df$data_set <-factor(plotting_df$data_set, 
-                          levels=c("IMS","MODIS","VIIRS","MODSCAG","Landsat","FLM"))
+                          levels=c("IMS","MODIS","VIIRS","STC","Landsat","FLM"))
 head(plotting_df)
 
 # read in sierra shp
@@ -65,7 +65,7 @@ dswe_mw <-ggplot(plotting_df) +
   geom_sf(data = sierra_sf, fill = "gray50", color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
   geom_raster(mapping = aes(x,y, fill = dswe_m3)) + 
   facet_grid(vars(pair), vars(data_set), scales = "fixed", switch = "y") +
-  scale_fill_gradientn(colors = swe_scale, limits = c(-300,300), oob = squish, na.value = "gray50", guide = "none") + 
+  scale_fill_gradientn(colors = swe_scale, limits = c(-200,200), oob = squish, na.value = "gray50", guide = "none") + 
   labs(fill = expression(Delta~SWE~(m^3))) +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
@@ -87,6 +87,7 @@ dswe_mw <-ggplot(plotting_df) +
                                barheight = 1,
                                frame.colour = "black", 
                                ticks.colour = "black")) 
+# dswe_mw
 
 # ggsave(p,
 #        file = "./plots/dswe_mw_v6.pdf",
@@ -104,13 +105,13 @@ setwd("~/ch3_fusion/rasters")
 
 # load in 80 m insar dswe products
 p1_stack_cm <-rast(list.files("./new_dswe/p1", full.names = T))
-names(p1_stack_cm) <-c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS")
+names(p1_stack_cm) <-c("FLM","IMS","Landsat","MODIS","STC","VIIRS")
 p2_stack_cm <-rast(list.files("./new_dswe/p2", full.names = T))
-names(p2_stack_cm) <-c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS")
+names(p2_stack_cm) <-c("FLM","IMS","Landsat","MODIS","STC","VIIRS")
 p3_stack_cm <-rast(list.files("./new_dswe/p3", full.names = T))
-names(p3_stack_cm) <-c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS")
+names(p3_stack_cm) <-c("FLM","IMS","Landsat","MODIS","STC","VIIRS")
 p4_stack_cm <-rast(list.files("./new_dswe/p4", full.names = T))
-names(p4_stack_cm) <-c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS")
+names(p4_stack_cm) <-c("FLM","IMS","Landsat","MODIS","STC","VIIRS")
 
 # create cell size raster in m^2
 cell_size_m2 <- cellSize(p4_stack_cm, unit = "m")
@@ -125,35 +126,35 @@ p4_stack_m3 <-(p4_stack_cm/100 * cell_size_m2)
 p1_df <-as.data.frame(p1_stack_m3, xy = TRUE)
 p1_df$pair <-rep("P1", nrow(p1_df))
 p1_df_l <-pivot_longer(p1_df, 
-                       cols = c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS"),
+                       cols = c("FLM","IMS","Landsat","MODIS","STC","VIIRS"),
                        names_to = c("data_set"))
 p1_df_l$data_set <-factor(p1_df_l$data_set, 
-                               levels=c("IMS","MODIS","VIIRS","MODSCAG","Landsat","FLM"))
+                               levels=c("IMS","MODIS","VIIRS","STC","Landsat","FLM"))
 
 p2_df <-as.data.frame(p2_stack_m3, xy = TRUE)
 p2_df$pair <-rep("P2", nrow(p2_df))
 p2_df_l <-pivot_longer(p2_df, 
-                       cols = c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS"),
+                       cols = c("FLM","IMS","Landsat","MODIS","STC","VIIRS"),
                        names_to = c("data_set"))
 p2_df_l$data_set <-factor(p2_df_l$data_set, 
-                          levels=c("IMS","MODIS","VIIRS","MODSCAG","Landsat","FLM"))
+                          levels=c("IMS","MODIS","VIIRS","STC","Landsat","FLM"))
 
 
 p3_df <-as.data.frame(p3_stack_m3, xy = TRUE)
 p3_df$pair <-rep("P3", nrow(p3_df))
 p3_df_l <-pivot_longer(p3_df, 
-                       cols = c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS"),
+                       cols = c("FLM","IMS","Landsat","MODIS","STC","VIIRS"),
                        names_to = c("data_set"))
 p3_df_l$data_set <-factor(p3_df_l$data_set, 
-                          levels=c("IMS","MODIS","VIIRS","MODSCAG","Landsat","FLM"))
+                          levels=c("IMS","MODIS","VIIRS","STC","Landsat","FLM"))
 
 p4_df <-as.data.frame(p4_stack_m3, xy = TRUE)
 p4_df$pair <-rep("P4", nrow(p4_df))
 p4_df_l <-pivot_longer(p4_df, 
-                       cols = c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS"),
+                       cols = c("FLM","IMS","Landsat","MODIS","STC","VIIRS"),
                        names_to = c("data_set"))
 p4_df_l$data_set <-factor(p4_df_l$data_set, 
-                          levels=c("IMS","MODIS","VIIRS","MODSCAG","Landsat","FLM"))
+                          levels=c("IMS","MODIS","VIIRS","STC","Landsat","FLM"))
 
 # bring in NA df
 na_stack <-rast("./new_uavsar/na_pixels_stack.tif")
@@ -292,19 +293,19 @@ full <-plot_grid(dswe, dswe_mw,
                  vjust = 1.5,
                  rel_widths = c(.5,.5))
 # png
-ggsave("~/ch3_fusion/plots/fig5_dswe_full_v2.png",
+ggsave("~/ch3_fusion/plots/fig5_dswe_full_v5.png",
        width = 13,
        height = 12,
        dpi = 300,
        units = "in")
 
-system("open ~/ch3_fusion/plots/fig5_dswe_full_v2.png")
+system("open ~/ch3_fusion/plots/fig5_dswe_full_v5.png")
 
-ggsave("~/ch3_fusion/plots/fig5_dswe_full_v2.pdf",
+ggsave("~/ch3_fusion/plots/fig5_dswe_full_v5.pdf",
        width = 13,
        height = 12,
        dpi = 300,
        units = "in")
 
-system("open ~/ch3_fusion/plots/fig5_dswe_full_v2.pdf")
+system("open ~/ch3_fusion/plots/fig5_dswe_full_v5.pdf")
 

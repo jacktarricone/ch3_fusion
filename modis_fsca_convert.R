@@ -22,8 +22,6 @@ rm(flm_raw)
 flm
 plot(flm)
 
-x <-date_list[160]
-x
 
 # function for concerting, cropping, and saving
 # MODIS ndsi to fsca
@@ -35,7 +33,7 @@ ndsi_to_fsca <-function(x){
     
     # convert to fsca using equation presented in salomonson & appel (2004)
     # fsca = 0.06 + (1.21 × ndsi)
-    fsca_rast1 <- 0.06 + (1.21*ndsi_rast)
+    fsca_rast1 <- -0.01 + (1.45*ndsi_rast)
     fsca_rast2 <-ifel(fsca_rast1 < 15, NA, fsca_rast1) # remote pixels below 15%
     fsca_rast <-ifel(fsca_rast2 > 100, 100, fsca_rast2) # anything above 100 = 100
     
@@ -70,7 +68,7 @@ ndsi_to_fsca <-function(x){
       }
     
     # save
-    saving_path <-file.path("./rasters/MOD10A1F_wy2020/fsca_v2/")
+    saving_path <-file.path("./rasters/MOD10A1F_wy2020/fsca/")
     writeRaster(fsca, paste0(saving_path, name_v1))
 }
 

@@ -51,17 +51,17 @@ plot(flm_stack_v3)
 ################
 
 # p1: jan 21 -- feb 12
-modis_0131 <-rast("./MOD10A1F_wy2020/fsca_v2/modis_fsca_20200131.tif")
-modis_0212 <-rast("./MOD10A1F_wy2020/fsca_v2/modis_fsca_20200212.tif")
+modis_0131 <-rast("./MOD10A1F_wy2020/fsca/modis_fsca_20200131.tif")
+modis_0212 <-rast("./MOD10A1F_wy2020/fsca/modis_fsca_20200212.tif")
 
 # p2
-modis_0219 <-rast("./MOD10A1F_wy2020/fsca_v2/modis_fsca_20200219.tif")
+modis_0219 <-rast("./MOD10A1F_wy2020/fsca/modis_fsca_20200219.tif")
 
 # p3
-modis_0226 <-rast("./MOD10A1F_wy2020/fsca_v2/modis_fsca_20200226.tif")
+modis_0226 <-rast("./MOD10A1F_wy2020/fsca/modis_fsca_20200226.tif")
 
 # p4
-modis_0311 <-rast("./MOD10A1F_wy2020/fsca_v2/modis_fsca_20200311.tif")
+modis_0311 <-rast("./MOD10A1F_wy2020/fsca/modis_fsca_20200311.tif")
 
 # stack 
 modis_stack_v1 <-c(modis_0131,modis_0212,modis_0219,modis_0226,modis_0311)
@@ -76,7 +76,7 @@ plot(modis_stack_v3)
 # writeRaster(modis_stack_v3[[3]], "./new_optical/p2_80m_20200212_20200219/modis_0219_80m.tif")
 # writeRaster(modis_stack_v3[[4]], "./new_optical/p3_80m_20200219_20200226/modis_0226_80m.tif")
 # writeRaster(modis_stack_v3[[5]], "./new_optical/p4_80m_20200226_20200311/modis_0311_80m.tif")
-# 
+
 
 ################
 ##### ims ######
@@ -119,17 +119,17 @@ plot(ims_stack_v5)
 ################
 
 # p1: jan 21 -- feb 12
-viirs_0131 <-rast("./VNP10A1F_wy2020/fsca_v2/viirs_fsca_20200131.tif")
-viirs_0212 <-rast("./VNP10A1F_wy2020/fsca_v2/viirs_fsca_20200212.tif")
+viirs_0131 <-rast("./VNP10A1F_wy2020/fsca/viirs_fsca_20200131.tif")
+viirs_0212 <-rast("./VNP10A1F_wy2020/fsca/viirs_fsca_20200212.tif")
 
 # p2
-viirs_0219 <-rast("./VNP10A1F_wy2020/fsca_v2/viirs_fsca_20200219.tif")
+viirs_0219 <-rast("./VNP10A1F_wy2020/fsca/viirs_fsca_20200219.tif")
 
 # p3
-viirs_0226 <-rast("./VNP10A1F_wy2020/fsca_v2/viirs_fsca_20200226.tif")
+viirs_0226 <-rast("./VNP10A1F_wy2020/fsca/viirs_fsca_20200226.tif")
 
 # p4
-viirs_0311 <-rast("./VNP10A1F_wy2020/fsca_v2/viirs_fsca_20200311.tif")
+viirs_0311 <-rast("./VNP10A1F_wy2020/fsca/viirs_fsca_20200311.tif")
 
 # stack 
 viirs_stack_v1 <-c(viirs_0131,viirs_0212,viirs_0219,viirs_0226,viirs_0311)
@@ -137,6 +137,7 @@ viirs_stack_v1 <-c(viirs_0131,viirs_0212,viirs_0219,viirs_0226,viirs_0311)
 # reformat
 viirs_stack_v2 <-crop(viirs_stack_v1, ext(coh_80m))
 viirs_stack_v3 <-mask(resample(viirs_stack_v2, coh_80m, method = 'bilinear'),coh_80m) # categorigcal, so near
+plot(viirs_stack_v3)
 
 # save
 # writeRaster(viirs_stack_v3[[2]], "./new_optical/p1_80m_20200131_20200212/viirs_0212_80m.tif")

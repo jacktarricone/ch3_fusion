@@ -22,4 +22,4 @@ print(sesame_swe)
 ggplot(sesame_swe, aes(x = date, y = swe_cm)) +
   geom_line()
 
-write.csv(sesame_swe, "./sesame_swe.csv")
+write.csv(sesame_swe, "./cues_swe.csv")

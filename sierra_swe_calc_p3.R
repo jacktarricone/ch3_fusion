@@ -91,7 +91,7 @@ ggplot(sp, aes(x = date, y = swe_cm, color = id)) +
 # define insar pair length
 length <-nrow(filter(sp, id == "CUES"))
 
-# calc change in SWE at pillow from feb 19 -- 26
+# calc change in SWE at pillow from feb 12 -- 19
 station_dswe <- sp %>%
   group_by(id) %>%
   summarize(dswe_cm = swe_cm[length] - swe_cm[1])
