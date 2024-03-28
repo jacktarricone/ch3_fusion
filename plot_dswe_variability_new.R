@@ -83,7 +83,6 @@ p3_sd <-app(p3_stack, fun = sd_na_rm)
 p3_df <-as.data.frame(p3_sd, xy = TRUE)
 p3_df$pair <-rep("(c) P3", nrow(p3_df))
 
-
 p4_sd <-app(p4_stack, fun = sd_na_rm)
 p4_df <-as.data.frame(p4_sd, xy = TRUE)
 p4_df$pair <-rep("(d) P4", nrow(p4_df))
@@ -164,7 +163,7 @@ cc <-ggplot(cc_df) +
 
 # save
 ggsave(cc,
-       file = "~/ch3_fusion/plots/cc_map_41x41_v2.png",
+       file = "~/ch3_fusion/plots/cc_map_41x41_v3.png",
        width = 3.5, 
        height = 8)
 
@@ -179,10 +178,10 @@ cow <-plot_grid(p1_p, cc,
 # test save
 # make tighter together
 ggsave(cow,
-       file = "~/ch3_fusion/plots/fig7_sd_vs_cc_plot_v6.pdf",
+       file = "~/ch3_fusion/plots/fig7_sd_vs_cc_plot_v7.pdf",
        width = 13, 
        height = 9,
        dpi = 300)
 
-system("open ~/ch3_fusion/plots/fig7_sd_vs_cc_plot_v6.pdf")
+system("open ~/ch3_fusion/plots/fig7_sd_vs_cc_plot_v7.pdf")
 

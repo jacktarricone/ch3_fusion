@@ -87,9 +87,20 @@ p4_sd <-app(p4_stack, fun = sd_na_rm)
 p4_df <-as.data.frame(p4_sd, xy = TRUE)
 p4_df$pair <-rep("P4", nrow(p4_df))
 
+# means
+mean(p1_df$lyr.1)
+mean(p2_df$lyr.1)
+mean(p3_df$lyr.1)
+mean(p4_df$lyr.1)
+
+max(p1_df$lyr.1)
+max(p2_df$lyr.1)
+max(p3_df$lyr.1)
+max(p4_df$lyr.1)
+
 # add bins col for box plot
 df_v3 <-cc_df  %>%
-  mutate(bin = cut(cc_mean, c(0,5,10,15,20,25,30,35,40,45,50,55,Inf)))
+  mutate(bin = cut(cc_mean, c(0,5,10,15,20,25,30,35,40,45,50,55,60)))
 
 # join cc
 p1_df2 <-full_join(p1_df, df_v3, by = c("x","y"))
@@ -112,7 +123,7 @@ f_labels <- data.frame(
   pair = c("P1", "P2" ,"P3", "P4"),
   label = c("(a) P1", "(b) P2" ,"(c) P3", "(d) P4"),
   bin = c('(5,10]','(5,10]','(5,10]','(5,10]'),
-  y = c(125, 125, 125, 125))
+  y = c(110, 110, 110, 110))
 
 # starting plot
 ### gains
@@ -123,7 +134,7 @@ p1_p <-ggplot(plotting_df_v2, mapping = aes(x = cc_mean, y = sd, fill = as.facto
   facet_wrap(~pair, scales = "fixed", nrow = 4)+
   xlab("CC (%)") + ylab(expression(Delta~SWE~SD~(m^3)))+ 
   scale_x_continuous(limits = c(0,55), breaks = c(0,5,10,15,20,25,30,35,40,45,50,55), expand = c(0,.5)) +
-  scale_y_continuous(limits = c(0,150)) +
+  scale_y_continuous(limits = c(0,125)) +
   theme_classic(13) +
   theme(panel.border = element_rect(colour = "black", fill = NA, size = 1),
         legend.position = "none",
@@ -138,12 +149,12 @@ p2
 
 # test save
 # make tighter together
-ggsave(p2,
-       file = "~/ch3_fusion/plots/fig8_cc_vs_sd_boxplot_v9.pdf",
-       width = 4, 
-       height = 5.5)
-
-system("open ~/ch3_fusion/plots/fig8_cc_vs_sd_boxplot_v9.pdf")
+# ggsave(p2,
+#        file = "~/ch3_fusion/plots/fig8_cc_vs_sd_boxplot_v10.pdf",
+#        width = 4, 
+#        height = 5.5)
+# 
+# system("open ~/ch3_fusion/plots/fig8_cc_vs_sd_boxplot_v10.pdf")
         
 
 ### numbers for results section

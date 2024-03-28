@@ -146,11 +146,17 @@ mean_changes <- as.data.frame(bar_plotting %>%
                                group_by(pair,stat) %>%
                                summarize(mean = round(mean(swe_change),digits = 2)))
 
+net_mean_changes <-filter(mean_changes, stat == "Net")
+net_mean_changes
+
 mult_diff <- as.data.frame(bar_plotting %>%
                                  group_by(pair,stat) %>%
                                  summarize(abs_max = round(max(abs(swe_change)),digits = 2),
                                            abs_min = round(min(abs(swe_change)),digits = 2),
                                            fact = round((abs_max/abs_min), digits = 2)))
+
+net_mult_diff <-filter(mult_diff, stat == "Net")
+net_mult_diff
 
 names_df <- as.data.frame(bar_plotting %>%
                              group_by(pair, stat) %>%
@@ -161,9 +167,6 @@ names_df <- as.data.frame(bar_plotting %>%
 names_df
 mult_diff
 mean(mult_diff$fact)
-
-net_mult_diff <-filter(mult_diff, stat == "Net")
-net_mult_diff
 
 gain_mult_diff <-filter(mult_diff, stat == "Gain")
 gain_mult_diff
@@ -180,12 +183,14 @@ mean_gain <-filter(mean_changes, stat == "Gain")
 mean_gain
 
 sensor_changes <- as.data.frame(bar_plotting %>%
-                                group_by(data_set,stat) %>%
-                                summarize(mean = round(mean(swe_change),digits = 2)))
+                                group_by(data_set,stat,pair) %>%
+                                summarize(mean = round(mean(abs(swe_change)),digits = 2)))
 
 sensor_net <-filter(sensor_changes, stat == "Net")
 sensor_net
 
-sensor_loss <-filter(sensor_changes, stat == "Loss")
-sensor_loss
+mean_net_sensor_changes <- as.data.frame(sensor_net%>%
+                                  group_by(data_set) %>%
+                                  summarize(mean_net = round(mean(mean),digits = 2)))
+mean_net_sensor_changes
 
