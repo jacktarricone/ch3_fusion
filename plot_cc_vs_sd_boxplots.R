@@ -70,7 +70,7 @@ sierra_sf <-st_geometry(sierra_v1)
 # define sd with na remove
 sd_na_rm <-function(x){sd(x, na.rm = TRUE)}
 
-# calculate pixelwise standard deviation, add pair row
+# calculate pixelwise CoV, add pair row
 p1_sd <-app(p1_stack, fun = sd_na_rm)
 p1_df <-as.data.frame(p1_sd, xy = TRUE)
 p1_df$pair <-rep("P1", nrow(p1_df))
@@ -109,7 +109,7 @@ p3_df2 <-full_join(p3_df, df_v3, by = c("x","y"))
 p4_df2 <-full_join(p4_df, df_v3, by = c("x","y"))
 
 # combine
-plotting_df <-rbind(p1_df2, p2_df2, p3_df2, p4_df2)
+plotting_df <-bind_rows(p1_df2, p2_df2, p3_df2, p4_df2)
 plotting_df_v2 <-na.omit(plotting_df)
 colnames(plotting_df_v2)[3] <-"sd"
 head(plotting_df_v2)
@@ -125,16 +125,17 @@ f_labels <- data.frame(
   bin = c('(5,10]','(5,10]','(5,10]','(5,10]'),
   y = c(110, 110, 110, 110))
 
+unique(plotting_df_v2$pair)
 # starting plot
 ### gains
 p1_p <-ggplot(plotting_df_v2, mapping = aes(x = cc_mean, y = sd, fill = as.factor(bin))) +
   geom_boxplot(linewidth = .3, varwidth = TRUE, outlier.size = .001, outlier.shape = 4, 
-               outlier.colour = "grey80", outlier.alpha  = .01) +
-  scale_fill_discrete(type = cc_scale(12)) +
+               outlier.colour = "red", outlier.alpha  = .01, fatten = 2) +
+  scale_fill_discrete(type = rep("gray90",12)) +
   facet_wrap(~pair, scales = "fixed", nrow = 4)+
-  xlab("CC (%)") + ylab(expression(Delta~SWE~SD~(m^3)))+ 
+  xlab("CC (%)") + ylab(expression(sigma[Delta~SWE]~(m^3)))+ 
   scale_x_continuous(limits = c(0,55), breaks = c(0,5,10,15,20,25,30,35,40,45,50,55), expand = c(0,.5)) +
-  scale_y_continuous(limits = c(0,125)) +
+  scale_y_continuous(limits = c(0,120)) +
   theme_classic(13) +
   theme(panel.border = element_rect(colour = "black", fill = NA, size = 1),
         legend.position = "none",
@@ -145,17 +146,16 @@ p1_p <-ggplot(plotting_df_v2, mapping = aes(x = cc_mean, y = sd, fill = as.facto
 
 # this works!!
 p2 <- p1_p + geom_text(data = f_labels, aes(x = 5, y = y, label = label), size = 5)
-p2
 
 # test save
 # make tighter together
-# ggsave(p2,
-#        file = "~/ch3_fusion/plots/fig8_cc_vs_sd_boxplot_v10.pdf",
-#        width = 4, 
-#        height = 5.5)
-# 
-# system("open ~/ch3_fusion/plots/fig8_cc_vs_sd_boxplot_v10.pdf")
-        
+ggsave(p2,
+       file = "~/ch3_fusion/plots/fig8_cc_vs_sd_boxplot_v11.pdf",
+       width = 4,
+       height = 5.5)
+
+system("open ~/ch3_fusion/plots/fig8_cc_vs_sd_boxplot_v11.pdf")
+
 
 ### numbers for results section
 plotting_df

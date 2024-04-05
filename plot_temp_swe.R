@@ -132,7 +132,7 @@ temp <-ggplot(daily_temp)+
 
 
 ## new plot
-my_colors <-c('yellow2', '#4daf4a', '#984ea3',  '#bebada','brown')
+my_colors <-c('black', '#4daf4a', '#984ea3',  '#bebada','brown')
 
 # plot swe
 swe <-ggplot(cadwr_swe)+
@@ -176,12 +176,12 @@ plot_grid(swe,temp,
           nrow = 2, 
           rel_heights = c(.47, .53))
 
-ggsave("~/ch3_fusion/plots/fig2_temp_swe_v5.pdf",
+ggsave("~/ch3_fusion/plots/fig2_temp_swe_v6.pdf",
        width = 8.5,
        height = 6.6,
        units = "in")
 
-system("open ~/ch3_fusion/plots/fig2_temp_swe_v5.pdf")
+system("open ~/ch3_fusion/plots/fig2_temp_swe_v6.pdf")
 
 
 

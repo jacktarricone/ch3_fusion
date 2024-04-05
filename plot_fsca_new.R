@@ -144,7 +144,7 @@ p50 <-ggplot(plotting_50) +
   geom_sf(data = sierra_sf, fill = "gray50", color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
   geom_raster(mapping = aes(x,y, fill = value)) + 
   facet_grid(vars(pair), vars(data_set), scales = "fixed", switch = "y") +
-  scale_fill_gradientn(colors = fsca_scale, limits = c(15,100), oob = squish, na.value = "gray50", guide = "none") + # max of color bar so it saturates
+  scale_fill_gradientn(colors = fsca_scale, limits = c(50,100), oob = squish, na.value = "gray50", guide = "none") + # max of color bar so it saturates
   labs(fill = "fSCA (%)") +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
@@ -168,8 +168,8 @@ p50 <-ggplot(plotting_50) +
                                ticks.colour = "black")) 
 
 ggsave(p50,
-       file = "~/ch3_fusion/plots/fig4_fcsa_50mask_plot_v6.pdf",
+       file = "~/ch3_fusion/plots/fig4_fcsa_50mask_plot_v7.pdf",
        width = 7, 
        height = 12)
 
-system("open ~/ch3_fusion/plots/fig4_fcsa_50mask_plot_v6.pdf") 
+system("open ~/ch3_fusion/plots/fig4_fcsa_50mask_plot_v7.pdf") 

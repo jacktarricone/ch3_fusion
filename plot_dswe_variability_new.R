@@ -103,7 +103,7 @@ p1_p <-ggplot(plotting_df) +
   geom_raster(mapping = aes(x,y, fill = lyr.1)) + 
   facet_wrap(vars(pair), scales = "fixed", dir = "h", strip.position = "top", nrow = 1) +
   scale_fill_gradientn(colors = scale1, limits = c(0,100), oob = squish) + # max of color bar so it saturates
-  labs(fill = expression(Delta~SWE~SD~(m^3))) +
+  labs(fill = expression(sigma[Delta~SWE]~(m^3))) +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
         axis.title.y = element_blank(),
@@ -178,10 +178,10 @@ cow <-plot_grid(p1_p, cc,
 # test save
 # make tighter together
 ggsave(cow,
-       file = "~/ch3_fusion/plots/fig7_sd_vs_cc_plot_v7.pdf",
+       file = "~/ch3_fusion/plots/fig7_sd_vs_cc_plot_v8.pdf",
        width = 13, 
        height = 9,
        dpi = 300)
 
-system("open ~/ch3_fusion/plots/fig7_sd_vs_cc_plot_v7.pdf")
+system("open ~/ch3_fusion/plots/fig7_sd_vs_cc_plot_v8.pdf")
 

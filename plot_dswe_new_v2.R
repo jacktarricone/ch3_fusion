@@ -156,6 +156,12 @@ p4_df_l <-pivot_longer(p4_df,
 p4_df_l$data_set <-factor(p4_df_l$data_set, 
                           levels=c("IMS","MODIS","VIIRS","STC","Landsat","FLM"))
 
+# full <-bind_rows(p1_df_l,p2_df_l,p3_df_l,p4_df_l)
+# head(full)
+# unique(full$pair)
+# hist(full$value, breaks = 100)
+# fwrite(full, "~/ch3_fusion/csvs/dswe_80m_from_fig5.csv")
+
 # bring in NA df
 na_stack <-rast("./new_uavsar/na_pixels_stack.tif")
 na_df <-as.data.frame(na_stack, xy = T)
