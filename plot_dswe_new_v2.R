@@ -289,29 +289,33 @@ dswe <-plot_grid(p1, p2, p3, p4,
           align = "v", 
           nrow = 4, 
           vjust = 10.5,
-          rel_heights = c(.26,.23,.23,.32))
+          rel_heights = c(.26,.23,.23,.33))
 
-full <-plot_grid(dswe, dswe_mw,
-                 labels = c("(a)","(b)"),
-                 label_size = 22,
-                 align = "v", 
-                 ncol = 2, 
-                 vjust = 1.5,
-                 rel_widths = c(.5,.5))
+
+
+# full <-plot_grid(dswe, dswe_mw,
+#                  labels = c("(a)","(b)"),
+#                  label_size = 22,
+#                  align = "v", 
+#                  ncol = 2, 
+#                  vjust = 1.5,
+#                  rel_widths = c(.5,.5))
 # png
-ggsave("~/ch3_fusion/plots/fig5_dswe_full_v7.png",
-       width = 13,
+
+ggsave("~/ch3_fusion/plots/fig5_dswe80m_v1.pdf",
+       width = 7,
        height = 12,
        dpi = 300,
        units = "in")
 
-system("open ~/ch3_fusion/plots/fig5_dswe_full_v7.png")
+system("open ~/ch3_fusion/plots/fig5_dswe80m_v1.pdf")
 
-ggsave("~/ch3_fusion/plots/fig5_dswe_full_v7.pdf",
-       width = 13,
+ggsave("~/ch3_fusion/plots/fig5_dswe80m_v1.png",
+       width = 7,
        height = 12,
        dpi = 300,
        units = "in")
 
-system("open ~/ch3_fusion/plots/fig5_dswe_full_v7.pdf")
+system("open ~/ch3_fusion/plots/fig5_dswe80m_v1.png")
+
 
