@@ -34,7 +34,7 @@ theme_classic <- function(base_size = 11, base_family = "",
     )
 }
 
-theme_set(theme_classic(15))
+theme_set(theme_classic(14))
 
 setwd("~/ch3_fusion/rasters/")
 
@@ -48,55 +48,32 @@ marg_stack <-rast(marg_list)*100
 
 # resample uavsar to 500m marg data
 uavsar_500 <-resample(uavsar_stack, marg_stack, method = "bilinear")
-
-# test hists
-# hist(marg_stack[[1]], breaks = 100, col = 'red')
-# hist(uavsar_500[[1]], breaks = 100, add = TRUE)
-# 
-# hist(marg_stack[[2]], breaks = 100, col = 'red')
-# hist(uavsar_500[[2]], breaks = 100, add = TRUE)
-# 
-# hist(marg_stack[[3]], breaks = 100, col = 'red')
-# hist(uavsar_500[[3]], breaks = 100, add = TRUE)
-# 
-# hist(marg_stack[[4]], breaks = 100, col = 'red')
-# hist(uavsar_500[[4]], breaks = 100, add = TRUE)
-
-# diff <-marg_stack - uavsar_500
-# plot(diff)
-# hist(diff, breaks = 100)
-
-# # calc layer means
-# marg_mean <-global(marg_stack, mean, na.rm = T)
-# uavsar_mean <-global(uavsar_500, mean, na.rm = T)
-# 
-# # calc layer sd
-# marg_sd <-global(marg_stack, sd, na.rm = T)
-# uavsar_sd <-global(uavsar_500, sd, na.rm = T)
+# writeRaster(uavsar_500, "./wus_marg/uavsar_500_stack.tif")
 
 # create df
 # marg
-marg_df <-as.data.frame(marg_stack)
-colnames(marg_df)[1:4]<-c("P1","P2","P3","P4")
-marg_df$data <-rep("WUS–SR",nrow(marg_df))
+marg_df <-as.data.frame(marg_stack, xy = T)
+colnames(marg_df)[3:6]<-c("P1","P2","P3","P4")
+marg_df$data <-rep("WUS-SR",nrow(marg_df))
 
 marg_long <- marg_df %>%
   pivot_longer(cols = starts_with("p"),
                names_to = "pair",
-               values_to = "value")
+               values_to = "dswe")
 
 # uavsar
-uavsar_df <-as.data.frame(uavsar_500)
-colnames(uavsar_df)[1:4]<-c("P1","P2","P3","P4")
+uavsar_df <-as.data.frame(uavsar_500, xy = T)
+colnames(uavsar_df)[3:6]<-c("P1","P2","P3","P4")
 uavsar_df$data <-rep("UAVSAR",nrow(uavsar_df))
 
 uavsar_long <- uavsar_df %>%
   pivot_longer(cols = starts_with("p"),
                names_to = "pair",
-               values_to = "value")
+               values_to = "dswe")
 # bind together
 df <-bind_rows(marg_long,uavsar_long)
 head(df)
+data.table::fwrite(df, "~/ch3_fusion/csvs/uavsar_marg_plotting_df.tif")
 
 # calc stats
 stats_df <- df %>%
@@ -105,15 +82,27 @@ stats_df <- df %>%
             sd_value = sd(value, na.rm = T))
 
 # plot
-ggplot(df, aes(x = pair, y = value, fill = data)) +
-  geom_boxplot() +
-  labs(title = "Boxplot of Mean Value by Pair and Data", fill = "Data") +
+p1 <-ggplot(df, aes(x = pair, y = value, fill = data)) +
+  geom_hline(yintercept = 0, col = "gray50", linetype = 3)+
+  geom_boxplot(linewidth = .4, width = .4, 
+               outlier.shape = 1, outlier.color = 'red', outlier.alpha = .1, outlier.size = .2,
+               position = 'dodge') +
+  scale_fill_manual(values = c('UAVSAR' = 'goldenrod', 'WUS-SR' = 'purple2'))+
   ylab(expression(Delta~SWE~(cm))) +
   xlab("Pair") + 
-  theme_minimal() +
   theme(panel.border = element_rect(colour = "black", fill = NA, linewidth  = 1),
-        legend.position = c(.65,.1),
+        legend.position = c(.65,.9),
         legend.direction = 'horizontal',
+        legend.title = element_blank(),
         legend.margin = margin(t = 0, r = 0, b = 0, l = 0),
         plot.margin = unit(c(.25,.25, 0,.25), "cm"))
+
+ggsave(p1,
+       file = "~/ch3_fusion/plots/marg_uavsar_diff_box_v1.png",
+       width = 6, 
+       height = 3,
+       units = "in",
+       dpi = 500) 
+
+system("open ~/ch3_fusion/plots/marg_uavsar_diff_box_v1.png")
 
