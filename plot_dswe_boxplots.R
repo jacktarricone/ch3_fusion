@@ -7,8 +7,7 @@ library(scales)
 library(cowplot)
 library(viridis)
 library(data.table)
-
-setwd("~/ch3_fusion/")
+library(RColorBrewer)
 
 theme_classic <- function(base_size = 11, base_family = "",
                           base_line_size = base_size / 22,
@@ -39,30 +38,31 @@ theme_classic <- function(base_size = 11, base_family = "",
     )
 }
 
-theme_set(theme_classic(18))
+theme_set(theme_classic(15))
 
-# read in csv
-df <-fread("./csvs/dswe_new_41_plotting_v3.csv")
-df$value2 <-df$value/10e4
-head(df)
+setwd("~/ch3_fusion/")
+
+# load in 80 m insar dswe products
+plotting_df <-fread("~/ch3_fusion/csvs/dswe_new_41_plotting_v8.csv")
+plotting_df$data_set <-factor(plotting_df$data_set, 
+                              levels=c("IMS","MODIS","VIIRS","STC","Landsat","FLM"))
+head(plotting_df)
 
 # define colors
 cols <-brewer_pal(palette = "Spectral")(6)
-df$data_set <-factor(df$data_set, levels = c('IMS','FLM','MODSCAG','MODIS','VIIRS','Landsat')) # conver to facor for plotting
-df
 
 # plot
-p <-ggplot(df, mapping = aes(x = as.factor(pair), y = value2, fill = data_set)) +
-  geom_violin(width=2, position=position_dodge(width=0.5)) +
+p <-ggplot(plotting_df, mapping = aes(x = as.factor(pair), y = dswe_m3, fill = data_set)) +
+  geom_boxplot(linewidth = .3, width = .7, 
+               outlier.shape = 4, outlier.color = 'gray90', outlier.alpha = .05, outlier.size = .01,
+               position = 'dodge') +
   scale_fill_manual(name = "fSCA Data",
                     values = c('IMS' = cols[2], 'FLM' = cols[4], 
-                               'MODSCAG' = cols[3], 'MODIS' = cols[5],
-                               'VIIRS' = cols[1], 'Landsat' = cols[6]),
-                    labels = c('IMS','FLM','MODSCAG',
-                               'MODIS','VIIRS','Landsat')) +
+                               'STC' = cols[3], 'MODIS' = cols[5],
+                               'VIIRS' = cols[1], 'Landsat' = cols[6]))+
   guides(fill = guide_legend(ncol = 3, override.aes = list(order = c(1,2,3,4,5,6)))) +
-  xlab("InSAR Pair") + ylab(expression(Delta~SWE~(10^4~m^3))) +
-  scale_y_continuous(limits = c(-8,6), breaks = seq(-8,6,2)) +
+  xlab("InSAR Pair") + ylab(expression(Delta~SWE~(m^3~10^2))) +
+  scale_y_continuous(limits = c(-300,300), breaks = seq(-300,300,100)) +
   theme_classic(25) +
   theme(panel.border = element_rect(colour = "black", fill = NA, linewidth  = 1),
         legend.position = c(.65,.1),
@@ -71,13 +71,15 @@ p <-ggplot(df, mapping = aes(x = as.factor(pair), y = value2, fill = data_set)) 
         plot.margin = unit(c(.25,.25, 0,.25), "cm"))
 
 
+
+
 ggsave(p,
-       file = "./plots/dswe_violin_v1.png",
+       file = "./plots/dswe_box_v1.png",
        width = 12, 
        height = 5,
        units = "in",
        dpi = 300) 
 
-system("open ./plots/dswe_violin_v1.png")
+system("open ./plots/dswe_box_v1.png")
 
 

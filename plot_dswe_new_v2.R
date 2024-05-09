@@ -89,16 +89,13 @@ dswe_mw <-ggplot(plotting_df) +
                                ticks.colour = "black")) 
 # dswe_mw
 
-# ggsave(p,
-#        file = "./plots/dswe_mw_v6.pdf",
-#        width = 7, 
-#        height = 12)
-# 
-# system("open ./plots/dswe_mw_v6.pdf") 
+ggsave(dswe_mw,
+       file = "./plots/dswe_mw_v7.pdf",
+       width = 7,
+       height = 12)
 
-# 80*80*41*41
-# (10758400/10^5)*.03
-# 10758400/(1000^3)
+system("open ./plots/dswe_mw_v7.pdf")
+
 #################################
 
 setwd("~/ch3_fusion/rasters")

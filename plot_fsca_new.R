@@ -83,6 +83,8 @@ p4_df_l <-pivot_longer(p4_df,
 
 # bind for plotting
 plotting_df <-rbind(p1_df_l,p2_df_l,p3_df_l,p4_df_l)
+plotting_df$data_set <-factor(plotting_df$data_set, 
+                              levels=c("IMS","MODIS","VIIRS","STC","Landsat","FLM"))
 plotting_50 <-plotting_df
 plotting_50$value <-ifelse(plotting_50$value < 50, NA, plotting_50$value)
 plotting_50$data_set <-factor(plotting_50$data_set, 
@@ -128,12 +130,12 @@ p <-ggplot(plotting_df) +
                                ticks.colour = "black")) 
 
 ggsave(p,
-       file = "./plots/fcsa_plot_v3.png",
+       file = "~/ch3_fusion/plots/fcsa_plot_v4.png",
        width = 7, 
        height = 12,
        dpi = 300)
 
-system("open ./plots/fcsa_plot_v3.png") 
+system("open ~/ch3_fusion/plots/fcsa_plot_v4.png") 
 
 
 
