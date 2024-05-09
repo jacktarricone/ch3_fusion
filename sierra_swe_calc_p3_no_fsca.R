@@ -1,9 +1,10 @@
-# sierra swe calc with different to compare to marg
+# sierra swe calc with different fsca masks: pair 3, feb 19 -- feb 26
+# jack tarricone
+# decemeber 5, 2022
 
 library(terra)
 library(dplyr)
 library(ggplot2);theme_set(theme_classic(12))
-library(lubridate)
 
 setwd("~/ch3_fusion/rasters/")
 
@@ -38,7 +39,11 @@ cues_swe$date <-mdy(cues_swe$date)
 cadwr_swe <-bind_rows(cadwr_swe1,cues_swe)
 
 # study period filter
-sp <-dplyr::filter(cadwr_swe, date > "2020-02-25" & date < "2020-03-12")
+sp <-dplyr::filter(cadwr_swe, date > "2020-02-18" & date < "2020-02-27")
+
+# test plot from vlc cadwr pillow
+ggplot(sp, aes(x = date, y = swe_cm, color = id)) +
+  geom_line()
 
 # define insar pair length
 length <-nrow(filter(sp, id == "CUES"))
@@ -48,9 +53,12 @@ station_dswe <- sp %>%
   group_by(id) %>%
   summarize(dswe_cm = swe_cm[length] - swe_cm[1])
 
+station_dswe
+
 # extract using that vector
 pillow_cell_dswe <-terra::extract(dswe_raw, pillow_point,  cells = TRUE, xy = TRUE, ID = TRUE)
 pillow_cell_dswe$ID <-c(pillow_point$code)
+pillow_cell_dswe
 
 # extract 8 surronding cells
 test_cells <-adjacent(dswe_raw, pillow_cell_dswe$cell, direction = 8)
@@ -98,6 +106,4 @@ dswe <-dswe_raw + tether_value
 plot(dswe)
 hist(dswe, breaks = 100)
 writeRaster(dswe, "~/ch3_fusion/rasters/wus_marg/pairs/p3_uavsar_dswe_80m.tif")
-  
-
 

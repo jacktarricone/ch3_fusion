@@ -10,61 +10,23 @@ setwd("~/ch3_fusion/rasters/")
 
 ## bring in inc
 unw <-rast("./new_uavsar/p1_80m/p1_14d_VV_unw_80m.tif")
-cor <-rast("./new_uavsar/p1_80m/p1_14d_VV_coh_80m.tif")
 inc <-rast("./new_uavsar/inc_80m.tif")
-
-# bring in fsca data
-ims <-rast("./new_optical/p1_80m_20200131_20200212/ims_0212_80m.tif")
-modscag <-rast("./new_optical/p1_80m_20200131_20200212/modscag_0212_80m.tif")
-modis <-rast("./new_optical/p1_80m_20200131_20200212/modis_0212_80m.tif")
-viirs <-rast("./new_optical/p1_80m_20200131_20200212/viirs_0212_80m.tif")
-flm <-rast("./new_optical/p1_80m_20200131_20200212/flm_0212_80m.tif")
-landsat <-rast("./new_optical/p1_80m_20200131_20200212/landsat_fsca_80m_20200201.tif")
-
-# stack
-stack <-c(ims,modscag,modis,viirs,flm,landsat)
-
-# mask pixels below 50% fsca
-stack_50 <-ifel(stack <= 50, NA, stack)
-plot(stack_50)
-
-# bring masked unwrapped phase rastesr
-unw_ims <-mask(unw, stack_50[[1]], maskvalue = NA)
-unw_modscag <-mask(unw, stack_50[[2]], maskvalue = NA)
-unw_modis <-mask(unw, stack_50[[3]], maskvalue = NA)
-unw_viirs <-mask(unw, stack_50[[4]], maskvalue = NA)
-unw_flm <-mask(unw, stack_50[[5]], maskvalue = NA)
-unw_landsat <-mask(unw, stack_50[[6]], maskvalue = NA)
-
-# stack phase data
-unw_stack <-c(unw_ims,unw_modscag,unw_modis,unw_viirs,unw_flm,unw_landsat)
 
 # import leinss swe change function
 devtools::source_url("https://raw.githubusercontent.com/jacktarricone/jemez_zenodo/main/insar_swe_functions.R")
-
-# function(phase, alpha, inc_angle) {
-#   
-#   wavelength <- 0.238403545
-#   k <- 2 * pi / wavelength
-#   return(phase / (alpha * k * (1.59 + inc_angle^2.5)))
-# }
-# 
 
 ############### 
 ## calc dswe and convert to cm
 ###############
 
-dswe_raw <-leinss_swe(phase = unw_stack, alpha = 1, inc_angle = inc)*100
+dswe_raw <-leinss_swe(phase = unw, alpha = 1, inc_angle = inc)*100
 
 ####### bring in snow pillow data
 # pull out location info into separate df
 pillow_locations <-read.csv("~/ch3_fusion/csvs/cadwr_pillows_meta_uavsar_v1.csv", header = TRUE)
 
 # plot pillow location using terra vector functionality
-pillow_point <-vect(pillow_locations, geom = c("lon","lat"), crs = crs(unw_modis)) #needs to be 
-plot(dswe_raw[[1]])
-points(pillow_point, cex = 1)
-text(pillow_point, labels = c("VLC", "DPO", "MHP","UBC","CUES"), pos = 3)
+pillow_point <-vect(pillow_locations, geom = c("lon","lat"), crs = crs(unw)) #needs to be 
 
 # calculate SWE change at pillow
 cadwr_swe1 <-read.csv("~/ch3_fusion/csvs/cadwr_swe_depth_qaqc_v1.csv")
@@ -74,11 +36,6 @@ cues_swe$date <-mdy(cues_swe$date)
 
 # bind
 cadwr_swe <-bind_rows(cadwr_swe1,cues_swe)
-cadwr_swe
-
-# test plot from vlc cadwr pillow
-ggplot(cadwr_swe, aes(x = date, y = swe_cm, color = id)) +
-  geom_line()
 
 # study period filter
 sp <-dplyr::filter(cadwr_swe, date > "2020-01-30" & date < "2020-02-13")
@@ -90,8 +47,6 @@ length <-nrow(filter(sp, id == "CUES"))
 station_dswe <- sp %>%
   group_by(id) %>%
   summarize(dswe_cm = swe_cm[length] - swe_cm[1])
-
-station_dswe
 
 # extract using that vector
 pillow_cell_dswe <-terra::extract(dswe_raw, pillow_point,  cells = TRUE, xy = TRUE, ID = TRUE)
@@ -143,14 +98,5 @@ tether_value
 dswe <-dswe_raw + tether_value
 plot(dswe)
 hist(dswe, breaks = 100)
+writeRaster(dswe, "~/ch3_fusion/rasters/wus_marg/pairs/p1_uavsar_dswe_80m.tif")
 
-# list names
-names <-c("ims","modscag","modis","viirs","flm","landsat")
-
-# save with looop
-for (i in 1:length(names)) {
-  
-  dataset <-names[i]
-  writeRaster(dswe[[i]], paste0("~/ch3_fusion/rasters/new_dswe/p1/p1_",dataset,"_dswe_cm_v8.tif"))
-  
-}

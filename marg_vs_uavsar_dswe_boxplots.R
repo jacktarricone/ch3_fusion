@@ -45,17 +45,22 @@ uavsar_stack <-rast(uavsar_list)
 # load in marg
 marg_list <-list.files("./wus_marg/pairs/", pattern = "marg", full.names = T)
 marg_stack <-rast(marg_list)*100
+plot(marg_stack)
 
 # resample uavsar to 500m marg data
 uavsar_500 <-resample(uavsar_stack, marg_stack, method = "bilinear")
-# writeRaster(uavsar_500, "./wus_marg/uavsar_500_stack.tif")
+uavsar_500
+plot(uavsar_500)
 
-# create df
+# calc diff
+diff_stack <-uavsar_500-marg_stack
+plot(diff_stack)
+
+# create df with marg, uavsar, and diff
 # marg
 marg_df <-as.data.frame(marg_stack, xy = T)
 colnames(marg_df)[3:6]<-c("P1","P2","P3","P4")
 marg_df$data <-rep("WUS-SR",nrow(marg_df))
-
 marg_long <- marg_df %>%
   pivot_longer(cols = starts_with("p"),
                names_to = "pair",
@@ -65,26 +70,37 @@ marg_long <- marg_df %>%
 uavsar_df <-as.data.frame(uavsar_500, xy = T)
 colnames(uavsar_df)[3:6]<-c("P1","P2","P3","P4")
 uavsar_df$data <-rep("UAVSAR",nrow(uavsar_df))
-
 uavsar_long <- uavsar_df %>%
   pivot_longer(cols = starts_with("p"),
                names_to = "pair",
                values_to = "dswe")
+
+# uavsar
+diff_df <-as.data.frame(diff_stack, xy = T)
+colnames(diff_df)[3:6]<-c("P1","P2","P3","P4")
+diff_df$data <-rep("Difference",nrow(diff_df))
+diff_long <- diff_df %>%
+  pivot_longer(cols = starts_with("p"),
+               names_to = "pair",
+               values_to = "dswe")
+
 # bind together
-df <-bind_rows(marg_long,uavsar_long)
+df1 <-bind_rows(marg_long,uavsar_long)
+df <-bind_rows(df1,diff_long)
 head(df)
-data.table::fwrite(df, "~/ch3_fusion/csvs/uavsar_marg_plotting_df.tif")
+data.table::fwrite(df, "~/ch3_fusion/csvs/uavsar_marg_plotting_df_GOOD_v1.csv")
 
 # calc stats
 stats_df <- df %>%
   group_by(data, pair) %>%
-  summarize(mean_value = mean(value, na.rm = T),
-            sd_value = sd(value, na.rm = T))
+  summarize(mean_value = mean(dswe, na.rm = T),
+            sd_value = sd(dswe, na.rm = T))
 
+stats_df
 # plot
-p1 <-ggplot(df, aes(x = pair, y = value, fill = data)) +
+p1 <-ggplot(df1, aes(x = pair, y = dswe, fill = data)) +
   geom_hline(yintercept = 0, col = "gray50", linetype = 3)+
-  geom_boxplot(linewidth = .4, width = .4, 
+  geom_boxplot(linewidth = .25, width = .4, 
                outlier.shape = 1, outlier.color = 'red', outlier.alpha = .1, outlier.size = .2,
                position = 'dodge') +
   scale_fill_manual(values = c('UAVSAR' = 'goldenrod', 'WUS-SR' = 'purple2'))+
@@ -98,11 +114,11 @@ p1 <-ggplot(df, aes(x = pair, y = value, fill = data)) +
         plot.margin = unit(c(.25,.25, 0,.25), "cm"))
 
 ggsave(p1,
-       file = "~/ch3_fusion/plots/marg_uavsar_diff_box_v1.png",
+       file = "~/ch3_fusion/plots/marg_uavsar_diff_box_v2.png",
        width = 6, 
        height = 3,
        units = "in",
        dpi = 500) 
 
-system("open ~/ch3_fusion/plots/marg_uavsar_diff_box_v1.png")
+system("open ~/ch3_fusion/plots/marg_uavsar_diff_box_v2.png")
 

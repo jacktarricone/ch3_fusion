@@ -1,4 +1,6 @@
-# sierra swe calc with different to compare to marg
+# sierra swe calc with different fsca masks: pair 4, feb 26 -- march 11
+# jack tarricone
+# decemeber 5, 2022
 
 library(terra)
 library(dplyr)
@@ -8,7 +10,7 @@ library(lubridate)
 setwd("~/ch3_fusion/rasters/")
 
 ## bring in inc
-unw <-rast("./new_uavsar/p3_80m/p3_7d_VV_unw_80m.tif")
+unw <-rast("./new_uavsar/p4_80m/p4_14d_VV_unw_80m.tif")
 inc <-rast("./new_uavsar/inc_80m.tif")
 
 # import leinss swe change function
@@ -27,9 +29,6 @@ pillow_locations
 
 # plot pillow location using terra vector functionality
 pillow_point <-vect(pillow_locations, geom = c("lon","lat"), crs = crs(unw)) #needs to be 
-plot(dswe_raw[[1]])
-points(pillow_point, cex = 1)
-text(pillow_point, labels = c("VLC", "DPO", "MHP","UBC","CUES"), pos = 3)
 
 # calculate SWE change at pillow
 cadwr_swe1 <-read.csv("~/ch3_fusion/csvs/cadwr_swe_depth_qaqc_v1.csv")
@@ -39,11 +38,6 @@ cues_swe$date <-mdy(cues_swe$date)
 
 # bind
 cadwr_swe <-bind_rows(cadwr_swe1,cues_swe)
-tail(cadwr_swe)
-
-# test plot from vlc cadwr pillow
-ggplot(cadwr_swe, aes(x = date, y = swe_cm, color = id)) +
-  geom_line()
 
 # study period filter
 sp <-dplyr::filter(cadwr_swe, date > "2020-02-25" & date < "2020-03-12")
@@ -113,6 +107,3 @@ dswe <-dswe_raw + tether_value
 plot(dswe)
 hist(dswe, breaks = 100)
 writeRaster(dswe, "~/ch3_fusion/rasters/wus_marg/pairs/p4_uavsar_dswe_80m.tif")
-  
-
-

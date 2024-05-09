@@ -1,9 +1,10 @@
-# sierra swe calc with different to compare to marg
+# sierra swe calc with different fsca masks: pair 1 jan 31 -- feb 11
+# jack tarricone
+# decemeber 5, 2022
 
 library(terra)
 library(dplyr)
 library(ggplot2);theme_set(theme_classic(12))
-library(lubridate)
 
 setwd("~/ch3_fusion/rasters/")
 
@@ -23,7 +24,6 @@ dswe_raw <-leinss_swe(phase = unw, alpha = 1, inc_angle = inc)*100
 ####### bring in snow pillow data
 # pull out location info into separate df
 pillow_locations <-read.csv("~/ch3_fusion/csvs/cadwr_pillows_meta_uavsar_v1.csv", header = TRUE)
-pillow_locations
 
 # plot pillow location using terra vector functionality
 pillow_point <-vect(pillow_locations, geom = c("lon","lat"), crs = crs(unw)) #needs to be 
@@ -38,12 +38,12 @@ cues_swe$date <-mdy(cues_swe$date)
 cadwr_swe <-bind_rows(cadwr_swe1,cues_swe)
 
 # study period filter
-sp <-dplyr::filter(cadwr_swe, date > "2020-02-25" & date < "2020-03-12")
+sp <-dplyr::filter(cadwr_swe, date > "2020-01-30" & date < "2020-02-13")
 
 # define insar pair length
 length <-nrow(filter(sp, id == "CUES"))
 
-# calc change in SWE at pillow from feb 12 -- 19
+# calc change in SWE at pillow from feb 12 - 19
 station_dswe <- sp %>%
   group_by(id) %>%
   summarize(dswe_cm = swe_cm[length] - swe_cm[1])
@@ -51,6 +51,7 @@ station_dswe <- sp %>%
 # extract using that vector
 pillow_cell_dswe <-terra::extract(dswe_raw, pillow_point,  cells = TRUE, xy = TRUE, ID = TRUE)
 pillow_cell_dswe$ID <-c(pillow_point$code)
+pillow_cell_dswe
 
 # extract 8 surronding cells
 test_cells <-adjacent(dswe_raw, pillow_cell_dswe$cell, direction = 8)
@@ -98,6 +99,4 @@ dswe <-dswe_raw + tether_value
 plot(dswe)
 hist(dswe, breaks = 100)
 writeRaster(dswe, "~/ch3_fusion/rasters/wus_marg/pairs/p1_uavsar_dswe_80m.tif")
-  
-
 

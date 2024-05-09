@@ -3,19 +3,16 @@
 library(terra)
 library(ncdf4)
 require(XML)
-remotes::install_github("USGS-R/EflowStats")
-remotes::install_github("USGS-R/smwrBase")
 library(EflowStats)
 
 # set working directory
 setwd("~/ch3_fusion/")
 
 # file paths
-t1 <-"~/ch3_fusion/rasters/wus_marg/WUS_UCLA_SR_v01_N37_0W119_0_agg_16_WY2020_21_SWE_SCA_POST.nc"
-x1 <-"~/ch3_fusion/rasters/wus_marg/WUS_UCLA_SR_v01_N37_0W119_0_agg_16_WY2020_21_SWE_SCA_POST.nc.xml"
-t2 <-"~/ch3_fusion/rasters/wus_marg/WUS_UCLA_SR_v01_N37_0W120_0_agg_16_WY2020_21_SWE_SCA_POST.nc"
-x2 <-"~/ch3_fusion/rasters/wus_marg/WUS_UCLA_SR_v01_N37_0W120_0_agg_16_WY2020_21_SWE_SCA_POST.nc.xml"
-
+t1 <-"~/ch3_fusion/rasters/wus_marg/WUS_UCLA_SR_v01_N37_0W119_0_agg_16_WY2019_20_SWE_SCA_POST.nc"
+x1 <-"~/ch3_fusion/rasters/wus_marg/WUS_UCLA_SR_v01_N37_0W119_0_agg_16_WY2019_20_SWE_SCA_POST.nc.xml"
+t2 <-"~/ch3_fusion/rasters/wus_marg/WUS_UCLA_SR_v01_N37_0W120_0_agg_16_WY2019_20_SWE_SCA_POST.nc"
+x2 <-"~/ch3_fusion/rasters/wus_marg/WUS_UCLA_SR_v01_N37_0W120_0_agg_16_WY2019_20_SWE_SCA_POST.nc.xml"
 
 # function to read in nc, geolocate, convert to rast for 1 tile
 ncdf_to_tiff <-function(nc_path, xml_path, dowy){
@@ -82,7 +79,7 @@ rast2 <-ncdf_to_tiff(nc_path = t2, xml_path = x2, dowy = dowy)
 full_rast <-merge(rast1,rast2)
 plot(full_rast[[5]])
 
-for (i in 1:length(dowy)) {
+for (i in 1:length(dowy)){
   
   dataset <-dowy[i]
   writeRaster(full_rast[[i]], paste0("~/ch3_fusion/rasters/wus_marg/uavsar_dates_swe/swe_dowy_",dataset,"_v1.tif"))
@@ -94,16 +91,16 @@ sierra <-vect("~/ch3_fusion/shapefiles/sierra_multiseg_shp_v4.gpkg")
 study_area <-crop(mask(full_rast,sierra),ext(sierra))
 plot(study_area[[4]])
 
-p1 <-study_area[[1]]-study_area[[2]]
-p2 <-study_area[[2]]-study_area[[3]]
-p3 <-study_area[[3]]-study_area[[4]]
-p4 <-study_area[[4]]-study_area[[5]]
+p1 <-study_area[[2]]-study_area[[1]]
+p2 <-study_area[[3]]-study_area[[2]]
+p3 <-study_area[[4]]-study_area[[3]]
+p4 <-study_area[[5]]-study_area[[4]]
 stack <-c(p1,p2,p3,p4)
 hist(stack,breaks=100)
 
 # save
-writeRaster(p1, "./rasters/wus_marg/pairs/p1_marg_dswe_v1.tif")
-writeRaster(p2, "./rasters/wus_marg/pairs/p2_marg_dswe_v1.tif")
-writeRaster(p3, "./rasters/wus_marg/pairs/p3_marg_dswe_v1.tif")
-writeRaster(p4, "./rasters/wus_marg/pairs/p4_marg_dswe_v1.tif")
+writeRaster(p1, "./rasters/wus_marg/pairs/p1_marg_dswe_v2.tif")
+writeRaster(p2, "./rasters/wus_marg/pairs/p2_marg_dswe_v2.tif")
+writeRaster(p3, "./rasters/wus_marg/pairs/p3_marg_dswe_v2.tif")
+writeRaster(p4, "./rasters/wus_marg/pairs/p4_marg_dswe_v2.tif")
 
