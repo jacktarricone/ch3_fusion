@@ -82,19 +82,28 @@ rast2 <-ncdf_to_tiff(nc_path = t2, xml_path = x2, dowy = dowy)
 full_rast <-merge(rast1,rast2)
 plot(full_rast[[5]])
 
+for (i in 1:length(dowy)) {
+  
+  dataset <-dowy[i]
+  writeRaster(full_rast[[i]], paste0("~/ch3_fusion/rasters/wus_marg/uavsar_dates_swe/swe_dowy_",dataset,"_v1.tif"))
+  
+}
 
+### create pairs by differencing
+sierra <-vect("~/ch3_fusion/shapefiles/sierra_multiseg_shp_v4.gpkg")
+study_area <-crop(mask(full_rast,sierra),ext(sierra))
+plot(study_area[[4]])
 
+p1 <-study_area[[1]]-study_area[[2]]
+p2 <-study_area[[2]]-study_area[[3]]
+p3 <-study_area[[3]]-study_area[[4]]
+p4 <-study_area[[4]]-study_area[[5]]
+stack <-c(p1,p2,p3,p4)
+hist(stack,breaks=100)
 
-# diff <-full_rast-full_rast2
-plot(full_rast2)
-writeRaster(full_rast2, "./rasters/wus_marg/diff2.tif")
-
-# test plot
-plot(mean_swe_rast[[160]]-mean_swe_rast[[153]])
-diff <-mean_swe_rast[[160]]-mean_swe_rast[[153]]
-
-writeRaster(diff, "swe_diff_160_153.tif")
-
-
-
+# save
+writeRaster(p1, "./rasters/wus_marg/pairs/p1_marg_dswe_v1.tif")
+writeRaster(p2, "./rasters/wus_marg/pairs/p2_marg_dswe_v1.tif")
+writeRaster(p3, "./rasters/wus_marg/pairs/p3_marg_dswe_v1.tif")
+writeRaster(p4, "./rasters/wus_marg/pairs/p4_marg_dswe_v1.tif")
 
