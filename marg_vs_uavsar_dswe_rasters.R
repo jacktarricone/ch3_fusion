@@ -44,6 +44,10 @@ theme_set(theme_classic(15))
 
 setwd("~/ch3_fusion/")
 
+# read in sierra shp
+sierra_v1 <-st_read("~/ch3_fusion/shapefiles/sierra_multiseg_shp_v4.gpkg")
+sierra_sf <-st_geometry(sierra_v1)
+
 # read in df
 p_df <-fread("./csvs/uavsar_marg_plotting_df_GOOD_v1.csv")
 uavsar_marg_df <-dplyr::filter(p_df, data != "Difference")
@@ -53,7 +57,7 @@ diff_df <-dplyr::filter(p_df, data == "Difference")
 swe_scale <-brewer.pal(9, "RdBu")
 
 dswe_both <-ggplot(uavsar_marg_df) +
-  # geom_sf(data = sierra_sf, fill = "gray50", color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
+  geom_sf(data = sierra_sf, fill = "gray50", color = "gray50", linewidth = .0001, inherit.aes = FALSE, alpha = 1) +
   geom_raster(mapping = aes(x,y, fill = dswe)) + 
   facet_grid(vars(data), vars(pair),scales = "fixed", switch = "y", ) +
   scale_fill_gradientn(colors = swe_scale, limits = c(-8,8), oob = squish, na.value = "gray50", guide = "none") + 
@@ -79,19 +83,19 @@ dswe_both <-ggplot(uavsar_marg_df) +
                                frame.colour = "black", 
                                ticks.colour = "black")) 
 
-ggsave(dswe_both,
-       file = "./plots/dswe_uavsar_marg_v2.pdf",
-       width = 8,
-       height = 12)
-
-system("open ./plots/dswe_uavsar_marg_v2.pdf")
+# ggsave(dswe_both,
+#        file = "./plots/dswe_uavsar_marg_v3.pdf",
+#        width = 8,
+#        height = 12)
+# 
+# system("open ./plots/dswe_uavsar_marg_v3.pdf")
 
 # plot diff
 # set color scale
 diff_scale <-rev(brewer.pal(9, "Spectral"))
 
 diff_p <-ggplot(diff_df) +
-  # geom_sf(data = sierra_sf, fill = "gray50", color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
+  geom_sf(data = sierra_sf, fill = "gray50", color = "gray50", linewidth = .001, inherit.aes = FALSE, alpha = 1) +
   geom_raster(mapping = aes(x,y, fill = dswe)) + 
   facet_grid(vars(data), vars(pair),scales = "fixed", switch = "y") +
   scale_fill_gradientn(colors = diff_scale, limits = c(-10,10), oob = squish, na.value = "gray50", guide = "none") + 
@@ -118,12 +122,12 @@ diff_p <-ggplot(diff_df) +
                                frame.colour = "black", 
                                ticks.colour = "black")) 
 
-ggsave(diff_p,
-       file = "./plots/diff_dswe_uavsar_marg_v1.pdf",
-       width = 8,
-       height = 4)
-
-system("open ./plots/diff_dswe_uavsar_marg_v1.pdf")
+# ggsave(diff_p,
+#        file = "./plots/diff_dswe_uavsar_marg_v1.pdf",
+#        width = 8,
+#        height = 4)
+# 
+# system("open ./plots/diff_dswe_uavsar_marg_v1.pdf")
 
 
 full <-plot_grid(dswe_both, diff_p,
@@ -133,11 +137,11 @@ full <-plot_grid(dswe_both, diff_p,
                  rel_heights = c(.66,.35))
 
 ggsave(full,
-       file = "./plots/full_dswe_uavsar_marg_v2.pdf",
+       file = "./plots/full_dswe_uavsar_marg_v3.pdf",
        width = 8,
        height = 12)
 
-system("open ./plots/full_dswe_uavsar_marg_v2.pdf")
+system("open ./plots/full_dswe_uavsar_marg_v3.pdf")
 
 ggsave(full,
        file = "./plots/full_dswe_uavsar_marg_v2.png",
