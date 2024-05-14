@@ -10,6 +10,7 @@ library(viridis)
 library(ggpubr)
 library(data.table)
 library(tidyr)
+library(dplyr)
 
 theme_classic <- function(base_size = 11, base_family = "",
                           base_line_size = base_size / 22,
@@ -50,8 +51,23 @@ sierra_sf <-st_geometry(sierra_v1)
 
 # read in df
 p_df <-fread("./csvs/uavsar_marg_plotting_df_GOOD_v2.csv")
-uavsar_marg_df <-dplyr::filter(p_df, data != "Difference")
+uavsar_marg_df <-dplyr::filter(p_df, data != "Difference") %>% filter(!is.na(dswe))
 diff_df <-dplyr::filter(p_df, data == "Difference")
+
+# pivoted_df <- uavsar_marg_df %>%
+#   pivot_wider(names_from = data, values_from = dswe) %>%
+#   filter(!is.na(UAVSAR))
+# 
+# pearson_r <- pivoted_df %>%
+#   group_by(pair) %>%
+#   summarise(
+#     r = cor(`WUS-SR`, UAVSAR, method = "pearson"),
+#     rmse = sqrt(mean((`WUS-SR` - UAVSAR)^2)),
+#     mae = mean(abs(`WUS-SR` - UAVSAR)),
+#     r_squared = cor(`WUS-SR`, UAVSAR)^2)
+# 
+# ggplot(pivoted_df, aes(x = `WUS-SR`, y = UAVSAR))+
+#   geom_point(alpha = .01)
 
 # set color scale
 swe_scale <-brewer.pal(9, "RdBu")
@@ -83,12 +99,12 @@ dswe_both <-ggplot(uavsar_marg_df) +
                                frame.colour = "black", 
                                ticks.colour = "black")) 
 
-# ggsave(dswe_both,
-#        file = "./plots/dswe_uavsar_marg_v3.pdf",
-#        width = 8,
-#        height = 12)
-# 
-# system("open ./plots/dswe_uavsar_marg_v3.pdf")
+ggsave(dswe_both,
+       file = "./plots/dswe_uavsar_marg_v4.pdf",
+       width = 8,
+       height = 12)
+
+system("open ./plots/dswe_uavsar_marg_v4.pdf")
 
 # plot diff
 # set color scale
@@ -134,19 +150,19 @@ full <-plot_grid(dswe_both, diff_p,
                  align = "v", 
                  nrow = 2, 
                  vjust = 10.5,
-                 rel_heights = c(.66,.35))
+                 rel_heights = c(.66,.319))
 
 ggsave(full,
-       file = "./plots/full_dswe_uavsar_marg_v4.pdf",
+       file = "./plots/full_dswe_uavsar_marg_v5.pdf",
        width = 8,
        height = 12)
 
-system("open ./plots/full_dswe_uavsar_marg_v4.pdf")
+system("open ./plots/full_dswe_uavsar_marg_v5.pdf")
 
-ggsave(full,
-       file = "./plots/full_dswe_uavsar_marg_v2.png",
-       width = 8,
-       height = 12,
-       dpi = 500)
-
-system("open ./plots/full_dswe_uavsar_marg_v2.png")
+# ggsave(full,
+#        file = "./plots/full_dswe_uavsar_marg_v2.png",
+#        width = 8,
+#        height = 12,
+#        dpi = 500)
+# 
+# system("open ./plots/full_dswe_uavsar_marg_v2.png")
