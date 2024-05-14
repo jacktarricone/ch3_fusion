@@ -49,7 +49,7 @@ sierra_v1 <-st_read("~/ch3_fusion/shapefiles/sierra_multiseg_shp_v4.gpkg")
 sierra_sf <-st_geometry(sierra_v1)
 
 # read in df
-p_df <-fread("./csvs/uavsar_marg_plotting_df_GOOD_v1.csv")
+p_df <-fread("./csvs/uavsar_marg_plotting_df_GOOD_v2.csv")
 uavsar_marg_df <-dplyr::filter(p_df, data != "Difference")
 diff_df <-dplyr::filter(p_df, data == "Difference")
 
@@ -137,11 +137,11 @@ full <-plot_grid(dswe_both, diff_p,
                  rel_heights = c(.66,.35))
 
 ggsave(full,
-       file = "./plots/full_dswe_uavsar_marg_v3.pdf",
+       file = "./plots/full_dswe_uavsar_marg_v4.pdf",
        width = 8,
        height = 12)
 
-system("open ./plots/full_dswe_uavsar_marg_v3.pdf")
+system("open ./plots/full_dswe_uavsar_marg_v4.pdf")
 
 ggsave(full,
        file = "./plots/full_dswe_uavsar_marg_v2.png",

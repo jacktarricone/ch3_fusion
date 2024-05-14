@@ -77,7 +77,7 @@ rast2 <-ncdf_to_tiff(nc_path = t2, xml_path = x2, dowy = dowy)
 
 # merge tiles
 full_rast <-merge(rast1,rast2)
-plot(full_rast[[5]])
+plot(full_rast)
 
 for (i in 1:length(dowy)){
   
@@ -89,18 +89,18 @@ for (i in 1:length(dowy)){
 ### create pairs by differencing
 sierra <-vect("~/ch3_fusion/shapefiles/sierra_multiseg_shp_v4.gpkg")
 study_area <-crop(mask(full_rast,sierra),ext(sierra))
-plot(study_area[[4]])
-
-p1 <-study_area[[2]]-study_area[[1]]
-p2 <-study_area[[3]]-study_area[[2]]
-p3 <-study_area[[4]]-study_area[[3]]
-p4 <-study_area[[5]]-study_area[[4]]
+study_area2 <-ifel(study_area < .005,NA,study_area)
+p1 <-study_area2[[2]]-study_area2[[1]]
+p2 <-study_area2[[3]]-study_area2[[2]]
+p3 <-study_area2[[4]]-study_area2[[3]]
+p4 <-study_area2[[5]]-study_area2[[4]]
 stack <-c(p1,p2,p3,p4)
+plot(stack)
 hist(stack,breaks=100)
 
-# save
-writeRaster(p1, "./rasters/wus_marg/pairs/p1_marg_dswe_v2.tif")
-writeRaster(p2, "./rasters/wus_marg/pairs/p2_marg_dswe_v2.tif")
-writeRaster(p3, "./rasters/wus_marg/pairs/p3_marg_dswe_v2.tif")
-writeRaster(p4, "./rasters/wus_marg/pairs/p4_marg_dswe_v2.tif")
+# # save
+writeRaster(p1, "./rasters/wus_marg/pairs/p1_marg_dswe_v4.tif")
+writeRaster(p2, "./rasters/wus_marg/pairs/p2_marg_dswe_v4.tif")
+writeRaster(p3, "./rasters/wus_marg/pairs/p3_marg_dswe_v4.tif")
+writeRaster(p4, "./rasters/wus_marg/pairs/p4_marg_dswe_v4.tif")
 
