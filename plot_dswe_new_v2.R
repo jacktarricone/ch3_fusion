@@ -290,29 +290,28 @@ dswe <-plot_grid(p1, p2, p3, p4,
 
 
 
-# full <-plot_grid(dswe, dswe_mw,
-#                  labels = c("(a)","(b)"),
-#                  label_size = 22,
-#                  align = "v", 
-#                  ncol = 2, 
-#                  vjust = 1.5,
-#                  rel_widths = c(.5,.5))
-# png
+full <-plot_grid(dswe, dswe_mw,
+                 labels = c("(a)","(b)"),
+                 label_size = 22,
+                 align = "v",
+                 ncol = 2,
+                 vjust = 1.5,
+                 rel_widths = c(.5,.5))
 
-ggsave("~/ch3_fusion/plots/fig5_dswe80m_v1.pdf",
-       width = 7,
+ggsave("~/ch3_fusion/plots/fig5_dswe_80m_mw_v1.pdf",
+       width = 13,
        height = 12,
        dpi = 300,
        units = "in")
 
-system("open ~/ch3_fusion/plots/fig5_dswe80m_v1.pdf")
+system("open ~/ch3_fusion/plots/fig5_dswe_80m_mw_v1.pdf")
 
-ggsave("~/ch3_fusion/plots/fig5_dswe80m_v1.png",
-       width = 7,
+ggsave("~/ch3_fusion/plots/fig5_dswe_80m_mw_v1.png",
+       width = 13,
        height = 12,
        dpi = 300,
        units = "in")
 
-system("open ~/ch3_fusion/plots/fig5_dswe80m_v1.png")
+system("open ~/ch3_fusion/plots/fig5_dswe_80m_mw_v1.png")
 
 

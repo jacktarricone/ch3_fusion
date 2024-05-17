@@ -47,14 +47,14 @@ marg_list <-list.files("./wus_marg/pairs/", pattern = "v4", full.names = T)
 marg_stack <-rast(marg_list)*100 # make rast in meters
 # marg_cs <-cellSize(marg_stack, unit = "m") # calc cell size in meters, it's variable
 # marg_stack_vol <-marg_stack*marg_cs # calculate volumetric swe change
-plot(marg_stack)
+# plot(marg_stack)
 
 # resample uavsar to 500m marg data
 uavsar_500_v1 <-resample(uavsar_stack, marg_stack, method = "bilinear")
 uavsar_500 <-mask(uavsar_500_v1, marg_stack)
 # uavsar_cs <-cellSize(uavsar_500, unit = "m") # calc cell size in meters, it's variable
 # uavsar_500_vol <-uavsar_500*uavsar_cs # calculate volumetric swe change
-plot(uavsar_500)
+# plot(uavsar_500)
 
 # calc diff
 diff_stack <-uavsar_500-marg_stack
@@ -125,7 +125,7 @@ p1 <-ggplot(df1, aes(y = dswe, fill = data)) +
             aes(label = paste0("\nMedian = ", sprintf("%.2f", round(med,2)), " cm",
                                "\nMean = ", round(mean, 2), " cm",
                                "\nIQR = ", sprintf("%.2f", round(iqr,2)), " cm"),
-                x = 1.2, y = 8), 
+                x = 1.2, y = 8.5), 
             hjust = 1, vjust = 1, size = 3, color = "purple2", fontface='bold') +
   geom_text(data = wus_stats, 
             aes(label = paste0(pair),x = -.8, y = 11), 
@@ -148,12 +148,12 @@ p1 <-ggplot(df1, aes(y = dswe, fill = data)) +
         plot.margin = unit(c(.25,.25, 0,.25), "cm"))
 
 ggsave(p1,
-       file = "~/ch3_fusion/plots/marg_uavsar_diff_box_v6.pdf",
+       file = "~/ch3_fusion/plots/marg_uavsar_diff_box_v7.pdf",
        width = 9, 
-       height = 4,
+       height = 3.5,
        units = "in",
        dpi = 500) 
 
-system("open ~/ch3_fusion/plots/marg_uavsar_diff_box_v6.pdf")
+system("open ~/ch3_fusion/plots/marg_uavsar_diff_box_v7.pdf")
 
 

@@ -53,29 +53,21 @@ sierra_sf <-st_geometry(sierra_v1)
 p_df <-fread("./csvs/uavsar_marg_plotting_df_GOOD_v2.csv")
 uavsar_marg_df <-dplyr::filter(p_df, data != "Difference") %>% filter(!is.na(dswe))
 diff_df <-dplyr::filter(p_df, data == "Difference")
+head(p_df)
 
-# pivoted_df <- uavsar_marg_df %>%
-#   pivot_wider(names_from = data, values_from = dswe) %>%
-#   filter(!is.na(UAVSAR))
-# 
-# pearson_r <- pivoted_df %>%
-#   group_by(pair) %>%
-#   summarise(
-#     r = cor(`WUS-SR`, UAVSAR, method = "pearson"),
-#     rmse = sqrt(mean((`WUS-SR` - UAVSAR)^2)),
-#     mae = mean(abs(`WUS-SR` - UAVSAR)),
-#     r_squared = cor(`WUS-SR`, UAVSAR)^2)
-# 
-# ggplot(pivoted_df, aes(x = `WUS-SR`, y = UAVSAR))+
-#   geom_point(alpha = .01)
+# filter for p1
+uavsar_p1 <-filter(p_df, data == "WUS-SR" & pair == "P1")
+marg_p1 <-filter(p_df, data == "UAVSAR" & pair == "P1")
+join <-bind_rows(uavsar_p1, marg_p1)
+diff_p1 <-filter(diff_df, pair == "P1")
 
 # set color scale
 swe_scale <-brewer.pal(9, "RdBu")
 
-dswe_both <-ggplot(uavsar_marg_df) +
+dswe_both <-ggplot(join) +
   geom_sf(data = sierra_sf, fill = "gray50", color = "gray50", linewidth = .0001, inherit.aes = FALSE, alpha = 1) +
   geom_raster(mapping = aes(x,y, fill = dswe)) + 
-  facet_grid(vars(data), vars(pair),scales = "fixed", switch = "y", ) +
+  facet_wrap(vars(data),scales = "fixed") +
   scale_fill_gradientn(colors = swe_scale, limits = c(-8,8), oob = squish, na.value = "gray50", guide = "none") + 
   labs(fill = expression(atop(Delta~SWE,(cm))))+
   theme(panel.border = element_blank(),
@@ -94,29 +86,33 @@ dswe_both <-ggplot(uavsar_marg_df) +
                                label.position = 'right',
                                title.position ='top',
                                title.hjust = .5,
+                               title.vjust = 2,
                                barwidth = 1,
-                               barheight = 27,
+                               barheight = 20,
                                frame.colour = "black", 
                                ticks.colour = "black")) 
+dswe_both
 
-ggsave(dswe_both,
-       file = "./plots/dswe_uavsar_marg_v4.pdf",
-       width = 8,
-       height = 12)
-
-system("open ./plots/dswe_uavsar_marg_v4.pdf")
+# ggsave(dswe_both,
+#        file = "./plots/dswe_uavsar_marg_v4.pdf",
+#        width = 8,
+#        height = 12)
+# 
+# system("open ./plots/dswe_uavsar_marg_v4.pdf")
 
 # plot diff
 # set color scale
 diff_scale <-rev(brewer.pal(9, "Spectral"))
 
-diff_p <-ggplot(diff_df) +
+diff_p <-ggplot(diff_p1) +
   geom_sf(data = sierra_sf, fill = "gray50", color = "gray50", linewidth = .001, inherit.aes = FALSE, alpha = 1) +
   geom_raster(mapping = aes(x,y, fill = dswe)) + 
-  facet_grid(vars(data), vars(pair),scales = "fixed", switch = "y") +
+  # facet_wrap(vars(pair), scales = "fixed") +
   scale_fill_gradientn(colors = diff_scale, limits = c(-10,10), oob = squish, na.value = "gray50", guide = "none") + 
-  labs(fill = "(cm)")+
+  labs(fill = expression(atop(Delta~SWE~Diff,(cm))), title = 'Difference')+
   theme(panel.border = element_blank(),
+        plot.title = element_text(margin=margin(b = 0, unit = "pt"), 
+                                  face = "bold", size = 13, hjust = .4),
         axis.text.x = element_blank(),
         axis.title.y = element_blank(),
         axis.title.x = element_blank(),
@@ -133,31 +129,27 @@ diff_p <-ggplot(diff_df) +
                                label.position = 'right',
                                title.position ='top',
                                title.hjust = .5,
+                               title.vjust = 2,
                                barwidth = 1,
-                               barheight = 13,
+                               barheight = 20,
                                frame.colour = "black", 
                                ticks.colour = "black")) 
 
-# ggsave(diff_p,
-#        file = "./plots/diff_dswe_uavsar_marg_v1.pdf",
-#        width = 8,
-#        height = 4)
-# 
-# system("open ./plots/diff_dswe_uavsar_marg_v1.pdf")
-
+# diff_p
 
 full <-plot_grid(dswe_both, diff_p,
-                 align = "v", 
-                 nrow = 2, 
+                 align = "h", 
+                 ncol = 2, 
                  vjust = 10.5,
-                 rel_heights = c(.66,.319))
+                 rel_widths = c(.66,.43))
 
+# full
 ggsave(full,
-       file = "./plots/full_dswe_uavsar_marg_v5.pdf",
+       file = "./plots/full_dswe_uavsar_marg_v6.pdf",
        width = 8,
-       height = 12)
+       height = 6)
 
-system("open ./plots/full_dswe_uavsar_marg_v5.pdf")
+system("open ./plots/full_dswe_uavsar_marg_v6.pdf")
 
 # ggsave(full,
 #        file = "./plots/full_dswe_uavsar_marg_v2.png",
@@ -166,3 +158,20 @@ system("open ./plots/full_dswe_uavsar_marg_v5.pdf")
 #        dpi = 500)
 # 
 # system("open ./plots/full_dswe_uavsar_marg_v2.png")
+
+
+
+# pivoted_df <- uavsar_marg_df %>%
+#   pivot_wider(names_from = data, values_from = dswe) %>%
+#   filter(!is.na(UAVSAR))
+# 
+# pearson_r <- pivoted_df %>%
+#   group_by(pair) %>%
+#   summarise(
+#     r = cor(`WUS-SR`, UAVSAR, method = "pearson"),
+#     rmse = sqrt(mean((`WUS-SR` - UAVSAR)^2)),
+#     mae = mean(abs(`WUS-SR` - UAVSAR)),
+#     r_squared = cor(`WUS-SR`, UAVSAR)^2)
+# 
+# ggplot(pivoted_df, aes(x = `WUS-SR`, y = UAVSAR))+
+#   geom_point(alpha = .01)
