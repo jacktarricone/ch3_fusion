@@ -101,11 +101,29 @@ summary_stats <- df1 %>%
             iqr = IQR(dswe, na.rm = T),
             med = median(dswe, na.rm = T))
 
+summary_stats
+
+# Compute the differences
+differences <- summary_stats %>%
+  pivot_wider(names_from = data, values_from = c(mean, iqr, med)) %>%
+  mutate(
+    mean_diff = `mean_WUS-SR` - mean_UAVSAR,
+    iqr_diff = `iqr_WUS-SR` - iqr_UAVSAR,
+    med_diff = `med_WUS-SR` - med_UAVSAR,
+  ) %>%
+  select(pair, mean_diff, iqr_diff, med_diff)
+
+# Print the differences
+print(differences)
+
 # filter
 uav_stats <-filter(summary_stats, data == "UAVSAR")
 wus_stats <-filter(summary_stats, data == "WUS-SR")
 
 round(summary_stats$iqr,2)
+
+mean_med <-round(mean(differences$med_diff[1:3]),2)
+mean_med
 
 # plot
 p1 <-ggplot(df1, aes(y = dswe, fill = data)) +
