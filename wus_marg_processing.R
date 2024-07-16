@@ -89,18 +89,32 @@ for (i in 1:length(dowy)){
 ### create pairs by differencing
 sierra <-vect("~/ch3_fusion/shapefiles/sierra_multiseg_shp_v4.gpkg")
 study_area <-crop(mask(full_rast,sierra),ext(sierra))
-study_area2 <-ifel(study_area < .005,NA,study_area)
-p1 <-study_area2[[2]]-study_area2[[1]]
-p2 <-study_area2[[3]]-study_area2[[2]]
-p3 <-study_area2[[4]]-study_area2[[3]]
-p4 <-study_area2[[5]]-study_area2[[4]]
+# study_area2 <-ifel(study_area < .005,NA,study_area)
+p1 <-study_area[[2]]-study_area[[1]]
+p2 <-study_area[[3]]-study_area[[2]]
+p3 <-study_area[[4]]-study_area[[3]]
+p4 <-study_area[[5]]-study_area[[4]]
+
+# bring in viirs data
+v_p1 <-rast("./rasters/new_optical/p1_80m_20200131_20200212/viirs_0212_80m.tif")
+v_p2 <-rast("./rasters/new_optical/p2_80m_20200212_20200219/viirs_0219_80m.tif")
+v_p3 <-rast("./rasters/new_optical/p3_80m_20200219_20200226/viirs_0226_80m.tif")
+v_p4 <-rast("./rasters/new_optical/p4_80m_20200226_20200311/viirs_0311_80m.tif")
+
+# stack and resampe
+v_stack <-c(v_p1,v_p2,v_p3,v_p4)
+v_resamp <-resample(v_stack, p1)
+plot(v_resamp)
+
+# bring in viirs data
 stack <-c(p1,p2,p3,p4)
-plot(stack)
+masked_stack <-mask(stack, v_resamp)
+plot(masked_stack)
 hist(stack,breaks=100)
 
 # # save
-writeRaster(p1, "./rasters/wus_marg/pairs/p1_marg_dswe_v4.tif")
-writeRaster(p2, "./rasters/wus_marg/pairs/p2_marg_dswe_v4.tif")
-writeRaster(p3, "./rasters/wus_marg/pairs/p3_marg_dswe_v4.tif")
-writeRaster(p4, "./rasters/wus_marg/pairs/p4_marg_dswe_v4.tif")
+writeRaster(masked_stack[[1]], "./rasters/wus_marg/pairs/p1_marg_dswe_v5.tif")
+writeRaster(masked_stack[[2]], "./rasters/wus_marg/pairs/p2_marg_dswe_v5.tif")
+writeRaster(masked_stack[[3]], "./rasters/wus_marg/pairs/p3_marg_dswe_v5.tif")
+writeRaster(masked_stack[[4]], "./rasters/wus_marg/pairs/p4_marg_dswe_v5.tif")
 

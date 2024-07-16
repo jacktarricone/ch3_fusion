@@ -60,6 +60,12 @@ uavsar_p1 <-filter(p_df, data == "WUS-SR" & pair == "P1")
 marg_p1 <-filter(p_df, data == "UAVSAR" & pair == "P1")
 join <-bind_rows(uavsar_p1, marg_p1)
 diff_p1 <-filter(diff_df, pair == "P1")
+hist(diff_p1$dswe, breaks = 100)
+min(diff_p1$dswe, na.rm = T)
+max(diff_p1$dswe, na.rm = T)
+median(diff_p1$dswe, na.rm = T)
+mean(diff_p1$dswe, na.rm = T)
+quantile(diff_p1$dswe, c(.05, .5, .95), na.rm = T) 
 
 # set color scale
 swe_scale <-brewer.pal(9, "RdBu")
