@@ -88,12 +88,6 @@ p4_iqr <-app(p4_stack, fun = iqr_na_rm)
 p4_df <-as.data.frame(p4_iqr, xy = TRUE)
 p4_df$pair <-rep("(d) P4", nrow(p4_df))
 
-
-# bind for facet plotting
-plotting_df <-rbind(p1_df,p2_df,p3_df,p4_df)
-hist(plotting_df$lyr.1)
-max(plotting_df$lyr.1)
-
 # means
 mean(p1_df$lyr.1)
 mean(p2_df$lyr.1)
@@ -107,7 +101,7 @@ max(p4_df$lyr.1)
 
 # add bins col for box plot
 df_v3 <-cc_df  %>%
-  mutate(bin = cut(cc_mean, c(0,5,10,15,20,25,30,35,40,45,50,55,60)))
+  mutate(bin = cut(focal_mean, c(0,5,10,15,20,25,30,35,40,45,50,55,60)))
 
 # join cc
 p1_df2 <-full_join(p1_df, df_v3, by = c("x","y"))
@@ -118,31 +112,19 @@ p4_df2 <-full_join(p4_df, df_v3, by = c("x","y"))
 # combine
 plotting_df <-bind_rows(p1_df2, p2_df2, p3_df2, p4_df2)
 plotting_df_v2 <-na.omit(plotting_df)
-colnames(plotting_df_v2)[3] <-"sd"
+colnames(plotting_df_v2)[3] <-"iqr"
 head(plotting_df_v2)
-hist(plotting_df_v2$sd)
+hist(plotting_df_v2$iqr, breaks = 100)
 
-# cc scale
-cc_scale <-colorRampPalette(c("#f7fcf5", "green4"))
-cc_scale(13)
-
-f_labels <- data.frame(
-  pair = c("P1", "P2" ,"P3", "P4"),
-  label = c("(a) P1", "(b) P2" ,"(c) P3", "(d) P4"),
-  bin = c('(5,10]','(5,10]','(5,10]','(5,10]'),
-  y = c(110, 110, 110, 110))
-
-unique(plotting_df_v2$pair)
 # starting plot
-### gains
-p1_p <-ggplot(plotting_df_v2, mapping = aes(x = cc_mean, y = sd, fill = as.factor(bin))) +
+p1_p <-ggplot(plotting_df_v2, mapping = aes(x = focal_mean, y = iqr, fill = as.factor(bin))) +
   geom_boxplot(linewidth = .3, varwidth = TRUE, outlier.size = .001, outlier.shape = 4, 
                outlier.colour = "red", outlier.alpha  = .01, fatten = 2) +
   scale_fill_discrete(type = rep("gray90",12)) +
-  facet_wrap(~pair, scales = "fixed", nrow = 4)+
-  xlab("CC (%)") + ylab(expression(sigma[Delta~SWE]~(m^3)))+ 
+  facet_wrap(~pair, scales = "fixed", nrow = 4) +
+  xlab("CC (%)") + ylab(expression(IQR~(m^3)))+
   scale_x_continuous(limits = c(0,55), breaks = c(0,5,10,15,20,25,30,35,40,45,50,55), expand = c(0,.5)) +
-  scale_y_continuous(limits = c(0,120)) +
+  scale_y_continuous(limits = c(0,100)) +
   theme_classic(13) +
   theme(panel.border = element_rect(colour = "black", fill = NA, size = 1),
         legend.position = "none",
@@ -151,17 +133,27 @@ p1_p <-ggplot(plotting_df_v2, mapping = aes(x = cc_mean, y = sd, fill = as.facto
         legend.box.background = element_rect(colour = "black"), 
         strip.text.x = element_blank())
 
+p1_p
+
+# create labels
+f_labels <- data.frame(
+  label = c("(a) P1", "(b) P2" ,"(c) P3", "(d) P4"),
+  pair = c("(a) P1", "(b) P2" ,"(c) P3", "(d) P4"),
+  bin = c(5,5,5,5),
+  y = c(110, 110, 110, 110))
+
 # this works!!
-p2 <- p1_p + geom_text(data = f_labels, aes(x = 5, y = y, label = label), size = 5)
+p2 <- p1_p + geom_text(data = f_labels, aes(x = bin, y = y, label = label), size = 5) 
+p2
 
 # test save
 # make tighter together
 ggsave(p2,
-       file = "~/ch3_fusion/plots/fig8_cc_vs_sd_boxplot_v11.pdf",
+       file = "~/ch3_fusion/plots/fig8_cc_vs_sd_boxplot_v12.pdf",
        width = 4,
        height = 5.5)
 
-system("open ~/ch3_fusion/plots/fig8_cc_vs_sd_boxplot_v11.pdf")
+system("open ~/ch3_fusion/plots/fig8_cc_vs_sd_boxplot_v12.pdf")
 
 
 ### numbers for results section

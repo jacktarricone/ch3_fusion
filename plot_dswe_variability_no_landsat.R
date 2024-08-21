@@ -95,6 +95,7 @@ p4_df$pair <-rep("(d) P4", nrow(p4_df))
 # bind for facet plotting
 plotting_df <-rbind(p1_df,p2_df,p3_df,p4_df)
 hist(plotting_df$lyr.1)
+max(plotting_df$lyr.1)
 
 # set scolor scale
 scale1 <-c(viridis(10, option = "H", direction = 1))
@@ -107,8 +108,8 @@ p1_p <-ggplot(plotting_df) +
   geom_sf(data = sierra_sf, fill = "gray80", color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
   geom_raster(mapping = aes(x,y, fill = lyr.1)) + 
   facet_wrap(vars(pair), scales = "fixed", dir = "h", strip.position = "top", nrow = 1) +
-  scale_fill_gradientn(colors = scale1, limits = c(0,100), oob = squish) + # max of color bar so it saturates
-  labs(fill = expression(sigma[Delta~SWE]~(m^3))) +
+  scale_fill_gradientn(colors = scale1, limits = c(0,150), oob = squish) + # max of color bar so it saturates
+  labs(fill = expression(IQR~(m^3))) +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
         axis.title.y = element_blank(),
@@ -183,10 +184,10 @@ cow <-plot_grid(p1_p, cc,
 # test save
 # make tighter together
 ggsave(cow,
-       file = "~/ch3_fusion/plots/fig7_sd_vs_cc_plot_v8.pdf",
+       file = "~/ch3_fusion/plots/fig7_sd_vs_cc_plot_v9.pdf",
        width = 13, 
        height = 9,
        dpi = 300)
 
-system("open ~/ch3_fusion/plots/fig7_sd_vs_cc_plot_v8.pdf")
+system("open ~/ch3_fusion/plots/fig7_sd_vs_cc_plot_v9.pdf")
 
