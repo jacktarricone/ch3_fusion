@@ -166,12 +166,12 @@ p1 <-ggplot(df1, aes(y = dswe, fill = data)) +
         plot.margin = unit(c(.25,.25, 0,.25), "cm"))
 
 ggsave(p1,
-       file = "~/ch3_fusion/plots/marg_uavsar_diff_box_v8.pdf",
+       file = "~/ch3_fusion/plots/fig11_marg_uavsar_diff_box_v8.pdf",
        width = 9, 
        height = 3.5,
        units = "in",
        dpi = 500) 
 
-system("open ~/ch3_fusion/plots/marg_uavsar_diff_box_v8.pdf")
+system("open ~/ch3_fusion/plots/fig11_marg_uavsar_diff_box_v8.pdf")
 
 

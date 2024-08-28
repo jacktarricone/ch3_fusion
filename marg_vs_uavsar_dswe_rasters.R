@@ -49,8 +49,9 @@ setwd("~/ch3_fusion/")
 sierra_v1 <-st_read("~/ch3_fusion/shapefiles/sierra_multiseg_shp_v4.gpkg")
 sierra_sf <-st_geometry(sierra_v1)
 
-# read in df
-p_df <-fread("./csvs/uavsar_marg_plotting_df_GOOD_v2.csv")
+# # read in df
+p_df <-fread("./csvs/uavsar_marg_plotting_df_volume_v3.csv")
+head(p_df)
 uavsar_marg_df <-dplyr::filter(p_df, data != "Difference") %>% filter(!is.na(dswe))
 diff_df <-dplyr::filter(p_df, data == "Difference")
 head(p_df)
@@ -65,7 +66,7 @@ min(diff_p1$dswe, na.rm = T)
 max(diff_p1$dswe, na.rm = T)
 median(diff_p1$dswe, na.rm = T)
 mean(diff_p1$dswe, na.rm = T)
-quantile(diff_p1$dswe, c(.05, .5, .95), na.rm = T) 
+quantile(diff_p1$dswe, c(.05, .5, .95), na.rm = T)
 
 # set color scale
 swe_scale <-brewer.pal(9, "RdBu")
@@ -115,7 +116,7 @@ diff_p <-ggplot(diff_p1) +
   geom_raster(mapping = aes(x,y, fill = dswe)) + 
   # facet_wrap(vars(pair), scales = "fixed") +
   scale_fill_gradientn(colors = diff_scale, limits = c(-10,10), oob = squish, na.value = "gray50", guide = "none") + 
-  labs(fill = expression(atop(Delta~SWE~Diff,(cm))), title = 'Difference')+
+  labs(fill = expression(atop(Delta~SWE~Diff,(cm))), title = 'Difference (UAVSAR - WUS-SR)')+
   theme(panel.border = element_blank(),
         plot.title = element_text(margin=margin(b = 0, unit = "pt"), 
                                   face = "bold", size = 13, hjust = .4),
@@ -137,7 +138,7 @@ diff_p <-ggplot(diff_p1) +
                                title.hjust = .5,
                                title.vjust = 2,
                                barwidth = 1,
-                               barheight = 20,
+                               barheight = 21,
                                frame.colour = "black", 
                                ticks.colour = "black")) 
 
@@ -151,11 +152,11 @@ full <-plot_grid(dswe_both, diff_p,
 
 # full
 ggsave(full,
-       file = "./plots/full_dswe_uavsar_marg_v6.pdf",
+       file = "./plots/fig10_p1_dswe_uavsar_marg_v7.pdf",
        width = 8,
        height = 6)
 
-system("open ./plots/full_dswe_uavsar_marg_v6.pdf")
+system("open ./plots/fig10_p1_dswe_uavsar_marg_v7.pdf")
 
 # ggsave(full,
 #        file = "./plots/full_dswe_uavsar_marg_v2.png",
