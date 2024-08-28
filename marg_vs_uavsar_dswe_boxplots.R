@@ -88,11 +88,14 @@ diff_long <- diff_df %>%
                names_to = "pair",
                values_to = "dswe")
 
+max(diff_long$dswe, na.rm = T)
+min(diff_long$dswe, na.rm = T)
+
 # bind together
 df1 <-bind_rows(marg_long,uavsar_long)
 df <-bind_rows(df1,diff_long)
 head(df)
-data.table::fwrite(df, "~/ch3_fusion/csvs/uavsar_marg_plotting_df_volume_v3.csv")
+# data.table::fwrite(df, "~/ch3_fusion/csvs/uavsar_marg_plotting_df_volume_v3.csv")
 
 # Calculate mean, median, and standard deviation for UAVSAR and WUS-SR
 summary_stats <- df1 %>%
