@@ -119,7 +119,7 @@ hist(plotting_df_v2$iqr, breaks = 100)
 # starting plot
 p1_p <-ggplot(plotting_df_v2, mapping = aes(x = focal_mean, y = iqr, fill = as.factor(bin))) +
   geom_boxplot(linewidth = .3, varwidth = TRUE, outlier.size = .001, outlier.shape = 4, 
-               outlier.colour = "red", outlier.alpha  = .01, fatten = 2) +
+               outlier.colour = "red", outlier.alpha  = .01, fatten = 1) +
   scale_fill_discrete(type = rep("gray90",12)) +
   facet_wrap(~pair, scales = "fixed", nrow = 4) +
   xlab("CC (%)") + ylab(expression(IQR~(m^3)))+
@@ -132,8 +132,6 @@ p1_p <-ggplot(plotting_df_v2, mapping = aes(x = focal_mean, y = iqr, fill = as.f
         legend.margin = margin(-5,1,1,1),
         legend.box.background = element_rect(colour = "black"), 
         strip.text.x = element_blank())
-
-p1_p
 
 # create labels
 f_labels <- data.frame(
@@ -149,11 +147,11 @@ p2
 # test save
 # make tighter together
 ggsave(p2,
-       file = "~/ch3_fusion/plots/fig8_cc_vs_sd_boxplot_v12.pdf",
+       file = "~/ch3_fusion/plots/fig8_cc_vs_sd_boxplot_v13.pdf",
        width = 4,
        height = 5.5)
 
-system("open ~/ch3_fusion/plots/fig8_cc_vs_sd_boxplot_v12.pdf")
+system("open ~/ch3_fusion/plots/fig8_cc_vs_sd_boxplot_v13.pdf")
 
 
 ### numbers for results section
