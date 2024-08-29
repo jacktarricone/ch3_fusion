@@ -39,6 +39,9 @@ unw_landsat <-mask(unw, stack_50[[6]], maskvalue = NA)
 
 # stack phase data
 unw_stack <-c(unw_ims,unw_modscag,unw_modis,unw_viirs,unw_flm,unw_landsat)
+# unw_stack2 <-c(unw,unw_stack)
+# unw_stack2
+# writeRaster(unw_stack2, "./new_uavsar/p4_phase_stack.tif")
 
 # import leinss swe change function
 devtools::source_url("https://raw.githubusercontent.com/jacktarricone/jemez_zenodo/main/insar_swe_functions.R")

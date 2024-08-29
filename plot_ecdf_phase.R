@@ -40,32 +40,9 @@ theme_set(theme_classic(16))
 
 setwd("~/ch3_fusion/rasters")
 
-# load in dswe data no mask
-no_mask_stack <-rast(list.files('./wus_marg/pairs', pattern = 'uavsar', full.names = T))
-no_mask_stack
-
-# calculate average cell area in cubic meters
-cell_size_rast_m2 <-cellSize(no_mask_stack, unit = "m")
-cell_size_rast_m2
-
-########## p1
-# 41 x 41 moving window sum in cubic meters
-# convert to cubic meters
-
-
-##################### UPDATE FOR ROSS AND CSV AND PLOTS
-no_mask_m3 <-no_mask_stack * cell_size_rast_m2
-
-# apply moving window
-no_mask_mw_v1 <-focal(no_mask_m3, c(41,41), na.rm=TRUE, fun = "sum")
-no_mask_mw <-(no_mask_mw_v1/(41*41))/100 # divide by 100 to convert to meters
-no_mask_mw
-p1_stack
 
 # load in 41x41 dswe products
-p1_stack_v1 <-rast(list.files("./dswe_variabilty_analysis/p1", pattern = ".tif", full.names = T))
-p1_stack <-c(p1_stack_v1, no_mask_mw[[1]])
-names(p1_stack) <-c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS","No Mask")
+p1_stack <-rast("./new_uavsar/p1_phase_stack2.tif")
 
 p2_stack_v1 <-rast(list.files("./dswe_variabilty_analysis/p2", pattern = ".tif", full.names = T))
 p2_stack <-c(p2_stack_v1, no_mask_mw[[2]])

@@ -10,7 +10,38 @@ setwd("~/ch3_fusion/rasters/")
 
 ## bring in inc
 unw <-rast("./new_uavsar/p1_80m/p1_14d_VV_unw_80m.tif")
+cor <-rast("./new_uavsar/p1_80m/p1_14d_VV_coh_80m.tif")
 inc <-rast("./new_uavsar/inc_80m.tif")
+
+# bring masked unwrapped phase rastesr
+ims <-rast("./new_optical/p1_80m_20200131_20200212/ims_0212_80m.tif")
+modscag <-rast("./new_optical/p1_80m_20200131_20200212/modscag_0212_80m.tif")
+modis <-rast("./new_optical/p1_80m_20200131_20200212/modis_0212_80m.tif")
+viirs <-rast("./new_optical/p1_80m_20200131_20200212/viirs_0212_80m.tif")
+flm <-rast("./new_optical/p1_80m_20200131_20200212/flm_0212_80m.tif")
+landsat <-rast("./new_optical/p1_80m_20200131_20200212/landsat_fsca_80m_20200201.tif")
+
+# stack
+stack <-c(ims,modscag,modis,viirs,flm,landsat)
+
+# mask pixels below 50% fsca
+stack_50 <-ifel(stack <= 50, NA, stack)
+plot(stack_50)
+
+# bring masked unwrapped phase rastesr
+unw_ims <-mask(unw, stack_50[[1]], maskvalue = NA)
+unw_modscag <-mask(unw, stack_50[[2]], maskvalue = NA)
+unw_modis <-mask(unw, stack_50[[3]], maskvalue = NA)
+unw_viirs <-mask(unw, stack_50[[4]], maskvalue = NA)
+unw_flm <-mask(unw, stack_50[[5]], maskvalue = NA)
+unw_landsat <-mask(unw, stack_50[[6]], maskvalue = NA)
+
+# stack phase data
+unw_stack <-c(unw_ims,unw_modis,unw_viirs,unw_modscag,unw_landsat,unw_flm)
+unw_stack2 <-c(unw,unw_stack)
+names(unw_stack2) <-c("No Mask","IMS","MODIS","VIIRS","STC","Landsat","FLM")
+unw_stack2
+writeRaster(unw_stack2, "./new_uavsar/p1_phase_stack2.tif")
 
 # import leinss swe change function
 devtools::source_url("https://raw.githubusercontent.com/jacktarricone/jemez_zenodo/main/insar_swe_functions.R")
