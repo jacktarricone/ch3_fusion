@@ -119,19 +119,23 @@ plot_colors <-brewer.pal(6, "Spectral")
 
 # plot
 ecdf <-ggplot()+
-  stat_ecdf(plotting_df, mapping = aes(x=value, color = data_set), linewidth=.8) +
+  stat_ecdf(plotting_df, mapping = aes(x=value, color = data_set), linewidth=.6) +
   scale_colour_manual(name = "Snow cover data",
-                      labels = c("IMS","MODSCAG","MODIS", "VIIRS","FLM","Landsat"),
-                      values = c("#D53E4F","#FC8D59",'#99D594','#3288BD','#FEE08B','purple','black'),
-                      breaks = c("IMS","MODSCAG","MODIS", "VIIRS","FLM","Landsat", "No Mask"))+ 
+                     # labels = c("IMS","MODSCAG","MODIS","VIIRS","FLM","Landsat", "No Mask"),
+                      values = c("#D53E4F" = "IMS",
+                                 "#FC8D59" = "MODSCAG",
+                                 '#99D594' = "MODIS",
+                                 '#3288BD' = "VIIRS",
+                                 '#FEE08B' = "FLM",
+                                 'purple'  = "Landsat",
+                                 "black"   = "No Mask"),
+                      breaks = c("No Mask","IMS","MODSCAG","MODIS","VIIRS","FLM","Landsat"))+ 
   facet_wrap( ~pair )+
-  scale_x_continuous(limits = c(-500,500), 
-                     breaks = seq(-500,500,100), 
-                     expand = c(0,.2)) + 
   ylab("Cumulative Distribution") +
-  xlab(expression(Delta~SWE~(m^3)))+
-  scale_y_continuous(expand = c(0,.03), limits = c(0,1)) +
-  theme(legend.position = c(.13,.25)) +
+  xlab(expression(Delta~SWE~(10^2~ m^3)))+
+  scale_x_continuous(expand = c(.01,0)) +
+  scale_y_continuous(expand = c(.01,0), limits = c(0,1)) +
+  theme(legend.position = c(.38,.25)) +
   theme(panel.border = element_rect(colour = "black", fill = NA, linewidth = 1),
         legend.title = element_blank(),
         legend.margin = margin(-5,1,1,1),
@@ -142,9 +146,9 @@ ecdf <-ggplot()+
 # test save
 # make tighter together
 ggsave(ecdf,
-       file = "~/ch3_fusion/plots/ecdf_v4.png",
+       file = "~/ch3_fusion/plots/ecdf_v5.png",
        width = 8, 
        height = 6,
        dpi = 150)
   
-system("open ~/ch3_fusion/plots/ecdf_v4.png")
+system("open ~/ch3_fusion/plots/ecdf_v5.png")
