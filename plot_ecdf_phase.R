@@ -42,45 +42,46 @@ setwd("~/ch3_fusion/rasters")
 
 
 # load in 41x41 dswe products
-p1_stack <-rast("./new_uavsar/p1_phase_stack2.tif")
+p1_stack_raw <-rast("./new_uavsar/p1_phase_stack2.tif")
+df1 <-global(p1_stack_raw, mean, na.rm = T)
+p1_stack <-p1_stack1 - mean(df1$mean)
+plot(p1_stack_raw)
 
-p2_stack_v1 <-rast(list.files("./dswe_variabilty_analysis/p2", pattern = ".tif", full.names = T))
-p2_stack <-c(p2_stack_v1, no_mask_mw[[2]])
-names(p2_stack) <-c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS","No Mask")
+p2_stack_raw <-rast("./new_uavsar/p2_phase_stack2.tif")
+df2 <-global(p2_stack_raw, mean, na.rm = T)
+p2_stack <-p2_stack_raw - mean(df2$mean)
 
+p3_stack_raw <-rast("./new_uavsar/p3_phase_stack2.tif")
+df3 <-global(p3_stack_raw, mean, na.rm = T)
+p3_stack <-p3_stack_raw - mean(df3$mean)
 
-p3_stack_v1 <-rast(list.files("./dswe_variabilty_analysis/p3", pattern = ".tif", full.names = T))
-p3_stack <-c(p3_stack_v1, no_mask_mw[[3]])
-names(p3_stack) <-c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS", "No Mask")
-
-p4_stack_v1 <-rast(list.files("./dswe_variabilty_analysis/p4", pattern = ".tif", full.names = T))
-p4_stack <-c(p4_stack_v1, no_mask_mw[[4]])
-names(p4_stack) <-c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS", "No Mask")
-
+p4_stack_raw <-rast("./new_uavsar/p4_phase_stack2.tif")
+df4 <-global(p4_stack_raw, mean, na.rm = T)
+p4_stack <-p4_stack_raw - mean(df4$mean)
 
 ### format data.frames for plotting
 p1_df <-as.data.frame(p1_stack, xy = TRUE)
 p1_df$pair <-rep("p1", nrow(p1_df))
 p1_df_l <-pivot_longer(p1_df, 
-                       cols = c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS","No Mask"),
+                       cols = c("FLM","IMS","Landsat","MODIS","STC","VIIRS","No Mask"),
                        names_to = c("data_set"))
 
 p2_df <-as.data.frame(p2_stack, xy = TRUE)
 p2_df$pair <-rep("p2", nrow(p2_df))
 p2_df_l <-pivot_longer(p2_df, 
-                       cols = c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS","No Mask"),
+                       cols = c("FLM","IMS","Landsat","MODIS","STC","VIIRS","No Mask"),
                        names_to = c("data_set"))
 
 p3_df <-as.data.frame(p3_stack, xy = TRUE)
 p3_df$pair <-rep("p3", nrow(p3_df))
 p3_df_l <-pivot_longer(p3_df, 
-                       cols = c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS","No Mask"),
+                       cols = c("FLM","IMS","Landsat","MODIS","STC","VIIRS","No Mask"),
                        names_to = c("data_set"))
 
 p4_df <-as.data.frame(p4_stack, xy = TRUE)
 p4_df$pair <-rep("p4", nrow(p4_df))
 p4_df_l <-pivot_longer(p4_df, 
-                       cols = c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS","No Mask"),
+                       cols = c("FLM","IMS","Landsat","MODIS","STC","VIIRS","No Mask"),
                        names_to = c("data_set"))
 
 
@@ -93,26 +94,26 @@ head(plotting_df)
 # display.brewer.all()
 plot_colors <-brewer.pal(6, "Spectral")
 # "#D53E4F" "#FC8D59" "#FEE08B" "#E6F598" "#99D594" "#3288BD"
-unique(plotting_df$d)
+hist(plotting_df$value, breaks = 100)
 
 # plot
 ecdf <-ggplot()+
   stat_ecdf(plotting_df, mapping = aes(x=value, color = data_set), linewidth=.5) +
   scale_colour_manual(name = "Snow cover data",
-                     # labels = c("IMS","MODSCAG","MODIS","VIIRS","FLM","Landsat", "No Mask"),
+                     # labels = c("IMS","STC","MODIS","VIIRS","FLM","Landsat", "No Mask"),
                       values = c("IMS" = "#D53E4F",
-                                 "MODSCAG" = "#FC8D59",
+                                 "STC" = "#FC8D59",
                                  "MODIS" = '#99D594',
                                  "VIIRS" = '#3288BD',
                                  "FLM" = '#FEE08B',
                                  "Landsat" = 'purple',
                                  "No Mask" = "black"),
-                      breaks = c("No Mask","IMS","MODSCAG","MODIS","VIIRS","FLM","Landsat"))+ 
-  facet_wrap( ~pair )+
+                      breaks = c("No Mask","IMS","STC","MODIS","VIIRS","FLM","Landsat"))+ 
+  facet_wrap( ~pair , scales = 'free')+
   ylab("Cumulative Distribution") +
-  xlab(expression(Delta~SWE~(10^2~ m^3)))+
-  scale_x_continuous(expand = c(.01,0)) +
-  scale_y_continuous(expand = c(.01,0), limits = c(0,1)) +
+  xlab("Phase (rad)")+
+  scale_y_continuous(expand = c(.01,0)) +
+  scale_x_continuous(limits = c(-2,2)) +
   theme(legend.position = c(.38,.25)) +
   theme(panel.border = element_rect(colour = "black", fill = NA, linewidth = 1),
         legend.title = element_blank(),
@@ -127,7 +128,7 @@ head(plotting_df)
 f_labels <- data.frame(
   label = c("(a) P1", "(b) P2" ,"(c) P3", "(d) P4"),
   pair = c("p1", "p2" ,"p3", "p4"),
-  x = c(-350,-350,-350,-350),
+  x = c(-1,-1,-1,-1),
   y = c(.9,.9,.9,.9))
 
 # this works!!
@@ -136,9 +137,9 @@ p2 <- ecdf + geom_text(data = f_labels, aes(x = x, y = y, label = label), size =
 # test save
 # make tighter together
 ggsave(p2,
-       file = "~/ch3_fusion/plots/ecdf_v7.png",
+       file = "~/ch3_fusion/plots/ecdf_phase_v1.png",
        width = 8, 
        height = 6,
        dpi = 150)
   
-system("open ~/ch3_fusion/plots/ecdf_v7.png")
+system("open ~/ch3_fusion/plots/ecdf_phase_v1.png")

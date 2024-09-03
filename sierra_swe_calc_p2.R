@@ -26,7 +26,6 @@ stack <-c(ims,modscag,modis,viirs,flm,landsat)
 
 # mask pixels below 50% fsca
 stack_50 <-ifel(stack <= 50, NA, stack)
-plot(stack_50)
 
 # bring masked unwrapped phase rastesr
 unw_ims <-mask(unw, stack_50[[1]], maskvalue = NA)
@@ -36,11 +35,11 @@ unw_viirs <-mask(unw, stack_50[[4]], maskvalue = NA)
 unw_flm <-mask(unw, stack_50[[5]], maskvalue = NA)
 unw_landsat <-mask(unw, stack_50[[6]], maskvalue = NA)
 
-# stack phase data
-unw_stack <-c(unw_ims,unw_modscag,unw_modis,unw_viirs,unw_flm,unw_landsat)
+unw_stack <-c(unw_ims,unw_modis,unw_viirs,unw_modscag,unw_landsat,unw_flm)
 # unw_stack2 <-c(unw,unw_stack)
+# names(unw_stack2) <-c("No Mask","IMS","MODIS","VIIRS","STC","Landsat","FLM")
 # unw_stack2
-# writeRaster(unw_stack2, "./new_uavsar/p2_phase_stack.tif")
+# writeRaster(unw_stack2, "./new_uavsar/p2_phase_stack2.tif")
 
 # import leinss swe change function
 devtools::source_url("https://raw.githubusercontent.com/jacktarricone/jemez_zenodo/main/insar_swe_functions.R")
