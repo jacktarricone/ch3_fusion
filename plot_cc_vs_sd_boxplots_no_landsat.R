@@ -137,41 +137,44 @@ p1_p <-ggplot(plotting_df_v2, mapping = aes(x = focal_mean, y = iqr, fill = as.f
 f_labels <- data.frame(
   label = c("(a) P1", "(b) P2" ,"(c) P3", "(d) P4"),
   pair = c("(a) P1", "(b) P2" ,"(c) P3", "(d) P4"),
-  bin = c(5,5,5,5),
+  bin = c('(10,15]','(10,15]','(10,15]','(10,15]'),
   y = c(110, 110, 110, 110))
 
 # this works!!
-p2 <- p1_p + geom_text(data = f_labels, aes(x = bin, y = y, label = label), size = 5) 
+p2 <- p1_p + geom_text(data = f_labels, aes(x = 5, y = 90, label = label), size = 5) 
 p2
 
 # test save
 # make tighter together
 ggsave(p2,
-       file = "~/ch3_fusion/plots/fig8_cc_vs_sd_boxplot_v13.pdf",
+       file = "~/ch3_fusion/plots/fig8_cc_vs_sd_boxplot_v14.pdf",
        width = 4,
        height = 5.5)
 
-system("open ~/ch3_fusion/plots/fig8_cc_vs_sd_boxplot_v13.pdf")
+system("open ~/ch3_fusion/plots/fig8_cc_vs_sd_boxplot_v14.pdf")
 
 
 ### numbers for results section
-plotting_df
+head(plotting_df_v2)
 
 # Group by 'bin' and calculate the median and mean values
 result <- plotting_df_v2 %>%
   group_by(pair,bin) %>%
-  summarize(med = median(sd), mean = mean(sd))
+  summarize(med = median(iqr), mean = mean(iqr))
 
 # Print the result
 print(result)
-p1 <-filter(result, pair == "P1")
+p1 <-filter(result, pair == "(a) P1")
 p1
 
-p2 <-filter(result, pair == "P2")
+p2 <-filter(result, pair == "(b) P2")
 p2
 
-p3 <-filter(result, pair == "P3")
+p3 <-filter(result, pair == "(c) P3")
 p3
 
-p4 <-filter(result, pair == "P4")
+p4 <-filter(result, pair == "(d) P4")
 p4
+
+bind <-rbind(p1[1:8,],p2[1:8,],p3[1:8,])
+max(bind$med)

@@ -100,6 +100,7 @@ system("open ./plots/dswe_mw_v7.pdf")
 
 setwd("~/ch3_fusion/rasters")
 
+
 # load in 80 m insar dswe products
 p1_stack_cm <-rast(list.files("./new_dswe/p1", full.names = T))
 names(p1_stack_cm) <-c("FLM","IMS","Landsat","MODIS","STC","VIIRS")
@@ -114,13 +115,13 @@ names(p4_stack_cm) <-c("FLM","IMS","Landsat","MODIS","STC","VIIRS")
 cell_size_m2 <- cellSize(p4_stack_cm, unit = "m")
 
 # convert SWE cm to m^3
-p1_stack_m3 <-(p1_stack_cm/100 * cell_size_m2)
-p2_stack_m3 <-(p2_stack_cm/100 * cell_size_m2)
-p3_stack_m3 <-(p3_stack_cm/100 * cell_size_m2)
-p4_stack_m3 <-(p4_stack_cm/100 * cell_size_m2)
+# p1_stack_m3 <-(p1_stack_cm/100 * cell_size_m2)
+# p2_stack_m3 <-(p2_stack_cm/100 * cell_size_m2)
+# p3_stack_m3 <-(p3_stack_cm/100 * cell_size_m2)
+# p4_stack_m3 <-(p4_stack_cm/100 * cell_size_m2)
 
 ### format data.frames for plotting
-p1_df <-as.data.frame(p1_stack_m3, xy = TRUE)
+p1_df <-as.data.frame(p1_stack_cm, xy = TRUE)
 p1_df$pair <-rep("P1", nrow(p1_df))
 p1_df_l <-pivot_longer(p1_df, 
                        cols = c("FLM","IMS","Landsat","MODIS","STC","VIIRS"),
@@ -128,7 +129,7 @@ p1_df_l <-pivot_longer(p1_df,
 p1_df_l$data_set <-factor(p1_df_l$data_set, 
                                levels=c("IMS","MODIS","VIIRS","STC","Landsat","FLM"))
 
-p2_df <-as.data.frame(p2_stack_m3, xy = TRUE)
+p2_df <-as.data.frame(p2_stack_cm, xy = TRUE)
 p2_df$pair <-rep("P2", nrow(p2_df))
 p2_df_l <-pivot_longer(p2_df, 
                        cols = c("FLM","IMS","Landsat","MODIS","STC","VIIRS"),
@@ -137,7 +138,7 @@ p2_df_l$data_set <-factor(p2_df_l$data_set,
                           levels=c("IMS","MODIS","VIIRS","STC","Landsat","FLM"))
 
 
-p3_df <-as.data.frame(p3_stack_m3, xy = TRUE)
+p3_df <-as.data.frame(p3_stack_cm, xy = TRUE)
 p3_df$pair <-rep("P3", nrow(p3_df))
 p3_df_l <-pivot_longer(p3_df, 
                        cols = c("FLM","IMS","Landsat","MODIS","STC","VIIRS"),
@@ -145,7 +146,7 @@ p3_df_l <-pivot_longer(p3_df,
 p3_df_l$data_set <-factor(p3_df_l$data_set, 
                           levels=c("IMS","MODIS","VIIRS","STC","Landsat","FLM"))
 
-p4_df <-as.data.frame(p4_stack_m3, xy = TRUE)
+p4_df <-as.data.frame(p4_stack_cm, xy = TRUE)
 p4_df$pair <-rep("P4", nrow(p4_df))
 p4_df_l <-pivot_longer(p4_df, 
                        cols = c("FLM","IMS","Landsat","MODIS","STC","VIIRS"),
@@ -197,7 +198,7 @@ p1 <-ggplot(p1_df_l) +
   geom_sf(data = p1_na_sf, fill = NA, color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
   geom_raster(mapping = aes(x,y, fill = value)) + 
   facet_wrap(vars(data_set), scales = "fixed", dir = "h", strip.position = "top", nrow = 1) +
-  scale_fill_gradientn(colors = dswe_scale, limits = c(-500,500), oob = squish, na.value = "gray50", guide = "none") + # max of color bar so it saturates
+  scale_fill_gradientn(colors = dswe_scale, limits = c(-7,7), oob = squish, na.value = "gray50", guide = "none") + # max of color bar so it saturates
   labs(fill = expression(Delta~SWE~(m^3))) +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
@@ -217,7 +218,7 @@ p2 <-ggplot(p2_df_l) +
   geom_sf(data = p2_na_sf, fill = NA, color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
   geom_raster(mapping = aes(x,y, fill = value)) + 
   facet_wrap(vars(data_set), scales = "fixed", dir = "h", strip.position = "top", nrow = 1) +
-  scale_fill_gradientn(colors = dswe_scale, limits = c(-500,500), oob = squish, na.value = "gray50", guide = "none") + # max of color bar so it saturates
+  scale_fill_gradientn(colors = dswe_scale, limits = c(-7,7), oob = squish, na.value = "gray50", guide = "none") + # max of color bar so it saturates
   labs(fill = expression(Delta~SWE~(m^3))) +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
@@ -237,7 +238,7 @@ p3 <-ggplot(p3_df_l) +
   geom_sf(data = p3_na_sf, fill = NA, color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
   geom_raster(mapping = aes(x,y, fill = value)) + 
   facet_wrap(vars(data_set), scales = "fixed", dir = "h", strip.position = "top", nrow = 1) +
-  scale_fill_gradientn(colors = dswe_scale, limits = c(-500,500), oob = squish, na.value = "gray50", guide = "none") + # max of color bar so it saturates
+  scale_fill_gradientn(colors = dswe_scale, limits = c(-7,7), oob = squish, na.value = "gray50", guide = "none") + # max of color bar so it saturates
   labs(fill = expression(Delta~SWE~(m^3))) +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
@@ -256,7 +257,7 @@ p4 <-ggplot(p4_df_l) +
   geom_sf(data = p4_na_sf, fill = NA, color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
   geom_raster(mapping = aes(x,y, fill = value)) + 
   facet_wrap(vars(data_set), scales = "fixed", dir = "h", strip.position = "top", nrow = 1) +
-  scale_fill_gradientn(colors = dswe_scale, limits = c(-500,500), oob = squish, na.value = "gray50", guide = "none") + # max of color bar so it saturates
+  scale_fill_gradientn(colors = dswe_scale, limits = c(-7,7), oob = squish, na.value = "gray50", guide = "none") + # max of color bar so it saturates
   labs(fill = expression(Delta~SWE~(m^3))) +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
@@ -289,29 +290,19 @@ dswe <-plot_grid(p1, p2, p3, p4,
           rel_heights = c(.26,.23,.23,.33))
 
 
+ggsave("~/ch3_fusion/plots/fig5_dswe_80m_mw_v3.pdf",
+       width = 13,
+       height = 12,
+       units = "in")
 
-full <-plot_grid(dswe, dswe_mw,
-                 labels = c("(a)","(b)"),
-                 label_size = 22,
-                 align = "v",
-                 ncol = 2,
-                 vjust = 1.5,
-                 rel_widths = c(.5,.5))
+system("open ~/ch3_fusion/plots/fig5_dswe_80m_mw_v3.pdf")
 
-ggsave("~/ch3_fusion/plots/fig5_dswe_80m_mw_v1.pdf",
+ggsave("~/ch3_fusion/plots/fig5_dswe_80m_mw_v3.png",
        width = 13,
        height = 12,
        dpi = 300,
        units = "in")
 
-system("open ~/ch3_fusion/plots/fig5_dswe_80m_mw_v1.pdf")
-
-ggsave("~/ch3_fusion/plots/fig5_dswe_80m_mw_v1.png",
-       width = 13,
-       height = 12,
-       dpi = 300,
-       units = "in")
-
-system("open ~/ch3_fusion/plots/fig5_dswe_80m_mw_v1.png")
+system("open ~/ch3_fusion/plots/fig5_dswe_80m_mw_v3.png")
 
 
