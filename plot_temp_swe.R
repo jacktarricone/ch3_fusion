@@ -124,10 +124,10 @@ temp <-ggplot(daily_temp)+
   geom_vline(xintercept = flight3, linetype=2, col = "purple4", alpha = 1) +
   geom_vline(xintercept = flight4, linetype=2, col = "purple4", alpha = 1) +
   geom_vline(xintercept = end, linetype=2, col = "purple4", alpha = 1) +
-  annotate("text", x = p1, y = 23, label = "P1", size = 4) +
-  annotate("text", x = p2, y = 23, label = "P2", size = 4) +
-  annotate("text", x = p3, y = 23, label = "P3", size = 4) +
-  annotate("text", x = p4, y = 23, label = "P4", size = 4) +
+  annotate("text", x = p1, y = 24, label = "P1", size = 4) +
+  annotate("text", x = p2, y = 24, label = "P2", size = 4) +
+  annotate("text", x = p3, y = 24, label = "P3", size = 4) +
+  annotate("text", x = p4, y = 24, label = "P4", size = 4) +
   annotate("rect", xmin = start, xmax = end,
            ymin = -Inf, ymax = Inf, alpha = .2)+
   geom_line(aes(x = date, y = max_temp_c), color = "red2", size = 1) +
