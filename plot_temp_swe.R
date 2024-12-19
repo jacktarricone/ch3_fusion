@@ -1,16 +1,16 @@
 # time series of swe and temp
 # jack tarricone
 
-# 4 cadwr stations
+# 5 cadwr stations
 
 library(dplyr)
 library(readxl)
 library(lubridate)
 library(ggplot2)
 library(cowplot)
+library(RColorBrewer)
+library(viridis)
 
-# set path to '/jemez_lband_swe_code_data' that was downloaded and unzipped from zenodo
-# all other file paths are relative
 setwd("~/ch3_fusion")
 list.files() #pwd
 
@@ -107,21 +107,32 @@ flight2 <-daily_temp$date[43]
 flight3 <-daily_temp$date[50]
 flight4 <-daily_temp$date[57]
 
+# define pair labels
+p1 <-date("2020-02-07")
+p2 <-date("2020-02-16")
+p3 <-date("2020-02-22")
+p4 <-date("2020-03-04")
+
 # quick test plot
 temp <-ggplot(daily_temp)+
   geom_hline(yintercept = 0, linetype=3, col = "gray30", alpha = 1) +
-  geom_vline(xintercept = ls1, linetype=2, col = "purple4", alpha = 1) +
-  geom_vline(xintercept = ls2, linetype=2, col = "purple4", alpha = 1) +
-  geom_vline(xintercept = ls3, linetype=2, col = "purple4", alpha = 1) +
-  geom_vline(xintercept = start, linetype=2, col = "orange", alpha = 1) +
-  geom_vline(xintercept = flight2, linetype=2, col = "orange", alpha = 1) +
-  geom_vline(xintercept = flight3, linetype=2, col = "orange", alpha = 1) +
-  geom_vline(xintercept = flight4, linetype=2, col = "orange", alpha = 1) +
-  geom_vline(xintercept = end, linetype=2, col = "orange", alpha = 1) +
+  geom_vline(xintercept = ls1, linetype=2, col = "orange", alpha = 1) +
+  geom_vline(xintercept = ls2, linetype=2, col = "orange", alpha = 1) +
+  geom_vline(xintercept = ls3, linetype=2, col = "orange", alpha = 1) +
+  geom_vline(xintercept = start, linetype=2, col = "purple4", alpha = 1) +
+  geom_vline(xintercept = flight2, linetype=2, col = "purple4", alpha = 1) +
+  geom_vline(xintercept = flight3, linetype=2, col = "purple4", alpha = 1) +
+  geom_vline(xintercept = flight4, linetype=2, col = "purple4", alpha = 1) +
+  geom_vline(xintercept = end, linetype=2, col = "purple4", alpha = 1) +
+  annotate("text", x = p1, y = 23, label = "P1", size = 4) +
+  annotate("text", x = p2, y = 23, label = "P2", size = 4) +
+  annotate("text", x = p3, y = 23, label = "P3", size = 4) +
+  annotate("text", x = p4, y = 23, label = "P4", size = 4) +
   annotate("rect", xmin = start, xmax = end,
            ymin = -Inf, ymax = Inf, alpha = .2)+
-  geom_line(aes(x = date, y = max_temp_c), color = "red2", size = .8) +
-  geom_line(aes(x = date, y = min_temp_c), color = "blue3", size = .9) +
+  geom_line(aes(x = date, y = max_temp_c), color = "red2", size = 1) +
+  geom_line(aes(x = date, y = min_temp_c), color = "blue3", size = 1) +
+  geom_line(aes(x = date, y = mean_temp_c), color = "black", size = 1) +
   ylab("Air Temperature (°C)")+
   xlab("Date") +
   scale_x_date(date_labels = "%m/%y",
@@ -130,23 +141,23 @@ temp <-ggplot(daily_temp)+
   theme(panel.border = element_rect(colour = "black", fill=NA, linewidth  = 1))
 
 
-
-## new plot
-my_colors <-c('black', '#4daf4a', '#984ea3',  '#bebada','brown')
-
 # plot swe
 swe <-ggplot(cadwr_swe)+
-  geom_vline(xintercept = ls1, linetype=2, col = "purple4", alpha = 1) +
-  geom_vline(xintercept = ls2, linetype=2, col = "purple4", alpha = 1) +
-  geom_vline(xintercept = ls3, linetype=2, col = "purple4", alpha = 1) +
-  geom_vline(xintercept = start, linetype=2, col = "orange", alpha = 1) +
-  geom_vline(xintercept = flight2, linetype=2, col = "orange", alpha = 1) +
-  geom_vline(xintercept = flight3, linetype=2, col = "orange", alpha = 1) +
-  geom_vline(xintercept = flight4, linetype=2, col = "orange", alpha = 1) +
-  geom_vline(xintercept = end, linetype=2, col = "orange", alpha = 1) +
+  geom_vline(xintercept = ls1, linetype=2, col = "orange", alpha = 1) +
+  geom_vline(xintercept = ls2, linetype=2, col = "orange", alpha = 1) +
+  geom_vline(xintercept = ls3, linetype=2, col = "orange", alpha = 1) +
+  geom_vline(xintercept = start, linetype=2, col = "purple4", alpha = 1) +
+  geom_vline(xintercept = flight2, linetype=2, col = "purple4", alpha = 1) +
+  geom_vline(xintercept = flight3, linetype=2, col = "purple4", alpha = 1) +
+  geom_vline(xintercept = flight4, linetype=2, col = "purple4", alpha = 1) +
+  geom_vline(xintercept = end, linetype=2, col = "purple4", alpha = 1) +
+  annotate("text", x = p1, y = 65, label = "P1", size = 4) +
+  annotate("text", x = p2, y = 65, label = "P2", size = 4) +
+  annotate("text", x = p3, y = 65, label = "P3", size = 4) +
+  annotate("text", x = p4, y = 65, label = "P4", size = 4) +
   annotate("rect", xmin = start, xmax = end,
            ymin = -Inf, ymax = Inf, alpha = .2)+
-  geom_line(aes(x = date, y = swe_cm, color = id),  size = .7)+
+  geom_line(aes(x = date, y = swe_cm, color = id),  linewidth = 1.2)+
   scale_x_date(date_labels = "%m/%y",
                date_breaks = "1 month",
                expand = c(0,3))+
@@ -156,11 +167,7 @@ swe <-ggplot(cadwr_swe)+
   ylab("SWE (cm)")+
   xlab("Date") +
   theme(panel.border = element_rect(colour = "black", fill=NA, linewidth  = 1))+
-  scale_color_manual(values = my_colors,
-                     breaks = c('DPO', 'MHP',
-                                'UBC', 'VLC','CUES'),
-                     labels = c('DPO', 'MHP',
-                                'UBC', 'VLC','CUES'))+
+  scale_colour_viridis_d(option = "plasma")+
   theme(legend.position = c(.92,.74),
         panel.border = element_rect(colour = "black", fill=NA, linewidth  = 1),
         axis.text.x=element_blank(),
@@ -176,12 +183,12 @@ plot_grid(swe,temp,
           nrow = 2, 
           rel_heights = c(.47, .53))
 
-ggsave("~/ch3_fusion/plots/fig2_temp_swe_v6.pdf",
+ggsave("~/ch3_fusion/plots/fig2_temp_swe_v8.pdf",
        width = 8.5,
        height = 6.6,
        units = "in")
 
-system("open ~/ch3_fusion/plots/fig2_temp_swe_v6.pdf")
+system("open ~/ch3_fusion/plots/fig2_temp_swe_v8.pdf")
 
 
 

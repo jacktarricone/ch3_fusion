@@ -42,62 +42,6 @@ theme_classic <- function(base_size = 11, base_family = "",
 
 theme_set(theme_classic(15))
 
-setwd("~/ch3_fusion/")
-
-# load in 80 m insar dswe products
-plotting_df <-fread("~/ch3_fusion/csvs/dswe_new_41_plotting_v8.csv")
-plotting_df$data_set <-factor(plotting_df$data_set, 
-                          levels=c("IMS","MODIS","VIIRS","STC","Landsat","FLM"))
-head(plotting_df)
-
-# read in sierra shp
-sierra_v1 <-st_read("~/ch3_fusion/shapefiles/sierra_multiseg_shp_v4.gpkg")
-sierra_sf <-st_geometry(sierra_v1)
-
-############
-### plot
-############
-
-# set color scale
-swe_scale <-brewer.pal(9, "RdBu")
-
-dswe_mw <-ggplot(plotting_df) +
-  geom_sf(data = sierra_sf, fill = "gray50", color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
-  geom_raster(mapping = aes(x,y, fill = dswe_m3)) + 
-  facet_grid(vars(pair), vars(data_set), scales = "fixed", switch = "y") +
-  scale_fill_gradientn(colors = swe_scale, limits = c(-300,300), oob = squish, na.value = "gray50", guide = "none") + 
-  labs(fill = expression(Delta~SWE~(m^3))) +
-  theme(panel.border = element_blank(),
-        axis.text.x = element_blank(),
-        axis.title.y = element_blank(),
-        axis.title.x = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks = element_blank(),
-        legend.position = "bottom",
-        plot.margin = unit(c(0,0,0,0), "cm"),
-        strip.background = element_blank(), 
-        legend.box.spacing = unit(0, "pt"), 
-        strip.text.y.left = element_text(angle = 0),
-        strip.text = element_text(size = 13, face = "bold")) +
-  guides(fill = guide_colorbar(direction = "horizontal",
-                               label.position = 'top',
-                               title.position ='bottom',
-                               title.hjust = .5,
-                               barwidth = 27,
-                               barheight = 1,
-                               frame.colour = "black", 
-                               ticks.colour = "black")) 
-# dswe_mw
-
-ggsave(dswe_mw,
-       file = "./plots/dswe_mw_v7.pdf",
-       width = 7,
-       height = 12)
-
-system("open ./plots/dswe_mw_v7.pdf")
-
-#################################
-
 setwd("~/ch3_fusion/rasters")
 
 
@@ -198,7 +142,7 @@ p1 <-ggplot(p1_df_l) +
   geom_sf(data = p1_na_sf, fill = NA, color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
   geom_raster(mapping = aes(x,y, fill = value)) + 
   facet_wrap(vars(data_set), scales = "fixed", dir = "h", strip.position = "top", nrow = 1) +
-  scale_fill_gradientn(colors = dswe_scale, limits = c(-7,7), oob = squish, na.value = "gray50", guide = "none") + # max of color bar so it saturates
+  scale_fill_gradientn(colors = dswe_scale, limits = c(-8,8), oob = squish, na.value = "gray50", guide = "none") + # max of color bar so it saturates
   labs(fill = expression(Delta~SWE~(m^3))) +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
@@ -218,7 +162,7 @@ p2 <-ggplot(p2_df_l) +
   geom_sf(data = p2_na_sf, fill = NA, color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
   geom_raster(mapping = aes(x,y, fill = value)) + 
   facet_wrap(vars(data_set), scales = "fixed", dir = "h", strip.position = "top", nrow = 1) +
-  scale_fill_gradientn(colors = dswe_scale, limits = c(-7,7), oob = squish, na.value = "gray50", guide = "none") + # max of color bar so it saturates
+  scale_fill_gradientn(colors = dswe_scale, limits = c(-8,8), oob = squish, na.value = "gray50", guide = "none") + # max of color bar so it saturates
   labs(fill = expression(Delta~SWE~(m^3))) +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
@@ -238,7 +182,7 @@ p3 <-ggplot(p3_df_l) +
   geom_sf(data = p3_na_sf, fill = NA, color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
   geom_raster(mapping = aes(x,y, fill = value)) + 
   facet_wrap(vars(data_set), scales = "fixed", dir = "h", strip.position = "top", nrow = 1) +
-  scale_fill_gradientn(colors = dswe_scale, limits = c(-7,7), oob = squish, na.value = "gray50", guide = "none") + # max of color bar so it saturates
+  scale_fill_gradientn(colors = dswe_scale, limits = c(-8,8), oob = squish, na.value = "gray50", guide = "none") + # max of color bar so it saturates
   labs(fill = expression(Delta~SWE~(m^3))) +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
@@ -257,8 +201,8 @@ p4 <-ggplot(p4_df_l) +
   geom_sf(data = p4_na_sf, fill = NA, color = "black", linewidth = .1, inherit.aes = FALSE, alpha = 1) +
   geom_raster(mapping = aes(x,y, fill = value)) + 
   facet_wrap(vars(data_set), scales = "fixed", dir = "h", strip.position = "top", nrow = 1) +
-  scale_fill_gradientn(colors = dswe_scale, limits = c(-7,7), oob = squish, na.value = "gray50", guide = "none") + # max of color bar so it saturates
-  labs(fill = expression(Delta~SWE~(m^3))) +
+  scale_fill_gradientn(colors = dswe_scale, limits = c(-8,8), oob = squish, na.value = "gray50", guide = "none") + # max of color bar so it saturates
+  labs(fill = expression(Delta~SWE~(cm))) +
   theme(panel.border = element_blank(),
         axis.text.x = element_blank(),
         axis.title.y = element_blank(),
@@ -290,19 +234,19 @@ dswe <-plot_grid(p1, p2, p3, p4,
           rel_heights = c(.26,.23,.23,.33))
 
 
-ggsave("~/ch3_fusion/plots/fig5_dswe_80m_mw_v3.pdf",
-       width = 13,
+ggsave("~/ch3_fusion/plots/fig5_dswe_80m_v6.pdf",
+       width = 7,
        height = 12,
        units = "in")
 
-system("open ~/ch3_fusion/plots/fig5_dswe_80m_mw_v3.pdf")
+system("open ~/ch3_fusion/plots/fig5_dswe_80m_v6.pdf")
 
-ggsave("~/ch3_fusion/plots/fig5_dswe_80m_mw_v3.png",
-       width = 13,
+ggsave("~/ch3_fusion/plots/fig5_dswe_80m_v6.png",
+       width = 7,
        height = 12,
        dpi = 300,
        units = "in")
 
-system("open ~/ch3_fusion/plots/fig5_dswe_80m_mw_v3.png")
+system("open ~/ch3_fusion/plots/fig5_dswe_80m_v6.png")
 
 

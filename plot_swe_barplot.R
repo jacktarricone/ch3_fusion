@@ -155,8 +155,24 @@ mult_diff <- as.data.frame(bar_plotting %>%
                                            abs_min = round(min(abs(swe_change)),digits = 2),
                                            fact = round((abs_max/abs_min), digits = 2)))
 
-net_mult_diff <-filter(mult_diff, stat == "Net")
+head(bar_plotting)
+bp_no_land <-filter(bar_plotting, data_set != "Landsat")
+mult_diff_no_land <- as.data.frame(bp_no_land %>%
+                             group_by(pair,stat) %>%
+                             summarize(abs_max = round(max(abs(swe_change)),digits = 2),
+                                       abs_min = round(min(abs(swe_change)),digits = 2),
+                                       fact = round((abs_max/abs_min), digits = 2)))
+
+mult_diff_no_land
+
+net_mult_diff <-filter(mult_diff_no_land, stat == "Net")
 net_mult_diff
+mean_fact <-mean(net_mult_diff$fact)
+mean_fact
+
+list <-as.list(1:20)
+list[[length(list)]]
+path <-getwd()
 
 names_df <- as.data.frame(bar_plotting %>%
                              group_by(pair, stat) %>%

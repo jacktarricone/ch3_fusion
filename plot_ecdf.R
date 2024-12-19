@@ -65,45 +65,45 @@ p1_stack
 # load in 41x41 dswe products
 p1_stack_v1 <-rast(list.files("./dswe_variabilty_analysis/p1", pattern = ".tif", full.names = T))
 p1_stack <-c(p1_stack_v1, no_mask_mw[[1]])
-names(p1_stack) <-c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS","No Mask")
+names(p1_stack) <-c("FLM","IMS","Landsat","MODIS","STC","VIIRS","No Mask")
 
 p2_stack_v1 <-rast(list.files("./dswe_variabilty_analysis/p2", pattern = ".tif", full.names = T))
 p2_stack <-c(p2_stack_v1, no_mask_mw[[2]])
-names(p2_stack) <-c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS","No Mask")
+names(p2_stack) <-c("FLM","IMS","Landsat","MODIS","STC","VIIRS","No Mask")
 
 
 p3_stack_v1 <-rast(list.files("./dswe_variabilty_analysis/p3", pattern = ".tif", full.names = T))
 p3_stack <-c(p3_stack_v1, no_mask_mw[[3]])
-names(p3_stack) <-c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS", "No Mask")
+names(p3_stack) <-c("FLM","IMS","Landsat","MODIS","STC","VIIRS", "No Mask")
 
 p4_stack_v1 <-rast(list.files("./dswe_variabilty_analysis/p4", pattern = ".tif", full.names = T))
 p4_stack <-c(p4_stack_v1, no_mask_mw[[4]])
-names(p4_stack) <-c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS", "No Mask")
+names(p4_stack) <-c("FLM","IMS","Landsat","MODIS","STC","VIIRS", "No Mask")
 
 
 ### format data.frames for plotting
 p1_df <-as.data.frame(p1_stack, xy = TRUE)
 p1_df$pair <-rep("p1", nrow(p1_df))
 p1_df_l <-pivot_longer(p1_df, 
-                       cols = c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS","No Mask"),
+                       cols = c("FLM","IMS","Landsat","MODIS","STC","VIIRS","No Mask"),
                        names_to = c("data_set"))
 
 p2_df <-as.data.frame(p2_stack, xy = TRUE)
 p2_df$pair <-rep("p2", nrow(p2_df))
 p2_df_l <-pivot_longer(p2_df, 
-                       cols = c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS","No Mask"),
+                       cols = c("FLM","IMS","Landsat","MODIS","STC","VIIRS","No Mask"),
                        names_to = c("data_set"))
 
 p3_df <-as.data.frame(p3_stack, xy = TRUE)
 p3_df$pair <-rep("p3", nrow(p3_df))
 p3_df_l <-pivot_longer(p3_df, 
-                       cols = c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS","No Mask"),
+                       cols = c("FLM","IMS","Landsat","MODIS","STC","VIIRS","No Mask"),
                        names_to = c("data_set"))
 
 p4_df <-as.data.frame(p4_stack, xy = TRUE)
 p4_df$pair <-rep("p4", nrow(p4_df))
 p4_df_l <-pivot_longer(p4_df, 
-                       cols = c("FLM","IMS","Landsat","MODIS","MODSCAG","VIIRS","No Mask"),
+                       cols = c("FLM","IMS","Landsat","MODIS","STC","VIIRS","No Mask"),
                        names_to = c("data_set"))
 
 
@@ -122,15 +122,15 @@ unique(plotting_df$d)
 ecdf <-ggplot()+
   stat_ecdf(plotting_df, mapping = aes(x=value, color = data_set), linewidth=.5) +
   scale_colour_manual(name = "Snow cover data",
-                     # labels = c("IMS","MODSCAG","MODIS","VIIRS","FLM","Landsat", "No Mask"),
+                     # labels = c("IMS","STC","MODIS","VIIRS","FLM","Landsat", "No Mask"),
                       values = c("IMS" = "#D53E4F",
-                                 "MODSCAG" = "#FC8D59",
+                                 "STC" = "#FC8D59",
                                  "MODIS" = '#99D594',
                                  "VIIRS" = '#3288BD',
                                  "FLM" = '#FEE08B',
                                  "Landsat" = 'purple',
                                  "No Mask" = "black"),
-                      breaks = c("No Mask","IMS","MODSCAG","MODIS","VIIRS","FLM","Landsat"))+ 
+                      breaks = c("No Mask","IMS","STC","MODIS","VIIRS","FLM","Landsat"))+ 
   facet_wrap( ~pair )+
   ylab("Cumulative Distribution") +
   xlab(expression(Delta~SWE~(10^2~ m^3)))+
@@ -159,9 +159,8 @@ p2 <- ecdf + geom_text(data = f_labels, aes(x = x, y = y, label = label), size =
 # test save
 # make tighter together
 ggsave(p2,
-       file = "~/ch3_fusion/plots/ecdf_v7.png",
+       file = "~/ch3_fusion/plots/ecdf_v8.pdf",
        width = 8, 
-       height = 6,
-       dpi = 150)
+       height = 6)
   
-system("open ~/ch3_fusion/plots/ecdf_v7.png")
+system("open ~/ch3_fusion/plots/ecdf_v8.pdf")

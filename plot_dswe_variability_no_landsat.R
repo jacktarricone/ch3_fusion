@@ -41,7 +41,7 @@ theme_classic <- function(base_size = 11, base_family = "",
     )
 }
 
-theme_set(theme_classic(16))
+theme_set(theme_classic(22))
 
 setwd("~/ch3_fusion/rasters")
 
@@ -184,10 +184,9 @@ cow <-plot_grid(p1_p, cc,
 # test save
 # make tighter together
 ggsave(cow,
-       file = "~/ch3_fusion/plots/fig7_sd_vs_cc_plot_v9.pdf",
+       file = "~/ch3_fusion/plots/fig7_sd_vs_cc_plot_v12.pdf",
        width = 13, 
-       height = 9,
-       dpi = 300)
+       height = 9)
 
-system("open ~/ch3_fusion/plots/fig7_sd_vs_cc_plot_v9.pdf")
+system("open ~/ch3_fusion/plots/fig7_sd_vs_cc_plot_v12.pdf")
 
