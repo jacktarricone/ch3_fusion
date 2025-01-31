@@ -38,7 +38,7 @@ theme_classic <- function(base_size = 11, base_family = "",
     )
 }
 
-theme_set(theme_classic(15))
+theme_set(theme_classic(13))
 
 setwd("~/ch3_fusion/rasters")
 
@@ -184,6 +184,17 @@ result <- summary %>%
 
 result
 
+modis_d <-result$MODIS[1]-result$MODIS[5]
+stc_d <-result$STC[1]-result$STC[5]
+viirs_d <-result$VIIRS[1]-result$VIIRS[5]
+flm_d <-result$FLM[1]-result$FLM[5]
+
+test <-mean(c(modis_d,stc_d,viirs_d))
+rt <-as.matrix(t(result))
+rt
+
+low_sd <-sd(as.numeric(rt[2:7,1]))
+high_sd <-sd(as.numeric(rt[2:7,5]))
 
 # plotting df
 plot_df2 <-pivot_longer(result, 
@@ -195,6 +206,7 @@ plot_df2$dataset <-factor(plot_df2$dataset,
                                levels=c("IMS","MODIS","VIIRS","STC","Landsat","FLM"))
 
 
+# plot
 ggplot(plot_df2, aes(fill= dataset, x = cc_group, y=value)) + 
   geom_bar(position="dodge", stat="identity", color = "black", width = .5)+
   scale_y_continuous(expand = c(.004,0), 
@@ -204,15 +216,15 @@ ggplot(plot_df2, aes(fill= dataset, x = cc_group, y=value)) +
   ylab("SCA (%)") +
   xlab("Canopy Cover (%)") +
   annotate("text", x = "0-15", y = 106, 
-           label = bquote(.(cc15) ~ km^2 ~ "(" * .(cc15_perc) * " %)"), size = 2.5) +
+           label = bquote(.(cc15_perc) ~ "%" ~ "(" ~ .(cc15) ~ km^2 ~ ")"), size = 2.5)+
   annotate("text", x = "15-30", y = 106, 
-           label = bquote(.(cc30) ~ km^2 ~ "(" * .(cc30_perc) * " %)"), size = 2.5) +
+           label = bquote(.(cc30_perc) ~ "%" ~ "(" ~ .(cc30) ~ km^2 ~ ")"), size = 2.5)+
   annotate("text", x = "30-45", y = 106, 
-           label = bquote(.(cc45) ~ km^2 ~ "(" * .(cc45_perc) * " %)"), size = 2.5) +
+           label = bquote(.(cc45_perc) ~ "%" ~ "(" ~ .(cc45) ~ km^2 ~ ")"), size = 2.5)+
   annotate("text", x = "45-60", y = 106, 
-           label = bquote(.(cc60) ~ km^2 ~ "(" * .(cc60_perc) * " %)"), size = 2.5) +
+           label = bquote(.(cc60_perc) ~ "%" ~ "(" ~ .(cc60) ~ km^2 ~ ")"), size = 2.5)+
   annotate("text", x = "60-100", y = 106, 
-           label = bquote(.(cc100) ~ km^2 ~ "(" * .(cc100_perc) * " %)"), size = 2.6) +
+           label = bquote(.(cc100_perc) ~ "%" ~ "(" ~ .(cc100) ~ km^2 ~ ")"), size = 2.5)+
   theme(panel.border = element_rect(colour = "black", fill = NA, linewidth = 1),
         legend.position = "top",
         legend.text = element_text(size = 8),
@@ -225,10 +237,10 @@ ggplot(plot_df2, aes(fill= dataset, x = cc_group, y=value)) +
         axis.text.x = element_text(color = "black"))+
   guides(fill = guide_legend(nrow = 1)) 
 
-ggsave(file = "~/ch3_fusion/plots/fig8_fsca_cc_bargraph_percent_v3.pdf",
+ggsave(file = "~/ch3_fusion/plots/fig8_fsca_cc_bargraph_percent_v4.pdf",
        width = 5.5, 
        height = 3)
 
-system("open ~/ch3_fusion/plots/fig8_fsca_cc_bargraph_percent_v3.pdf") 
+system("open ~/ch3_fusion/plots/fig8_fsca_cc_bargraph_percent_v4.pdf") 
 
 
